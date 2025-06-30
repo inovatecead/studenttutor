@@ -181,6 +181,13 @@ if ($filter_course > 0) {
     $filters['courseid'] = $filter_course;
 }
 
+// Debug: temporary debugging
+debugging('Applied filters in index.php: ' . print_r($filters, true), DEBUG_DEVELOPER);
+
+// Debug: check if we have any assignments at all
+$total_assignments = $DB->count_records('local_studenttutor_assign');
+debugging('Total assignments in database: ' . $total_assignments, DEBUG_DEVELOPER);
+
 $assignments = assignment_manager::get_all_assignments_with_details($filters);
 
 if ($assignments) {
@@ -252,6 +259,25 @@ if ($assignments) {
     echo html_writer::table($table);
 } else {
     echo html_writer::div(get_string('no_assignments', 'local_studenttutor'), 'alert alert-info');
+    
+    // DEBUG: Add direct database check
+    echo html_writer::start_tag('div', array('style' => 'margin-top: 20px; padding: 10px; background: #f8f9fa; border: 1px solid #dee2e6;'));
+    echo html_writer::tag('h4', 'DEBUG: Verificação direta do banco');
+    
+    $debug_assignments = $DB->get_records('local_studenttutor_assign', null, 'timeassigned DESC', '*', 0, 5);
+    echo html_writer::tag('p', 'Total de registros na tabela: ' . $total_assignments);
+    
+    if ($debug_assignments) {
+        echo html_writer::tag('p', 'Primeiros registros encontrados:');
+        echo html_writer::start_tag('pre', array('style' => 'font-size: 12px;'));
+        foreach ($debug_assignments as $record) {
+            echo "ID: {$record->id}, TutorID: {$record->tutorid}, StudentID: {$record->studentid}, CourseID: {$record->courseid}, Status: {$record->status}, TimeAssigned: " . userdate($record->timeassigned) . "\n";
+        }
+        echo html_writer::end_tag('pre');
+    } else {
+        echo html_writer::tag('p', 'Nenhum registro encontrado na tabela local_studenttutor_assign', array('style' => 'color: red;'));
+    }
+    echo html_writer::end_tag('div');
 }
 
 echo html_writer::end_tag('div');

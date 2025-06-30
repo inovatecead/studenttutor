@@ -114,7 +114,7 @@ class history_manager {
         $updatedata->id = $entryid;
         $updatedata->timemodified = time();
 
-        $allowedfields = ['activitytype', 'description', 'courseid'];
+        $allowedfields = ['activitytype', 'title', 'description', 'courseid'];
         foreach ($allowedfields as $field) {
             if (isset($data[$field])) {
                 $updatedata->$field = $data[$field];
@@ -398,6 +398,12 @@ class history_manager {
             return false;
         }
 
+        // Check title
+        if (empty(trim($title))) {
+            debugging('Title cannot be empty', DEBUG_DEVELOPER);
+            return false;
+        }
+
         // Check description length
         if (empty(trim($description))) {
             debugging('Description cannot be empty', DEBUG_DEVELOPER);
@@ -426,10 +432,11 @@ class history_manager {
                 $studentid = $row[$mapping['studentid']] ?? null;
                 $tutorid = $row[$mapping['tutorid']] ?? null;
                 $activitytype = $row[$mapping['activitytype']] ?? null;
+                $title = $row[$mapping['title']] ?? '';
                 $description = $row[$mapping['description']] ?? null;
                 $courseid = $row[$mapping['courseid']] ?? 0;
 
-                if (self::add_history_entry($studentid, $tutorid, $activitytype, $description, $courseid)) {
+                if (self::add_history_entry($studentid, $tutorid, $activitytype, $title, $description, $courseid)) {
                     $results['success']++;
                 } else {
                     $results['errors']++;

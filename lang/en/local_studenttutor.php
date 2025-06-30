@@ -48,8 +48,6 @@ $string['action_meeting'] = 'Meeting';
 $string['action_email'] = 'Email Communication';
 $string['action_feedback'] = 'Feedback';
 $string['action_assessment'] = 'Assessment Review';
-$string['action_phone'] = 'Phone Call';
-$string['action_other'] = 'Other';
 
 // Filter options
 $string['filters'] = 'Filters';
@@ -128,15 +126,11 @@ $string['nohistory'] = 'No tutoring activities found.';
 // Settings
 $string['settings'] = 'Settings';
 $string['general_settings'] = 'General Settings';
-$string['general_settings_desc'] = 'Configure general settings for the Student-Tutor plugin';
+$string['general_settings_desc'] = 'Configure general plugin settings';
 $string['enable_plugin'] = 'Enable Plugin';
-$string['enable_plugin_desc'] = 'Enable or disable the Student-Tutor plugin functionality';
+$string['enable_plugin_desc'] = 'Enable or disable the Student-Tutor assignment plugin';
 $string['max_assignments'] = 'Maximum Assignments';
-$string['max_assignments_desc'] = 'Maximum number of students that can be assigned to a single tutor';
-$string['tutor_role'] = 'Tutor Role Short Name';
-$string['tutor_role_desc'] = 'Short name of the role that should be considered as tutors (e.g., tutortematico, teacher, editingteacher)';
-$string['additional_tutor_roles'] = 'Additional Tutor Roles';
-$string['additional_tutor_roles_desc'] = 'Comma-separated list of additional role short names that should be considered as tutors (e.g., teacher,editingteacher)';
+$string['max_assignments_desc'] = 'Maximum number of students a tutor can be assigned to';
 
 // Additional form labels
 $string['add_assignment'] = 'Add Assignment';
@@ -178,16 +172,6 @@ $string['assignmentnotfound'] = 'Assignment not found';
 $string['assignmentalreadyexists'] = 'This assignment already exists';
 $string['assignment_creation_failed'] = 'Failed to create assignment';
 $string['assignment_update_failed'] = 'Failed to update assignment';
-
-// History management
-$string['confirm_delete_history'] = 'Are you sure you want to delete this history entry? This action cannot be undone.';
-$string['history_deleted_success'] = 'History entry deleted successfully';
-$string['history_delete_error'] = 'Error deleting history entry';
-$string['history_not_found'] = 'History entry not found';
-$string['edit_history'] = 'Edit History Entry';
-$string['history_updated_success'] = 'History entry updated successfully';
-$string['history_update_error'] = 'Error updating history entry';
-$string['editing_history_for'] = 'Editing history entry for {$a}';
 
 // Course integration
 $string['my_students_in_course'] = 'My Students in {$a}';

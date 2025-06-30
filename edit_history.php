@@ -137,15 +137,14 @@ if ($form->is_cancelled()) {
     redirect($return_url);
 } else if ($data = $form->get_data()) {
     try {
-        // Update the history entry
-        $update_data = new stdClass();
-        $update_data->id = $historyid;
-        $update_data->activitytype = $data->activitytype;
-        $update_data->title = $data->title;
-        $update_data->description = $data->description;
-        $update_data->timemodified = time();
+        // Update the history entry using the manager
+        $update_data = array(
+            'activitytype' => $data->activitytype,
+            'title' => $data->title,
+            'description' => $data->description
+        );
         
-        if ($DB->update_record('local_studenttutor_history', $update_data)) {
+        if (history_manager::update_history_entry($historyid, $update_data)) {
             \core\notification::success(get_string('history_updated_success', 'local_studenttutor'));
         } else {
             \core\notification::error(get_string('history_update_error', 'local_studenttutor'));

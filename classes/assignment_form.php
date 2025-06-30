@@ -23,7 +23,6 @@
  */
 
 require_once($CFG->libdir . '/formslib.php');
-require_once(__DIR__ . '/../lib.php');
 
 class assignment_form extends moodleform {
 
@@ -43,7 +42,7 @@ class assignment_form extends moodleform {
             }
         }
 
-        // Get tutors (users with configured tutor roles) - in alphabetical order
+        // Get tutors using configured roles instead of hardcoded ones
         $tutor_roles = local_studenttutor_get_tutor_roles();
         $tutors = $this->get_users_by_role($tutor_roles, $courseid);
         $tutor_options = array();
@@ -109,32 +108,6 @@ class assignment_form extends moodleform {
         }
 
         return $errors;
-    }
-
-    /**
-     * Get configured tutor roles from plugin settings
-     * @return array Array of role shortnames
-     */
-    private function get_configured_tutor_roles() {
-        // Get primary tutor role from config
-        $primary_role = get_config('local_studenttutor', 'tutor_role');
-        if (empty($primary_role)) {
-            $primary_role = 'tutortematico'; // Default fallback
-        }
-        
-        $roles = [$primary_role];
-        
-        // Get additional tutor roles from config
-        $additional_roles = get_config('local_studenttutor', 'additional_tutor_roles');
-        if (!empty($additional_roles)) {
-            $additional_array = array_map('trim', explode(',', $additional_roles));
-            $roles = array_merge($roles, $additional_array);
-        }
-        
-        // Remove duplicates and empty values
-        $roles = array_unique(array_filter($roles));
-        
-        return $roles;
     }
 
     /**

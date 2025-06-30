@@ -48,21 +48,15 @@ $string['action_meeting'] = 'Encontro/Reunião';
 $string['action_email'] = 'Comunicação por Email';
 $string['action_feedback'] = 'Feedback/Retorno';
 $string['action_assessment'] = 'Revisão de Avaliação';
-$string['action_phone'] = 'Ligação Telefônica';
-$string['action_other'] = 'Outro';
 
 // Configurações
 $string['settings'] = 'Configurações';
 $string['general_settings'] = 'Configurações Gerais';
-$string['general_settings_desc'] = 'Configure as configurações gerais do plugin Student-Tutor';
+$string['general_settings_desc'] = 'Configure as configurações gerais do plugin';
 $string['enable_plugin'] = 'Habilitar Plugin';
-$string['enable_plugin_desc'] = 'Habilitar ou desabilitar a funcionalidade do plugin Student-Tutor';
+$string['enable_plugin_desc'] = 'Habilitar ou desabilitar o plugin de atribuição Estudante-Tutor';
 $string['max_assignments'] = 'Máximo de Atribuições';
-$string['max_assignments_desc'] = 'Número máximo de estudantes que podem ser atribuídos a um único tutor';
-$string['tutor_role'] = 'Nome Curto do Papel de Tutor';
-$string['tutor_role_desc'] = 'Nome curto do papel que deve ser considerado como tutor (ex: tutortematico, teacher, editingteacher)';
-$string['additional_tutor_roles'] = 'Papéis Adicionais de Tutor';
-$string['additional_tutor_roles_desc'] = 'Lista separada por vírgulas de nomes curtos de papéis adicionais que devem ser considerados como tutores (ex: teacher,editingteacher)';
+$string['max_assignments_desc'] = 'Número máximo de estudantes que um tutor pode ter atribuído';
 
 // Rótulos de formulário adicionais
 $string['add_assignment'] = 'Adicionar Atribuição';
@@ -103,15 +97,8 @@ $string['error_invalid_assignment'] = 'ID de atribuição inválido';
 $string['assignmentnotfound'] = 'Atribuição não encontrada';
 $string['assignmentalreadyexists'] = 'Esta atribuição já existe';
 $string['assignment_creation_failed'] = 'Falha ao criar atribuição';
-
-// Gerenciamento de histórico
-$string['confirm_delete_history'] = 'Tem certeza de que deseja excluir esta entrada do histórico? Esta ação não pode ser desfeita.';
-$string['history_deleted_success'] = 'Entrada do histórico excluída com sucesso';
-$string['history_delete_error'] = 'Erro ao excluir entrada do histórico';
-$string['history_not_found'] = 'Entrada do histórico não encontrada';
-$string['edit_history'] = 'Editar Entrada do Histórico';
-$string['history_updated_success'] = 'Entrada do histórico atualizada com sucesso';
-$string['history_update_error'] = 'Erro ao atualizar entrada do histórico';
+$string['assignment_update_failed'] = 'Falha ao atualizar atribuição';
+$string['error_deleting_assignment'] = 'Erro ao excluir atribuição';
 
 // Opções de filtro
 $string['filters'] = 'Filtros';

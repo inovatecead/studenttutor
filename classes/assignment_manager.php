@@ -73,10 +73,8 @@ class assignment_manager {
         $assignment->tutorid = $tutorid;
         $assignment->courseid = $courseid;
         $assignment->assignedby = $assignedby;
-        $assignment->timeassigned = time();    // CAMPO OBRIGATÓRIO - quando foi atribuído
-        $assignment->timecreated = time();
+        $assignment->timeassigned = time();
         $assignment->timemodified = time();
-        $assignment->createdby = $assignedby;
         $assignment->status = self::STATUS_ACTIVE;
 
         try {
@@ -224,12 +222,12 @@ class assignment_manager {
      * Get assignments with optional filters.
      *
      * @param array $filters Optional filters (courseid, studentid, tutorid, status)
-     * @param string $sort Sort field (default: timecreated DESC)
+     * @param string $sort Sort field (default: timeassigned DESC)
      * @param int $limitfrom Start position for pagination
      * @param int $limitnum Number of records to return
      * @return array Array of assignment records with user details
      */
-    public static function get_assignments($filters = array(), $sort = 'a.timecreated DESC', $limitfrom = 0, $limitnum = 0) {
+    public static function get_assignments($filters = array(), $sort = 'a.timeassigned DESC', $limitfrom = 0, $limitnum = 0) {
         global $DB;
 
         $sql = "SELECT a.*, 
@@ -333,21 +331,19 @@ class assignment_manager {
     public static function get_tutor_students_including_global($tutorid, $courseid, $status = self::STATUS_ACTIVE) {
         global $DB;
         
-        // Query para buscar estudantes atribuídos ao tutor tanto no curso específico quanto globalmente
-        $sql = "SELECT DISTINCT a.id, a.studentid, a.tutorid, a.courseid, a.status, a.timeassigned, a.timecreated, a.timemodified,
+        $sql = "SELECT DISTINCT a.*, 
                        tu.firstname as tutor_firstname, tu.lastname as tutor_lastname, tu.email as tutor_email,
                        st.firstname as student_firstname, st.lastname as student_lastname, st.email as student_email,
                        c.fullname as course_name, c.shortname as course_shortname,
-                       CASE WHEN a.courseid = 0 THEN 'Global' ELSE c.fullname END as assignment_scope,
                        CASE WHEN a.courseid = 0 THEN 1 ELSE 0 END as is_global_assignment
                 FROM {local_studenttutor_assign} a
-                JOIN {user} tu ON a.tutorid = tu.id AND tu.deleted = 0 AND tu.suspended = 0
-                JOIN {user} st ON a.studentid = st.id AND st.deleted = 0 AND st.suspended = 0
-                LEFT JOIN {course} c ON a.courseid = c.id AND c.visible = 1
+                JOIN {user} tu ON a.tutorid = tu.id AND tu.deleted = 0
+                JOIN {user} st ON a.studentid = st.id AND st.deleted = 0
+                LEFT JOIN {course} c ON a.courseid = c.id
                 WHERE a.tutorid = :tutorid 
                 AND a.status = :status
                 AND (a.courseid = :courseid OR a.courseid = 0)
-                ORDER BY is_global_assignment DESC, st.lastname ASC, st.firstname ASC";
+                ORDER BY is_global_assignment DESC, st.lastname, st.firstname";
                 
         $params = [
             'tutorid' => $tutorid,
@@ -356,9 +352,7 @@ class assignment_manager {
         ];
         
         try {
-            $results = $DB->get_records_sql($sql, $params);
-            
-            return $results;
+            return $DB->get_records_sql($sql, $params);
         } catch (\Exception $e) {
             debugging('Error getting tutor students including global: ' . $e->getMessage(), DEBUG_DEVELOPER);
             return array();
@@ -485,7 +479,7 @@ class assignment_manager {
      * Get all assignments with user and course details
      *
      * @param array $filters Optional filters (status, tutorid, studentid, courseid)
-     * @param string $sort Sort order (default: 'timecreated DESC')
+     * @param string $sort Sort order (default: 'timeassigned DESC')
      * @param int $limitfrom Start position for pagination
      * @param int $limitnum Number of records to return
      * @return array Array of assignment records with details
@@ -493,7 +487,11 @@ class assignment_manager {
     public static function get_all_assignments_with_details($filters = array(), $sort = 'a.timeassigned DESC', $limitfrom = 0, $limitnum = 0) {
         global $DB;
 
-        $sql = "SELECT a.*, 
+        // Debug: log the filters being applied
+        debugging('get_all_assignments_with_details filters: ' . print_r($filters, true), DEBUG_DEVELOPER);
+
+        $sql = "SELECT a.id, a.studentid, a.tutorid, a.courseid, a.assignedby, 
+                       a.timeassigned, a.timemodified, a.status,
                        tu.firstname as tutor_firstname, tu.lastname as tutor_lastname,
                        st.firstname as student_firstname, st.lastname as student_lastname,
                        c.fullname as course_name
@@ -505,30 +503,30 @@ class assignment_manager {
         $where = array();
         $params = array();
 
-        // Apply filters
+        // Add deleted filter (exclude deleted users) - always apply
+        $where[] = "tu.deleted = 0";
+        $where[] = "st.deleted = 0";
+
+        // Apply filters only if they have meaningful values
         if (!empty($filters['status'])) {
             $where[] = "a.status = :status";
             $params['status'] = $filters['status'];
         }
 
-        if (!empty($filters['tutorid'])) {
+        if (!empty($filters['tutorid']) && $filters['tutorid'] > 0) {
             $where[] = "a.tutorid = :tutorid";
             $params['tutorid'] = $filters['tutorid'];
         }
 
-        if (!empty($filters['studentid'])) {
+        if (!empty($filters['studentid']) && $filters['studentid'] > 0) {
             $where[] = "a.studentid = :studentid";
             $params['studentid'] = $filters['studentid'];
         }
 
-        if (!empty($filters['courseid'])) {
+        if (!empty($filters['courseid']) && $filters['courseid'] > 0) {
             $where[] = "a.courseid = :courseid";
             $params['courseid'] = $filters['courseid'];
         }
-
-        // Add deleted filter (exclude deleted users)
-        $where[] = "tu.deleted = 0";
-        $where[] = "st.deleted = 0";
 
         if (!empty($where)) {
             $sql .= " WHERE " . implode(' AND ', $where);
@@ -536,8 +534,17 @@ class assignment_manager {
 
         $sql .= " ORDER BY " . $sort;
 
+        // Debug: log the final SQL and parameters
+        debugging('SQL: ' . $sql, DEBUG_DEVELOPER);
+        debugging('Params: ' . print_r($params, true), DEBUG_DEVELOPER);
+
         try {
-            return $DB->get_records_sql($sql, $params, $limitfrom, $limitnum);
+            $result = $DB->get_records_sql($sql, $params, $limitfrom, $limitnum);
+            
+            // Debug: log the result count
+            debugging('Found ' . count($result) . ' assignments', DEBUG_DEVELOPER);
+            
+            return $result;
         } catch (\Exception $e) {
             debugging('Error getting assignments with details: ' . $e->getMessage(), DEBUG_DEVELOPER);
             return array();

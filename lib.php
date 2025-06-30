@@ -34,16 +34,24 @@ defined('MOODLE_INTERNAL') || die();
 function local_studenttutor_extend_navigation_course($navigation, $course, $context) {
     global $USER, $DB;
     
-    // Check if user is enrolled in this course as teacher/editingteacher
+    // Get configured tutor roles
+    $tutor_roles = local_studenttutor_get_tutor_roles();
+    
+    // Check if user is enrolled in this course with configured tutor role
     $roles = get_user_roles($context, $USER->id);
     $is_tutor = false;
     
     foreach ($roles as $role) {
-        if ($role->shortname === 'teacher' || $role->shortname === 'editingteacher') {
+        if (in_array($role->shortname, $tutor_roles)) {
             $is_tutor = true;
             break;
         }
     }
+    
+    // Debug: temporary debugging
+    debugging('User ID: ' . $USER->id . ', Course ID: ' . $course->id . ', Is Tutor: ' . ($is_tutor ? 'YES' : 'NO'), DEBUG_DEVELOPER);
+    debugging('User roles in course: ' . implode(', ', array_map(function($r) { return $r->shortname; }, $roles)), DEBUG_DEVELOPER);
+    debugging('Configured tutor roles: ' . implode(', ', $tutor_roles), DEBUG_DEVELOPER);
     
     if ($is_tutor) {
         // Check if this tutor has any students assigned in this course OR globally
@@ -51,21 +59,24 @@ function local_studenttutor_extend_navigation_course($navigation, $course, $cont
             SELECT 1 FROM {local_studenttutor_assign} a
             WHERE a.tutorid = :tutorid 
             AND (a.courseid = :courseid OR a.courseid = 0)
-            AND (a.status = 1 OR a.status = 'active')
+            AND a.status = 'active'
         ", ['tutorid' => $USER->id, 'courseid' => $course->id]);
         
-        if ($has_students) {
-            $url = new moodle_url('/local/studenttutor/course_view.php', ['courseid' => $course->id]);
-            $node = $navigation->add(
-                get_string('my_students', 'local_studenttutor'),
-                $url,
-                navigation_node::TYPE_CUSTOM,
-                null,
-                'studenttutor_mystudents',
-                new pix_icon('i/users', '')
-            );
-            $node->showinflatnavigation = true;
-        }
+        debugging('Has students assigned: ' . ($has_students ? 'YES' : 'NO'), DEBUG_DEVELOPER);
+        
+        // Always show the menu item for tutors, even if no students assigned yet
+        $url = new moodle_url('/local/studenttutor/course_view.php', ['courseid' => $course->id]);
+        $node = $navigation->add(
+            get_string('my_students', 'local_studenttutor'),
+            $url,
+            navigation_node::TYPE_CUSTOM,
+            null,
+            'studenttutor_mystudents',
+            new pix_icon('i/users', '')
+        );
+        $node->showinflatnavigation = true;
+        
+        debugging('Navigation node added for My Students', DEBUG_DEVELOPER);
     }
 }
 

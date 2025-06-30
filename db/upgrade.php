@@ -120,5 +120,31 @@ function xmldb_local_studenttutor_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2025063001, 'local', 'studenttutor');
     }
 
+    if ($oldversion < 2025063013) {
+        // Ensure title field exists in history table and has default values
+        $table = new xmldb_table('local_studenttutor_history');
+        $field = new xmldb_field('title', XMLDB_TYPE_CHAR, '255', null, false, null, null, 'activitytype');
+
+        // Add title field if it doesn't exist
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        // Update existing records without titles
+        $DB->execute("UPDATE {local_studenttutor_history} 
+                      SET title = CASE 
+                          WHEN activitytype = 'meeting' THEN 'Meeting with student'
+                          WHEN activitytype = 'email' THEN 'Email communication'
+                          WHEN activitytype = 'feedback' THEN 'Feedback provided'
+                          WHEN activitytype = 'assessment' THEN 'Assessment review'
+                          WHEN activitytype = 'phone' THEN 'Phone conversation'
+                          ELSE 'Tutoring activity'
+                      END
+                      WHERE title IS NULL OR title = ''");
+
+        // Studenttutor savepoint reached.
+        upgrade_plugin_savepoint(true, 2025063013, 'local', 'studenttutor');
+    }
+
     return true;
 }
