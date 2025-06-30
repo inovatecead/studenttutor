@@ -24,6 +24,7 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/formslib.php');
+require_once(__DIR__ . '/lib.php');
 
 use local_studenttutor\history_manager;
 
