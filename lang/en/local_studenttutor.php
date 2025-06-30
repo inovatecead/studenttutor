@@ -128,11 +128,15 @@ $string['nohistory'] = 'No tutoring activities found.';
 // Settings
 $string['settings'] = 'Settings';
 $string['general_settings'] = 'General Settings';
-$string['general_settings_desc'] = 'Configure general plugin settings';
+$string['general_settings_desc'] = 'Configure general settings for the Student-Tutor plugin';
 $string['enable_plugin'] = 'Enable Plugin';
-$string['enable_plugin_desc'] = 'Enable or disable the Student-Tutor assignment plugin';
+$string['enable_plugin_desc'] = 'Enable or disable the Student-Tutor plugin functionality';
 $string['max_assignments'] = 'Maximum Assignments';
-$string['max_assignments_desc'] = 'Maximum number of students a tutor can be assigned to';
+$string['max_assignments_desc'] = 'Maximum number of students that can be assigned to a single tutor';
+$string['tutor_role'] = 'Tutor Role Short Name';
+$string['tutor_role_desc'] = 'Short name of the role that should be considered as tutors (e.g., tutortematico, teacher, editingteacher)';
+$string['additional_tutor_roles'] = 'Additional Tutor Roles';
+$string['additional_tutor_roles_desc'] = 'Comma-separated list of additional role short names that should be considered as tutors (e.g., teacher,editingteacher)';
 
 // Additional form labels
 $string['add_assignment'] = 'Add Assignment';

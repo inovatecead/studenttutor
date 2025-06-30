@@ -86,3 +86,60 @@ function local_studenttutor_extend_settings_navigation($settingsnav, $context) {
         }
     }
 }
+
+/**
+ * Get configured tutor roles from plugin settings
+ * @return array Array of role shortnames
+ */
+function local_studenttutor_get_tutor_roles() {
+    // Get primary tutor role from config
+    $primary_role = get_config('local_studenttutor', 'tutor_role');
+    if (empty($primary_role)) {
+        $primary_role = 'tutortematico'; // Default fallback
+    }
+    
+    $roles = [$primary_role];
+    
+    // Get additional tutor roles from config
+    $additional_roles = get_config('local_studenttutor', 'additional_tutor_roles');
+    if (!empty($additional_roles)) {
+        $additional_array = array_map('trim', explode(',', $additional_roles));
+        $roles = array_merge($roles, $additional_array);
+    }
+    
+    // Remove duplicates and empty values
+    $roles = array_unique(array_filter($roles));
+    
+    return $roles;
+}
+
+/**
+ * Check if user has tutor role based on configured roles
+ * @param int $userid User ID
+ * @param int $courseid Course ID (optional, 0 for any course)
+ * @return bool True if user has tutor role
+ */
+function local_studenttutor_is_tutor($userid, $courseid = 0) {
+    global $DB;
+    
+    $tutor_roles = local_studenttutor_get_tutor_roles();
+    $role_list = "'" . implode("','", $tutor_roles) . "'";
+    
+    if ($courseid > 0) {
+        $sql = "SELECT 1 FROM {role_assignments} ra
+                JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50
+                JOIN {course} c ON c.id = ctx.instanceid
+                JOIN {role} r ON r.id = ra.roleid
+                WHERE ra.userid = :userid 
+                AND c.id = :courseid
+                AND r.shortname IN ($role_list)";
+        return $DB->record_exists_sql($sql, ['userid' => $userid, 'courseid' => $courseid]);
+    } else {
+        $sql = "SELECT 1 FROM {role_assignments} ra
+                JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50
+                JOIN {role} r ON r.id = ra.roleid
+                WHERE ra.userid = :userid 
+                AND r.shortname IN ($role_list)";
+        return $DB->record_exists_sql($sql, ['userid' => $userid]);
+    }
+}

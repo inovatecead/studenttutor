@@ -45,6 +45,18 @@ if ($hassiteconfig) {
             get_string('max_assignments', 'local_studenttutor'),
             get_string('max_assignments_desc', 'local_studenttutor'),
             10, PARAM_INT));
+
+        // Configuração do papel de tutor
+        $settings->add(new admin_setting_configtext('local_studenttutor/tutor_role',
+            get_string('tutor_role', 'local_studenttutor'),
+            get_string('tutor_role_desc', 'local_studenttutor'),
+            'tutortematico', PARAM_TEXT));
+
+        // Configuração adicional: permitir múltiplos papéis
+        $settings->add(new admin_setting_configtext('local_studenttutor/additional_tutor_roles',
+            get_string('additional_tutor_roles', 'local_studenttutor'),
+            get_string('additional_tutor_roles_desc', 'local_studenttutor'),
+            '', PARAM_TEXT));
     }
 
     $ADMIN->add('local_studenttutor', $settings);

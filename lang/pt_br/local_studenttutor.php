@@ -54,11 +54,15 @@ $string['action_other'] = 'Outro';
 // Configurações
 $string['settings'] = 'Configurações';
 $string['general_settings'] = 'Configurações Gerais';
-$string['general_settings_desc'] = 'Configure as configurações gerais do plugin';
+$string['general_settings_desc'] = 'Configure as configurações gerais do plugin Student-Tutor';
 $string['enable_plugin'] = 'Habilitar Plugin';
-$string['enable_plugin_desc'] = 'Habilitar ou desabilitar o plugin de atribuição Estudante-Tutor';
+$string['enable_plugin_desc'] = 'Habilitar ou desabilitar a funcionalidade do plugin Student-Tutor';
 $string['max_assignments'] = 'Máximo de Atribuições';
-$string['max_assignments_desc'] = 'Número máximo de estudantes que um tutor pode ter atribuído';
+$string['max_assignments_desc'] = 'Número máximo de estudantes que podem ser atribuídos a um único tutor';
+$string['tutor_role'] = 'Nome Curto do Papel de Tutor';
+$string['tutor_role_desc'] = 'Nome curto do papel que deve ser considerado como tutor (ex: tutortematico, teacher, editingteacher)';
+$string['additional_tutor_roles'] = 'Papéis Adicionais de Tutor';
+$string['additional_tutor_roles_desc'] = 'Lista separada por vírgulas de nomes curtos de papéis adicionais que devem ser considerados como tutores (ex: teacher,editingteacher)';
 
 // Rótulos de formulário adicionais
 $string['add_assignment'] = 'Adicionar Atribuição';

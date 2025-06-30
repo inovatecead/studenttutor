@@ -41,14 +41,7 @@ $context = context_course::instance($courseid);
 require_login($course);
 
 // Check if user is a tutor in this course
-$roles = get_user_roles($context, $USER->id);
-$is_tutor = false;
-foreach ($roles as $role) {
-    if ($role->shortname === 'teacher' || $role->shortname === 'editingteacher') {
-        $is_tutor = true;
-        break;
-    }
-}
+$is_tutor = local_studenttutor_is_tutor($USER->id, $courseid);
 
 if (!$is_tutor) {
     throw new moodle_exception('nopermissions', 'error', '', get_string('access_denied', 'local_studenttutor'));

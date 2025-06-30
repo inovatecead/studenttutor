@@ -24,6 +24,7 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
+require_once(__DIR__ . '/lib.php');
 
 use local_studenttutor\assignment_manager;
 
@@ -38,14 +39,8 @@ $is_admin = has_capability('local/studenttutor:manageassignments', $context);
 
 // If user is not admin, filter by their assignments only
 if (!$is_admin) {
-    // Check if user is a tutor (has teacher role in any course)
-    $user_is_tutor = $DB->record_exists_sql("
-        SELECT 1 FROM {role_assignments} ra
-        JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50
-        JOIN {role} r ON r.id = ra.roleid
-        WHERE ra.userid = :userid 
-        AND r.shortname IN ('teacher', 'editingteacher')
-    ", ['userid' => $USER->id]);
+    // Check if user is a tutor (has configured tutor role in any course)
+    $user_is_tutor = local_studenttutor_is_tutor($USER->id);
     
     if ($user_is_tutor) {
         $user_context_filter = 'tutor';
@@ -105,6 +100,8 @@ echo html_writer::tag('h4', get_string('filters', 'local_studenttutor'), array('
 echo html_writer::start_tag('form', array('method' => 'get', 'action' => '', 'style' => 'display: flex; gap: 15px; align-items: end; flex-wrap: wrap;'));
 
 // Tutor filter
+$tutor_roles = local_studenttutor_get_tutor_roles();
+$role_list = "'" . implode("','", $tutor_roles) . "'";
 $tutors = $DB->get_records_sql("
     SELECT DISTINCT u.id, u.firstname, u.lastname
     FROM {user} u
@@ -112,7 +109,7 @@ $tutors = $DB->get_records_sql("
     JOIN {context} ctx ON ctx.id = ra.contextid AND ctx.contextlevel = 50
     JOIN {role} r ON r.id = ra.roleid
     WHERE u.deleted = 0 AND u.suspended = 0 AND u.confirmed = 1
-    AND r.shortname IN ('teacher', 'editingteacher')
+    AND r.shortname IN ($role_list)
     ORDER BY u.lastname, u.firstname
 ");
 $tutor_options = array(0 => get_string('all_tutors', 'local_studenttutor'));
