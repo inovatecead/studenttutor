@@ -134,10 +134,10 @@ echo html_writer::end_tag('div');
 
 // Get history for this student and tutor in this course
 $history_entries = $DB->get_records_sql("
-    SELECT h.*, h.timecreated
+    SELECT h.*, h.timecreated, h.activity_date
     FROM {local_studenttutor_history} h
     WHERE h.studentid = :studentid AND h.tutorid = :tutorid AND h.courseid = :courseid
-    ORDER BY h.timecreated DESC
+    ORDER BY h.activity_date DESC, h.timecreated DESC
 ", [
     'studentid' => $studentid,
     'tutorid' => $USER->id,
@@ -155,7 +155,15 @@ if (empty($history_entries)) {
         
         echo html_writer::start_tag('div');
         echo html_writer::tag('h6', $entry->title, ['class' => 'mb-0']);
-        echo html_writer::tag('small', userdate($entry->timecreated), ['class' => 'text-muted d-block']);
+        
+        // Show activity date if different from created date
+        $activity_date = $entry->activity_date ?: $entry->timecreated;
+        echo html_writer::tag('small', 
+            get_string('activity_date', 'local_studenttutor') . ': ' . userdate($activity_date, get_string('strftimedaydate')), 
+            ['class' => 'text-info d-block']);
+        echo html_writer::tag('small', 
+            get_string('created_on', 'local_studenttutor') . ': ' . userdate($entry->timecreated), 
+            ['class' => 'text-muted d-block']);
         echo html_writer::end_tag('div');
         
         // Action buttons

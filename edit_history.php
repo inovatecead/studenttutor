@@ -77,15 +77,8 @@ class edit_history_form extends moodleform {
         $mform = $this->_form;
         $history_entry = $this->_customdata['history_entry'];
         
-        // Activity type
-        $types = array(
-            'meeting' => get_string('action_meeting', 'local_studenttutor'),
-            'email' => get_string('action_email', 'local_studenttutor'),
-            'feedback' => get_string('action_feedback', 'local_studenttutor'),
-            'assessment' => get_string('action_assessment', 'local_studenttutor'),
-            'phone' => get_string('action_phone', 'local_studenttutor'),
-            'other' => get_string('action_other', 'local_studenttutor')
-        );
+        // Activity type - using dynamic types from database
+        $types = \local_studenttutor\activity_type_manager::get_activity_types_options(true);
         
         $mform->addElement('select', 'activitytype', get_string('action_type', 'local_studenttutor'), $types);
         $mform->setType('activitytype', PARAM_TEXT);
@@ -97,6 +90,11 @@ class edit_history_form extends moodleform {
         $mform->setType('title', PARAM_TEXT);
         $mform->addRule('title', get_string('required'), 'required', null, 'client');
         $mform->setDefault('title', $history_entry->title);
+        
+        // Activity date
+        $mform->addElement('date_selector', 'activity_date', get_string('activity_date', 'local_studenttutor'));
+        $mform->setDefault('activity_date', $history_entry->activity_date ?: time());
+        $mform->addHelpButton('activity_date', 'activity_date', 'local_studenttutor');
         
         // Description
         $mform->addElement('textarea', 'description', get_string('description', 'local_studenttutor'), 
@@ -141,6 +139,7 @@ if ($form->is_cancelled()) {
         $update_data = array(
             'activitytype' => $data->activitytype,
             'title' => $data->title,
+            'activity_date' => $data->activity_date,
             'description' => $data->description
         );
         

@@ -146,5 +146,325 @@ function xmldb_local_studenttutor_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2025063013, 'local', 'studenttutor');
     }
 
+    if ($oldversion < 2025070102) {
+        
+        // Define table local_studenttutor_activity_types to store dynamic activity types
+        $table = new xmldb_table('local_studenttutor_activity_types');
+
+        // Adding fields
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('name', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('shortname', XMLDB_TYPE_CHAR, '50', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('icon', XMLDB_TYPE_CHAR, '50', null, null, null, 'fa-circle');
+        $table->add_field('color', XMLDB_TYPE_CHAR, '7', null, null, null, '#007bff');
+        $table->add_field('active', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1');
+        $table->add_field('sortorder', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Adding indexes
+        $table->add_index('shortname', XMLDB_INDEX_UNIQUE, array('shortname'));
+        $table->add_index('active', XMLDB_INDEX_NOTUNIQUE, array('active'));
+        $table->add_index('sortorder', XMLDB_INDEX_NOTUNIQUE, array('sortorder'));
+
+        // Conditionally launch create table
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Insert default activity types
+        $time = time();
+        $default_types = array(
+            array(
+                'name' => 'Convocatória para reunião',
+                'shortname' => 'convocatoria_reuniao',
+                'description' => 'Convocação de estudantes para reuniões',
+                'icon' => 'fa-bell',
+                'color' => '#007bff',
+                'sortorder' => 1,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Retorno de dúvidas',
+                'shortname' => 'retorno_duvidas',
+                'description' => 'Esclarecimento de dúvidas dos estudantes',
+                'icon' => 'fa-question-circle',
+                'color' => '#17a2b8',
+                'sortorder' => 2,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Reunião Virtual para webconferencia',
+                'shortname' => 'reuniao_virtual_webconf',
+                'description' => 'Reuniões virtuais via webconferência',
+                'icon' => 'fa-video',
+                'color' => '#28a745',
+                'sortorder' => 3,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Reunião presencial no polo',
+                'shortname' => 'reuniao_presencial_polo',
+                'description' => 'Reuniões presenciais realizadas no polo de ensino',
+                'icon' => 'fa-users',
+                'color' => '#fd7e14',
+                'sortorder' => 4,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Reunião com grupo de Trabalho do Seminário Integrador - Online',
+                'shortname' => 'grupo_seminario_online',
+                'description' => 'Reuniões online com grupos de trabalho do Seminário Integrador',
+                'icon' => 'fa-laptop',
+                'color' => '#6f42c1',
+                'sortorder' => 5,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Reunião com grupo de Trabalho do Seminário Integrador - Presencial',
+                'shortname' => 'grupo_seminario_presencial',
+                'description' => 'Reuniões presenciais com grupos de trabalho do Seminário Integrador',
+                'icon' => 'fa-chalkboard-teacher',
+                'color' => '#e83e8c',
+                'sortorder' => 6,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Apresentação de Seminário Temático',
+                'shortname' => 'apresentacao_seminario',
+                'description' => 'Apresentações de seminários temáticos pelos estudantes',
+                'icon' => 'fa-presentation',
+                'color' => '#20c997',
+                'sortorder' => 7,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Aplicação de Prova/Atividade',
+                'shortname' => 'aplicacao_prova',
+                'description' => 'Aplicação de provas e atividades avaliativas',
+                'icon' => 'fa-clipboard-check',
+                'color' => '#dc3545',
+                'sortorder' => 8,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Atividade de nivelamento nas área temáticas que o estudante apresenta dificuldade',
+                'shortname' => 'nivelamento_areas',
+                'description' => 'Atividades de nivelamento em áreas temáticas com dificuldade',
+                'icon' => 'fa-chart-line',
+                'color' => '#ffc107',
+                'sortorder' => 9,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Diagnóstico sobre dificuldade do estudante em relação as áreas temáticas',
+                'shortname' => 'diagnostico_dificuldades',
+                'description' => 'Diagnóstico e identificação de dificuldades do estudante',
+                'icon' => 'fa-stethoscope',
+                'color' => '#6610f2',
+                'sortorder' => 10,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Outros',
+                'shortname' => 'outros',
+                'description' => 'Outras atividades não categorizadas',
+                'icon' => 'fa-ellipsis-h',
+                'color' => '#6c757d',
+                'sortorder' => 11,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            )
+        );
+
+        foreach ($default_types as $type) {
+            $DB->insert_record('local_studenttutor_activity_types', (object)$type);
+        }
+
+        // Studenttutor savepoint reached.
+        upgrade_plugin_savepoint(true, 2025070102, 'local', 'studenttutor');
+    }
+
+    if ($oldversion < 2025070103) {
+        // Update existing activity types with new Brazilian-specific types
+        // First, clear existing types
+        $DB->delete_records('local_studenttutor_activity_types');
+        
+        // Insert new activity types
+        $time = time();
+        $new_types = array(
+            array(
+                'name' => 'Convocatória para reunião',
+                'shortname' => 'convocatoria_reuniao',
+                'description' => 'Convocação de estudantes para reuniões',
+                'icon' => 'fa-bell',
+                'color' => '#007bff',
+                'sortorder' => 1,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Retorno de dúvidas',
+                'shortname' => 'retorno_duvidas',
+                'description' => 'Esclarecimento de dúvidas dos estudantes',
+                'icon' => 'fa-question-circle',
+                'color' => '#17a2b8',
+                'sortorder' => 2,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Reunião Virtual para webconferencia',
+                'shortname' => 'reuniao_virtual_webconf',
+                'description' => 'Reuniões virtuais via webconferência',
+                'icon' => 'fa-video',
+                'color' => '#28a745',
+                'sortorder' => 3,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Reunião presencial no polo',
+                'shortname' => 'reuniao_presencial_polo',
+                'description' => 'Reuniões presenciais realizadas no polo de ensino',
+                'icon' => 'fa-users',
+                'color' => '#fd7e14',
+                'sortorder' => 4,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Reunião com grupo de Trabalho do Seminário Integrador - Online',
+                'shortname' => 'grupo_seminario_online',
+                'description' => 'Reuniões online com grupos de trabalho do Seminário Integrador',
+                'icon' => 'fa-laptop',
+                'color' => '#6f42c1',
+                'sortorder' => 5,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Reunião com grupo de Trabalho do Seminário Integrador - Presencial',
+                'shortname' => 'grupo_seminario_presencial',
+                'description' => 'Reuniões presenciais com grupos de trabalho do Seminário Integrador',
+                'icon' => 'fa-chalkboard-teacher',
+                'color' => '#e83e8c',
+                'sortorder' => 6,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Apresentação de Seminário Temático',
+                'shortname' => 'apresentacao_seminario',
+                'description' => 'Apresentações de seminários temáticos pelos estudantes',
+                'icon' => 'fa-presentation',
+                'color' => '#20c997',
+                'sortorder' => 7,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Aplicação de Prova/Atividade',
+                'shortname' => 'aplicacao_prova',
+                'description' => 'Aplicação de provas e atividades avaliativas',
+                'icon' => 'fa-clipboard-check',
+                'color' => '#dc3545',
+                'sortorder' => 8,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Atividade de nivelamento nas área temáticas que o estudante apresenta dificuldade',
+                'shortname' => 'nivelamento_areas',
+                'description' => 'Atividades de nivelamento em áreas temáticas com dificuldade',
+                'icon' => 'fa-chart-line',
+                'color' => '#ffc107',
+                'sortorder' => 9,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Diagnóstico sobre dificuldade do estudante em relação as áreas temáticas',
+                'shortname' => 'diagnostico_dificuldades',
+                'description' => 'Diagnóstico de dificuldades do estudante em áreas temáticas',
+                'icon' => 'fa-stethoscope',
+                'color' => '#6610f2',
+                'sortorder' => 10,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            ),
+            array(
+                'name' => 'Outros',
+                'shortname' => 'outros',
+                'description' => 'Outras atividades não categorizadas',
+                'icon' => 'fa-ellipsis-h',
+                'color' => '#6c757d',
+                'sortorder' => 11,
+                'active' => 1,
+                'timecreated' => $time,
+                'timemodified' => $time
+            )
+        );
+
+        foreach ($new_types as $type) {
+            $DB->insert_record('local_studenttutor_activity_types', (object)$type);
+        }
+
+        // Studenttutor savepoint reached.
+        upgrade_plugin_savepoint(true, 2025070103, 'local', 'studenttutor');
+    }
+
+    if ($oldversion < 2025070104) {
+        // Add activity_date field to history table
+        $table = new xmldb_table('local_studenttutor_history');
+        $field = new xmldb_field('activity_date', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'title');
+
+        // Add activity_date field if it doesn't exist
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        // Update existing records to use timecreated as activity_date for compatibility
+        $DB->execute('UPDATE {local_studenttutor_history} SET activity_date = timecreated WHERE activity_date IS NULL OR activity_date = 0');
+
+        // Studenttutor savepoint reached.
+        upgrade_plugin_savepoint(true, 2025070104, 'local', 'studenttutor');
+    }
+
     return true;
 }

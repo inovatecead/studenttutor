@@ -62,9 +62,10 @@ class history_manager {
      * @param string $description Activity description
      * @param int $courseid Course ID (optional)
      * @param int $createdby User ID who created the entry
+     * @param int $activity_date Date when the activity occurred (optional, defaults to current time)
      * @return int|false History entry ID or false on failure
      */
-    public static function add_history_entry($studentid, $tutorid, $activitytype, $title, $description, $courseid = 0, $createdby = null) {
+    public static function add_history_entry($studentid, $tutorid, $activitytype, $title, $description, $courseid = 0, $createdby = null, $activity_date = null) {
         global $DB, $USER;
 
         // Validation
@@ -73,6 +74,7 @@ class history_manager {
         }
 
         $createdby = $createdby ?: $USER->id;
+        $activity_date = $activity_date ?: time();
 
         $entry = new \stdClass();
         $entry->studentid = $studentid;
@@ -80,6 +82,7 @@ class history_manager {
         $entry->courseid = $courseid;
         $entry->activitytype = $activitytype;
         $entry->title = $title;
+        $entry->activity_date = $activity_date;
         $entry->description = $description;
         $entry->timecreated = time();
         $entry->timemodified = time();
@@ -114,7 +117,7 @@ class history_manager {
         $updatedata->id = $entryid;
         $updatedata->timemodified = time();
 
-        $allowedfields = ['activitytype', 'title', 'description', 'courseid'];
+        $allowedfields = ['activitytype', 'title', 'activity_date', 'description', 'courseid'];
         foreach ($allowedfields as $field) {
             if (isset($data[$field])) {
                 $updatedata->$field = $data[$field];
@@ -357,14 +360,8 @@ class history_manager {
      * @return array Array of valid activity types
      */
     public static function get_activity_types() {
-        return array(
-            self::TYPE_MEETING => get_string('action_meeting', 'local_studenttutor'),
-            self::TYPE_EMAIL => get_string('action_email', 'local_studenttutor'),
-            self::TYPE_FEEDBACK => get_string('action_feedback', 'local_studenttutor'),
-            self::TYPE_ASSESSMENT => get_string('action_assessment', 'local_studenttutor'),
-            self::TYPE_GUIDANCE => get_string('action_guidance', 'local_studenttutor'),
-            self::TYPE_OTHER => get_string('action_other', 'local_studenttutor')
-        );
+        // Use dynamic activity types from database
+        return \local_studenttutor\activity_type_manager::get_activity_types_options(true);
     }
 
     /**

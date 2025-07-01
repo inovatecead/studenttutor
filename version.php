@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2025063013;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2025070104;        // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2020061500;        // Requires this Moodle version (3.9.0 or higher).
 $plugin->component = 'local_studenttutor'; // Full name of the plugin (used for diagnostics).
 $plugin->maturity  = MATURITY_STABLE;

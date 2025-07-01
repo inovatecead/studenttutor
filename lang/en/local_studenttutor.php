@@ -41,7 +41,13 @@ $string['select_student'] = 'Select Student';
 $string['select_course'] = 'Select Course';
 $string['action_type'] = 'Activity Type';
 $string['activity_title'] = 'Activity Title';
+$string['activity_date'] = 'Activity Date';
 $string['description'] = 'Description';
+$string['created_on'] = 'Created on';
+
+// Help strings
+$string['activity_title_help'] = 'Enter a descriptive title for this activity.';
+$string['activity_date_help'] = 'Select the date when this activity took place.';
 
 // Action types
 $string['action_meeting'] = 'Meeting';
@@ -230,3 +236,73 @@ $string['assignment_updated'] = 'Assignment updated successfully';
 $string['assignments_created'] = '{$a} assignments created successfully';
 $string['assignmentnotfound'] = 'Assignment not found';
 $string['edit_temporarily_disabled'] = 'Assignment editing is temporarily disabled. Please contact the administrator if you need to modify an assignment.';
+
+// Activity Types Management
+$string['manage_activity_types'] = 'Manage Activity Types';
+$string['add_activity_type'] = 'Add Activity Type';
+$string['edit_activity_type'] = 'Edit Activity Type';
+$string['activity_type_created'] = 'Activity type created successfully';
+$string['activity_type_updated'] = 'Activity type updated successfully';
+$string['activity_type_deleted'] = 'Activity type deleted successfully';
+$string['activity_type_enabled'] = 'Activity type enabled';
+$string['activity_type_disabled'] = 'Activity type disabled';
+$string['activity_types_reordered'] = 'Activity types reordered successfully';
+$string['no_activity_types'] = 'No activity types found';
+$string['confirm_delete_activity_type'] = 'Are you sure you want to delete this activity type?';
+$string['activity_type_create_error'] = 'Error creating activity type';
+$string['activity_type_update_error'] = 'Error updating activity type';
+$string['activity_type_delete_error'] = 'Error deleting activity type';
+$string['activity_type_save_error'] = 'Error saving activity type';
+$string['editing_activity_type'] = 'Editing activity type: {$a}';
+$string['shortnameexists'] = 'This shortname already exists';
+$string['activity_types_statistics'] = 'Usage Statistics';
+$string['usage_count'] = 'Usage Count';
+$string['uses'] = 'uses';
+$string['order'] = 'Order';
+$string['preview'] = 'Preview';
+
+// Activity Type Form Fields
+$string['activity_type_name'] = 'Activity Type Name';
+$string['activity_type_name_help'] = 'The display name for this activity type';
+$string['activity_type_shortname'] = 'Shortname';
+$string['activity_type_shortname_help'] = 'A unique identifier for this activity type (letters, numbers, and underscores only)';
+$string['activity_type_description'] = 'Description';
+$string['activity_type_description_help'] = 'A brief description of when to use this activity type';
+$string['activity_type_icon'] = 'Icon';
+$string['activity_type_icon_help'] = 'FontAwesome icon to display with this activity type';
+$string['activity_type_color'] = 'Color';
+$string['activity_type_color_help'] = 'Color to use when displaying this activity type';
+$string['activity_type_active'] = 'Active';
+$string['activity_type_active_help'] = 'Whether this activity type is available for selection';
+$string['activity_type_sortorder'] = 'Sort Order';
+$string['activity_type_sortorder_help'] = 'Order in which this type appears in lists (lower numbers first)';
+
+// Icons
+$string['icon_users'] = 'Users (meetings)';
+$string['icon_envelope'] = 'Envelope (email)';
+$string['icon_comment'] = 'Comment (feedback)';
+$string['icon_clipboard'] = 'Clipboard (assessment)';
+$string['icon_compass'] = 'Compass (guidance)';
+$string['icon_phone'] = 'Phone (calls)';
+$string['icon_video'] = 'Video (video calls)';
+$string['icon_file'] = 'File (documents)';
+$string['icon_chart'] = 'Chart (analytics)';
+$string['icon_lightbulb'] = 'Lightbulb (ideas)';
+$string['icon_graduation'] = 'Graduation cap (academic)';
+$string['icon_other'] = 'Other';
+
+// Colors
+$string['color_green'] = 'Green';
+$string['color_blue'] = 'Blue';
+$string['color_yellow'] = 'Yellow';
+$string['color_red'] = 'Red';
+$string['color_purple'] = 'Purple';
+$string['color_orange'] = 'Orange';
+$string['color_teal'] = 'Teal';
+$string['color_gray'] = 'Gray';
+
+$string['shortname'] = 'Shortname';
+$string['icon'] = 'Icon';
+$string['color'] = 'Color';
+$string['sortorder'] = 'Sort Order';
+$string['export_csv'] = 'Export CSV';
