@@ -74,6 +74,8 @@ $PAGE->set_heading($course->fullname);
 // Create form
 class edit_history_form extends moodleform {
     public function definition() {
+        global $DB;
+        
         $mform = $this->_form;
         $history_entry = $this->_customdata['history_entry'];
         
@@ -85,10 +87,20 @@ class edit_history_form extends moodleform {
         $mform->addRule('activitytype', get_string('required'), 'required', null, 'client');
         $mform->setDefault('activitytype', $history_entry->activitytype);
         
-        // Activity date
-        $mform->addElement('date_selector', 'activity_date', get_string('activity_date', 'local_studenttutor'));
-        $mform->setDefault('activity_date', $history_entry->activity_date ?: time());
-        $mform->addHelpButton('activity_date', 'activity_date', 'local_studenttutor');
+        // Activity date (only if field exists in database)
+        // Try to check if field exists by attempting a simple query
+        try {
+            $DB->get_record_sql("SELECT activity_date FROM {local_studenttutor_history} WHERE 1=0");
+            $activity_date_exists = true;
+        } catch (dml_exception $e) {
+            $activity_date_exists = false;
+        }
+        
+        if ($activity_date_exists) {
+            $mform->addElement('date_selector', 'activity_date', get_string('activity_date', 'local_studenttutor'));
+            $mform->setDefault('activity_date', $history_entry->activity_date ?: time());
+            $mform->addHelpButton('activity_date', 'activity_date', 'local_studenttutor');
+        }
         
         // Description
         $mform->addElement('textarea', 'description', get_string('description', 'local_studenttutor'), 
@@ -132,9 +144,18 @@ if ($form->is_cancelled()) {
         // Update the history entry using the manager
         $update_data = array(
             'activitytype' => $data->activitytype,
-            'activity_date' => $data->activity_date,
             'description' => $data->description
         );
+        
+        // Only add activity_date if field exists
+        try {
+            $DB->get_record_sql("SELECT activity_date FROM {local_studenttutor_history} WHERE 1=0");
+            if (isset($data->activity_date)) {
+                $update_data['activity_date'] = $data->activity_date;
+            }
+        } catch (dml_exception $e) {
+            // Field doesn't exist, skip it
+        }
         
         if (history_manager::update_history_entry($historyid, $update_data)) {
             \core\notification::success(get_string('history_updated_success', 'local_studenttutor'));

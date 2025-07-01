@@ -133,16 +133,33 @@ echo html_writer::link(
 echo html_writer::end_tag('div');
 
 // Get history for this student and tutor in this course
-$history_entries = $DB->get_records_sql("
-    SELECT h.*, h.timecreated, h.activity_date
-    FROM {local_studenttutor_history} h
-    WHERE h.studentid = :studentid AND h.tutorid = :tutorid AND h.courseid = :courseid
-    ORDER BY h.activity_date DESC, h.timecreated DESC
-", [
-    'studentid' => $studentid,
-    'tutorid' => $USER->id,
-    'courseid' => $courseid
-]);
+// Try with activity_date first, fallback to timecreated only if field doesn't exist
+try {
+    $history_entries = $DB->get_records_sql("
+        SELECT h.*, h.timecreated, h.activity_date
+        FROM {local_studenttutor_history} h
+        WHERE h.studentid = :studentid AND h.tutorid = :tutorid AND h.courseid = :courseid
+        ORDER BY h.activity_date DESC, h.timecreated DESC
+    ", [
+        'studentid' => $studentid,
+        'tutorid' => $USER->id,
+        'courseid' => $courseid
+    ]);
+    $activity_date_exists = true;
+} catch (dml_exception $e) {
+    // Field doesn't exist, use fallback query
+    $history_entries = $DB->get_records_sql("
+        SELECT h.*, h.timecreated
+        FROM {local_studenttutor_history} h
+        WHERE h.studentid = :studentid AND h.tutorid = :tutorid AND h.courseid = :courseid
+        ORDER BY h.timecreated DESC
+    ", [
+        'studentid' => $studentid,
+        'tutorid' => $USER->id,
+        'courseid' => $courseid
+    ]);
+    $activity_date_exists = false;
+}
 
 if (empty($history_entries)) {
     echo $OUTPUT->notification(get_string('no_history_entries', 'local_studenttutor'), 'info');
@@ -161,11 +178,13 @@ if (empty($history_entries)) {
         
         echo html_writer::tag('h6', $type_name, ['class' => 'mb-0']);
         
-        // Show activity date if different from created date
-        $activity_date = $entry->activity_date ?: $entry->timecreated;
-        echo html_writer::tag('small', 
-            get_string('activity_date', 'local_studenttutor') . ': ' . userdate($activity_date, get_string('strftimedaydate')), 
-            ['class' => 'text-info d-block']);
+        // Show activity date if field exists and is different from created date
+        if ($activity_date_exists && isset($entry->activity_date)) {
+            $activity_date = $entry->activity_date ?: $entry->timecreated;
+            echo html_writer::tag('small', 
+                get_string('activity_date', 'local_studenttutor') . ': ' . userdate($activity_date, get_string('strftimedaydate')), 
+                ['class' => 'text-info d-block']);
+        }
         echo html_writer::tag('small', 
             get_string('created_on', 'local_studenttutor') . ': ' . userdate($entry->timecreated), 
             ['class' => 'text-muted d-block']);

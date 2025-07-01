@@ -92,10 +92,20 @@ class course_history_form extends moodleform {
         $mform->setType('action_type', PARAM_TEXT);
         $mform->addRule('action_type', get_string('required'), 'required', null, 'client');
         
-        // Activity date
-        $mform->addElement('date_selector', 'activity_date', get_string('activity_date', 'local_studenttutor'));
-        $mform->setDefault('activity_date', time()); // Default to today
-        $mform->addHelpButton('activity_date', 'activity_date', 'local_studenttutor');
+        // Activity date (only if field exists in database)
+        // Try to check if field exists by attempting a simple query
+        try {
+            $DB->get_record_sql("SELECT activity_date FROM {local_studenttutor_history} WHERE 1=0");
+            $activity_date_exists = true;
+        } catch (dml_exception $e) {
+            $activity_date_exists = false;
+        }
+        
+        if ($activity_date_exists) {
+            $mform->addElement('date_selector', 'activity_date', get_string('activity_date', 'local_studenttutor'));
+            $mform->setDefault('activity_date', time()); // Default to today
+            $mform->addHelpButton('activity_date', 'activity_date', 'local_studenttutor');
+        }
         
         // Description
         $mform->addElement('textarea', 'description', get_string('description', 'local_studenttutor'), 
@@ -120,15 +130,34 @@ if ($form->is_cancelled()) {
         // Debug: verificar dados recebidos
         debugging('Data received: ' . print_r($data, true), DEBUG_DEVELOPER);
         
-        $entryid = history_manager::add_history_entry(
-            $data->studentid,
-            $USER->id,
-            $data->action_type,
-            $data->description,
-            $courseid,
-            $USER->id,
-            $data->activity_date
-        );
+        // Check if activity_date field exists by trying a test query
+        try {
+            $DB->get_record_sql("SELECT activity_date FROM {local_studenttutor_history} WHERE 1=0");
+            $activity_date_exists = true;
+        } catch (dml_exception $e) {
+            $activity_date_exists = false;
+        }
+        
+        if ($activity_date_exists && isset($data->activity_date)) {
+            $entryid = history_manager::add_history_entry(
+                $data->studentid,
+                $USER->id,
+                $data->action_type,
+                $data->description,
+                $courseid,
+                $USER->id,
+                $data->activity_date
+            );
+        } else {
+            $entryid = history_manager::add_history_entry(
+                $data->studentid,
+                $USER->id,
+                $data->action_type,
+                $data->description,
+                $courseid,
+                $USER->id
+            );
+        }
         
         if ($entryid) {
             \core\notification::success(get_string('history_added_success', 'local_studenttutor'));

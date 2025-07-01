@@ -80,11 +80,18 @@ class history_manager {
         $entry->tutorid = $tutorid;
         $entry->courseid = $courseid;
         $entry->activitytype = $activitytype;
-        $entry->activity_date = $activity_date;
         $entry->description = $description;
         $entry->timecreated = time();
         $entry->timemodified = time();
         $entry->createdby = $createdby;
+        
+        // Only add activity_date if field exists in database
+        try {
+            $DB->get_record_sql("SELECT activity_date FROM {local_studenttutor_history} WHERE 1=0");
+            $entry->activity_date = $activity_date;
+        } catch (\dml_exception $e) {
+            // Field doesn't exist, skip it
+        }
 
         try {
             $entryid = $DB->insert_record('local_studenttutor_history', $entry);
