@@ -58,18 +58,17 @@ class history_manager {
      * @param int $studentid Student user ID
      * @param int $tutorid Tutor user ID
      * @param string $activitytype Type of activity
-     * @param string $title Activity title
      * @param string $description Activity description
      * @param int $courseid Course ID (optional)
      * @param int $createdby User ID who created the entry
      * @param int $activity_date Date when the activity occurred (optional, defaults to current time)
      * @return int|false History entry ID or false on failure
      */
-    public static function add_history_entry($studentid, $tutorid, $activitytype, $title, $description, $courseid = 0, $createdby = null, $activity_date = null) {
+    public static function add_history_entry($studentid, $tutorid, $activitytype, $description, $courseid = 0, $createdby = null, $activity_date = null) {
         global $DB, $USER;
 
         // Validation
-        if (!self::validate_history_data($studentid, $tutorid, $activitytype, $title, $description)) {
+        if (!self::validate_history_data($studentid, $tutorid, $activitytype, '', $description)) {
             return false;
         }
 
@@ -81,7 +80,6 @@ class history_manager {
         $entry->tutorid = $tutorid;
         $entry->courseid = $courseid;
         $entry->activitytype = $activitytype;
-        $entry->title = $title;
         $entry->activity_date = $activity_date;
         $entry->description = $description;
         $entry->timecreated = time();

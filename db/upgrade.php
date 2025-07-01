@@ -452,15 +452,15 @@ function xmldb_local_studenttutor_upgrade($oldversion) {
     if ($oldversion < 2025070104) {
         // Add activity_date field to history table
         $table = new xmldb_table('local_studenttutor_history');
-        $field = new xmldb_field('activity_date', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'title');
+        $field = new xmldb_field('activity_date', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
 
         // Add activity_date field if it doesn't exist
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
+            
+            // Update existing records to use timecreated as activity_date for compatibility
+            $DB->execute('UPDATE {local_studenttutor_history} SET activity_date = timecreated WHERE activity_date = 0');
         }
-        
-        // Update existing records to use timecreated as activity_date for compatibility
-        $DB->execute('UPDATE {local_studenttutor_history} SET activity_date = timecreated WHERE activity_date IS NULL OR activity_date = 0');
 
         // Studenttutor savepoint reached.
         upgrade_plugin_savepoint(true, 2025070104, 'local', 'studenttutor');

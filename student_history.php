@@ -154,7 +154,12 @@ if (empty($history_entries)) {
         echo html_writer::start_tag('div', ['class' => 'card-header d-flex justify-content-between align-items-center']);
         
         echo html_writer::start_tag('div');
-        echo html_writer::tag('h6', $entry->title, ['class' => 'mb-0']);
+        
+        // Get activity type name
+        $activity_type = \local_studenttutor\activity_type_manager::get_activity_type_by_shortname($entry->activitytype);
+        $type_name = $activity_type ? $activity_type->name : $entry->activitytype;
+        
+        echo html_writer::tag('h6', $type_name, ['class' => 'mb-0']);
         
         // Show activity date if different from created date
         $activity_date = $entry->activity_date ?: $entry->timecreated;

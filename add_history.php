@@ -92,12 +92,6 @@ class course_history_form extends moodleform {
         $mform->setType('action_type', PARAM_TEXT);
         $mform->addRule('action_type', get_string('required'), 'required', null, 'client');
         
-        // Title
-        $mform->addElement('text', 'title', get_string('activity_title', 'local_studenttutor'), array('size' => 60));
-        $mform->setType('title', PARAM_TEXT);
-        $mform->addRule('title', get_string('required'), 'required', null, 'client');
-        $mform->addHelpButton('title', 'activity_title', 'local_studenttutor');
-        
         // Activity date
         $mform->addElement('date_selector', 'activity_date', get_string('activity_date', 'local_studenttutor'));
         $mform->setDefault('activity_date', time()); // Default to today
@@ -127,7 +121,6 @@ if ($form->is_cancelled()) {
             $data->studentid,
             $USER->id,
             $data->action_type,
-            $data->title,
             $data->description,
             $courseid,
             $USER->id,

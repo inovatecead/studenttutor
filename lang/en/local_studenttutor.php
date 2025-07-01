@@ -41,13 +41,13 @@ $string['select_student'] = 'Select Student';
 $string['select_course'] = 'Select Course';
 $string['action_type'] = 'Activity Type';
 $string['activity_title'] = 'Activity Title';
-$string['activity_date'] = 'Activity Date';
+$string['activity_date'] = 'Data da Atividade';
 $string['description'] = 'Description';
-$string['created_on'] = 'Created on';
+$string['created_on'] = 'Criado em';
 
 // Help strings
 $string['activity_title_help'] = 'Enter a descriptive title for this activity.';
-$string['activity_date_help'] = 'Select the date when this activity took place.';
+$string['activity_date_help'] = 'Selecione a data em que esta atividade ocorreu.';
 
 // Action types
 $string['action_meeting'] = 'Meeting';

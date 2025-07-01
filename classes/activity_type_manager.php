@@ -263,4 +263,16 @@ class activity_type_manager {
         
         return $csv;
     }
+
+    /**
+     * Get activity type by shortname
+     *
+     * @param string $shortname The shortname of the activity type
+     * @return object|false Activity type object or false if not found
+     */
+    public static function get_activity_type_by_shortname($shortname) {
+        global $DB;
+        
+        return $DB->get_record('local_studenttutor_activity_types', array('shortname' => $shortname));
+    }
 }

@@ -85,12 +85,6 @@ class edit_history_form extends moodleform {
         $mform->addRule('activitytype', get_string('required'), 'required', null, 'client');
         $mform->setDefault('activitytype', $history_entry->activitytype);
         
-        // Title
-        $mform->addElement('text', 'title', get_string('activity_title', 'local_studenttutor'), array('size' => 60));
-        $mform->setType('title', PARAM_TEXT);
-        $mform->addRule('title', get_string('required'), 'required', null, 'client');
-        $mform->setDefault('title', $history_entry->title);
-        
         // Activity date
         $mform->addElement('date_selector', 'activity_date', get_string('activity_date', 'local_studenttutor'));
         $mform->setDefault('activity_date', $history_entry->activity_date ?: time());
@@ -138,7 +132,6 @@ if ($form->is_cancelled()) {
         // Update the history entry using the manager
         $update_data = array(
             'activitytype' => $data->activitytype,
-            'title' => $data->title,
             'activity_date' => $data->activity_date,
             'description' => $data->description
         );
