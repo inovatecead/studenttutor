@@ -117,6 +117,9 @@ if ($form->is_cancelled()) {
     redirect(new moodle_url('/local/studenttutor/course_view.php', array('courseid' => $courseid)));
 } else if ($data = $form->get_data()) {
     try {
+        // Debug: verificar dados recebidos
+        debugging('Data received: ' . print_r($data, true), DEBUG_DEVELOPER);
+        
         $entryid = history_manager::add_history_entry(
             $data->studentid,
             $USER->id,
@@ -134,6 +137,7 @@ if ($form->is_cancelled()) {
             \core\notification::error(get_string('history_add_error', 'local_studenttutor'));
         }
     } catch (Exception $e) {
+        debugging('Exception in add_history: ' . $e->getMessage(), DEBUG_DEVELOPER);
         \core\notification::error(get_string('history_add_error', 'local_studenttutor') . ': ' . $e->getMessage());
     }
 }

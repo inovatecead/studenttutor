@@ -115,7 +115,7 @@ class history_manager {
         $updatedata->id = $entryid;
         $updatedata->timemodified = time();
 
-        $allowedfields = ['activitytype', 'title', 'activity_date', 'description', 'courseid'];
+        $allowedfields = ['activitytype', 'activity_date', 'description', 'courseid'];
         foreach ($allowedfields as $field) {
             if (isset($data[$field])) {
                 $updatedata->$field = $data[$field];
@@ -386,16 +386,10 @@ class history_manager {
             return false;
         }
 
-        // Validate activity type
-        $valid_types = array_keys(self::get_activity_types());
-        if (!in_array($activitytype, $valid_types)) {
+        // Validate activity type using dynamic types from database
+        $activity_types = \local_studenttutor\activity_type_manager::get_activity_types_options(true);
+        if (!array_key_exists($activitytype, $activity_types)) {
             debugging('Invalid activity type: ' . $activitytype, DEBUG_DEVELOPER);
-            return false;
-        }
-
-        // Check title
-        if (empty(trim($title))) {
-            debugging('Title cannot be empty', DEBUG_DEVELOPER);
             return false;
         }
 
