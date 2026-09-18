@@ -15,10 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Assignment manager class for Student-Tutor Assignment plugin.
+ * Assignment manager class for the Nexo Tutoria Acadêmica plugin.
  *
  * @package    local_studenttutor
- * @copyright  2025 Your Organization
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -33,13 +34,12 @@ require_once($CFG->libdir . '/accesslib.php');
  * Class for managing student-tutor assignments.
  */
 class assignment_manager {
-
     /** @var string Active assignment status */
     const STATUS_ACTIVE = 'active';
-    
+
     /** @var string Inactive assignment status */
     const STATUS_INACTIVE = 'inactive';
-    
+
     /** @var string Completed assignment status */
     const STATUS_COMPLETED = 'completed';
 
@@ -81,19 +81,18 @@ class assignment_manager {
             $assignmentid = $DB->insert_record('local_studenttutor_assign', $assignment);
 
             // Trigger assignment created event
-            $event = \local_studenttutor\event\assignment_created::create(array(
+            $event = \local_studenttutor\event\assignment_created::create([
                 'context' => \context_system::instance(),
                 'objectid' => $assignmentid,
-                'other' => array(
+                'other' => [
                     'tutorid' => $tutorid,
                     'studentid' => $studentid,
-                    'courseid' => $courseid
-                )
-            ));
+                    'courseid' => $courseid,
+                ],
+            ]);
             $event->trigger();
 
             return $assignmentid;
-
         } catch (\Exception $e) {
             debugging('Error creating assignment: ' . $e->getMessage(), DEBUG_DEVELOPER);
             return false;
@@ -127,10 +126,11 @@ class assignment_manager {
             }
 
             // Check for conflicts if key fields changed
-            if ($studentid != $assignment->studentid || 
-                $tutorid != $assignment->tutorid || 
-                $courseid != $assignment->courseid) {
-                
+            if (
+                $studentid != $assignment->studentid ||
+                $tutorid != $assignment->tutorid ||
+                $courseid != $assignment->courseid
+            ) {
                 if (self::assignment_exists($studentid, $tutorid, $courseid, $assignmentid)) {
                     throw new \moodle_exception('assignmentalreadyexists', 'local_studenttutor');
                 }
@@ -153,20 +153,19 @@ class assignment_manager {
 
             if ($result) {
                 // Trigger assignment updated event
-                $event = \local_studenttutor\event\assignment_updated::create(array(
+                $event = \local_studenttutor\event\assignment_updated::create([
                     'context' => \context_system::instance(),
                     'objectid' => $assignmentid,
-                    'other' => array(
+                    'other' => [
                         'tutorid' => $updatedata->tutorid ?? $assignment->tutorid,
                         'studentid' => $updatedata->studentid ?? $assignment->studentid,
-                        'courseid' => $updatedata->courseid ?? $assignment->courseid
-                    )
-                ));
+                        'courseid' => $updatedata->courseid ?? $assignment->courseid,
+                    ],
+                ]);
                 $event->trigger();
             }
 
             return $result;
-
         } catch (\Exception $e) {
             debugging('Error updating assignment: ' . $e->getMessage(), DEBUG_DEVELOPER);
             return false;
@@ -188,13 +187,12 @@ class assignment_manager {
         }
 
         try {
-            $result = $DB->delete_records('local_studenttutor_assign', array('id' => $assignmentid));
-            
+            $result = $DB->delete_records('local_studenttutor_assign', ['id' => $assignmentid]);
+
             // Also clean up related history entries if needed
             // Note: Consider soft delete instead for audit trail
-            
-            return $result;
 
+            return $result;
         } catch (\Exception $e) {
             debugging('Error deleting assignment: ' . $e->getMessage(), DEBUG_DEVELOPER);
             return false;
@@ -211,7 +209,7 @@ class assignment_manager {
         global $DB;
 
         try {
-            return $DB->get_record('local_studenttutor_assign', array('id' => $assignmentid));
+            return $DB->get_record('local_studenttutor_assign', ['id' => $assignmentid]);
         } catch (\Exception $e) {
             debugging('Error getting assignment: ' . $e->getMessage(), DEBUG_DEVELOPER);
             return false;
@@ -227,12 +225,17 @@ class assignment_manager {
      * @param int $limitnum Number of records to return
      * @return array Array of assignment records with user details
      */
-    public static function get_assignments($filters = array(), $sort = 'a.timeassigned DESC', $limitfrom = 0, $limitnum = 0) {
+    public static function get_assignments($filters = [], $sort = 'a.timeassigned DESC', $limitfrom = 0, $limitnum = 0) {
         global $DB;
 
-        $sql = "SELECT a.*, 
-                       tu.firstname as tutor_firstname, tu.lastname as tutor_lastname, tu.email as tutor_email,
-                       st.firstname as student_firstname, st.lastname as student_lastname, st.email as student_email,
+        // Name fields come from \core_user\fields so that display names honour the site
+        // settings for phonetic, middle and alternate names and fullname() receives every
+        // field it expects. The e-mail columns that used to be selected here were removed:
+        // nothing in the plugin ever read them.
+        $nameselects = \core_user\fields::for_name()->get_sql('tu', false, 'tutor_')->selects .
+                \core_user\fields::for_name()->get_sql('st', false, 'student_')->selects;
+
+        $sql = "SELECT a.*{$nameselects},
                        c.fullname as course_name, c.shortname as course_shortname
                 FROM {local_studenttutor_assign} a
                 JOIN {user} tu ON a.tutorid = tu.id AND tu.deleted = 0
@@ -240,7 +243,7 @@ class assignment_manager {
                 LEFT JOIN {course} c ON a.courseid = c.id
                 WHERE 1=1";
 
-        $params = array();
+        $params = [];
 
         // Apply filters
         if (!empty($filters['courseid'])) {
@@ -274,7 +277,7 @@ class assignment_manager {
             return $DB->get_records_sql($sql, $params, $limitfrom, $limitnum);
         } catch (\Exception $e) {
             debugging('Error getting assignments: ' . $e->getMessage(), DEBUG_DEVELOPER);
-            return array();
+            return [];
         }
     }
 
@@ -287,10 +290,10 @@ class assignment_manager {
      * @return array Array of student assignments
      */
     public static function get_tutor_students($tutorid, $courseid = null, $status = self::STATUS_ACTIVE) {
-        $filters = array(
+        $filters = [
             'tutorid' => $tutorid,
-            'status' => $status
-        );
+            'status' => $status,
+        ];
 
         if ($courseid !== null) {
             $filters['courseid'] = $courseid;
@@ -308,10 +311,10 @@ class assignment_manager {
      * @return array Array of tutor assignments
      */
     public static function get_student_tutors($studentid, $courseid = null, $status = self::STATUS_ACTIVE) {
-        $filters = array(
+        $filters = [
             'studentid' => $studentid,
-            'status' => $status
-        );
+            'status' => $status,
+        ];
 
         if ($courseid !== null) {
             $filters['courseid'] = $courseid;
@@ -330,32 +333,33 @@ class assignment_manager {
      */
     public static function get_tutor_students_including_global($tutorid, $courseid, $status = self::STATUS_ACTIVE) {
         global $DB;
-        
-        $sql = "SELECT DISTINCT a.*, 
-                       tu.firstname as tutor_firstname, tu.lastname as tutor_lastname, tu.email as tutor_email,
-                       st.firstname as student_firstname, st.lastname as student_lastname, st.email as student_email,
+
+        $nameselects = \core_user\fields::for_name()->get_sql('tu', false, 'tutor_')->selects .
+                \core_user\fields::for_name()->get_sql('st', false, 'student_')->selects;
+
+        $sql = "SELECT DISTINCT a.*{$nameselects},
                        c.fullname as course_name, c.shortname as course_shortname,
                        CASE WHEN a.courseid = 0 THEN 1 ELSE 0 END as is_global_assignment
                 FROM {local_studenttutor_assign} a
                 JOIN {user} tu ON a.tutorid = tu.id AND tu.deleted = 0
                 JOIN {user} st ON a.studentid = st.id AND st.deleted = 0
                 LEFT JOIN {course} c ON a.courseid = c.id
-                WHERE a.tutorid = :tutorid 
+                WHERE a.tutorid = :tutorid
                 AND a.status = :status
                 AND (a.courseid = :courseid OR a.courseid = 0)
                 ORDER BY is_global_assignment DESC, st.lastname, st.firstname";
-                
+
         $params = [
             'tutorid' => $tutorid,
             'status' => $status,
-            'courseid' => $courseid
+            'courseid' => $courseid,
         ];
-        
+
         try {
             return $DB->get_records_sql($sql, $params);
         } catch (\Exception $e) {
             debugging('Error getting tutor students including global: ' . $e->getMessage(), DEBUG_DEVELOPER);
-            return array();
+            return [];
         }
     }
 
@@ -371,11 +375,11 @@ class assignment_manager {
     public static function assignment_exists($studentid, $tutorid, $courseid, $excludeid = null) {
         global $DB;
 
-        $params = array(
+        $params = [
             'studentid' => $studentid,
             'tutorid' => $tutorid,
-            'courseid' => $courseid
-        );
+            'courseid' => $courseid,
+        ];
 
         $sql = "studentid = :studentid AND tutorid = :tutorid AND courseid = :courseid";
 
@@ -399,18 +403,18 @@ class assignment_manager {
         global $DB;
 
         // Check if users exist and are not deleted
-        if (!$DB->record_exists('user', array('id' => $studentid, 'deleted' => 0))) {
+        if (!$DB->record_exists('user', ['id' => $studentid, 'deleted' => 0])) {
             debugging('Student user not found or deleted: ' . $studentid, DEBUG_DEVELOPER);
             return false;
         }
 
-        if (!$DB->record_exists('user', array('id' => $tutorid, 'deleted' => 0))) {
+        if (!$DB->record_exists('user', ['id' => $tutorid, 'deleted' => 0])) {
             debugging('Tutor user not found or deleted: ' . $tutorid, DEBUG_DEVELOPER);
             return false;
         }
 
         // Check if course exists (if not global assignment)
-        if ($courseid > 0 && !$DB->record_exists('course', array('id' => $courseid))) {
+        if ($courseid > 0 && !$DB->record_exists('course', ['id' => $courseid])) {
             debugging('Course not found: ' . $courseid, DEBUG_DEVELOPER);
             return false;
         }
@@ -430,14 +434,14 @@ class assignment_manager {
      * @param array $filters Optional filters
      * @return array Statistics array
      */
-    public static function get_statistics($filters = array()) {
+    public static function get_statistics($filters = []) {
         global $DB;
 
-        $stats = array();
+        $stats = [];
 
         // Base WHERE clause
         $where = "1=1";
-        $params = array();
+        $params = [];
 
         if (!empty($filters['courseid'])) {
             $where .= " AND courseid = :courseid";
@@ -456,8 +460,11 @@ class assignment_manager {
             // Active assignments
             $activeparams = $params;
             $activeparams['status'] = self::STATUS_ACTIVE;
-            $stats['active_assignments'] = $DB->count_records_select('local_studenttutor_assign', 
-                $where . " AND status = :status", $activeparams);
+            $stats['active_assignments'] = $DB->count_records_select(
+                'local_studenttutor_assign',
+                $where . " AND status = :status",
+                $activeparams
+            );
 
             // Unique tutors
             $sql = "SELECT COUNT(DISTINCT tutorid) FROM {local_studenttutor_assign} WHERE " . $where;
@@ -468,10 +475,9 @@ class assignment_manager {
             $stats['unique_students'] = $DB->count_records_sql($sql, $params);
 
             return $stats;
-
         } catch (\Exception $e) {
             debugging('Error getting statistics: ' . $e->getMessage(), DEBUG_DEVELOPER);
-            return array();
+            return [];
         }
     }
 
@@ -484,24 +490,22 @@ class assignment_manager {
      * @param int $limitnum Number of records to return
      * @return array Array of assignment records with details
      */
-    public static function get_all_assignments_with_details($filters = array(), $sort = 'a.timeassigned DESC', $limitfrom = 0, $limitnum = 0) {
+    public static function get_all_assignments_with_details($filters = [], $sort = 'a.timeassigned DESC', $limitfrom = 0, $limitnum = 0) {
         global $DB;
 
-        // Debug: log the filters being applied
-        debugging('get_all_assignments_with_details filters: ' . print_r($filters, true), DEBUG_DEVELOPER);
+        $nameselects = \core_user\fields::for_name()->get_sql('tu', false, 'tutor_')->selects .
+                \core_user\fields::for_name()->get_sql('st', false, 'student_')->selects;
 
-        $sql = "SELECT a.id, a.studentid, a.tutorid, a.courseid, a.assignedby, 
-                       a.timeassigned, a.timemodified, a.status,
-                       tu.firstname as tutor_firstname, tu.lastname as tutor_lastname,
-                       st.firstname as student_firstname, st.lastname as student_lastname,
+        $sql = "SELECT a.id, a.studentid, a.tutorid, a.courseid, a.assignedby,
+                       a.timeassigned, a.timemodified, a.status{$nameselects},
                        c.fullname as course_name
                 FROM {local_studenttutor_assign} a
                 JOIN {user} tu ON a.tutorid = tu.id
                 JOIN {user} st ON a.studentid = st.id
                 LEFT JOIN {course} c ON a.courseid = c.id";
-        
-        $where = array();
-        $params = array();
+
+        $where = [];
+        $params = [];
 
         // Add deleted filter (exclude deleted users) - always apply
         $where[] = "tu.deleted = 0";
@@ -534,20 +538,13 @@ class assignment_manager {
 
         $sql .= " ORDER BY " . $sort;
 
-        // Debug: log the final SQL and parameters
-        debugging('SQL: ' . $sql, DEBUG_DEVELOPER);
-        debugging('Params: ' . print_r($params, true), DEBUG_DEVELOPER);
-
         try {
             $result = $DB->get_records_sql($sql, $params, $limitfrom, $limitnum);
-            
-            // Debug: log the result count
-            debugging('Found ' . count($result) . ' assignments', DEBUG_DEVELOPER);
-            
+
             return $result;
         } catch (\Exception $e) {
             debugging('Error getting assignments with details: ' . $e->getMessage(), DEBUG_DEVELOPER);
-            return array();
+            return [];
         }
     }
 }

@@ -18,7 +18,8 @@
  * External API for adding history entries
  *
  * @package    local_studenttutor
- * @copyright  2025 Your Organization
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -38,7 +39,6 @@ use local_studenttutor\history_manager;
  * External API for adding history entries
  */
 class add_history extends external_api {
-
     /**
      * Returns description of method parameters
      * @return external_function_parameters
@@ -47,9 +47,9 @@ class add_history extends external_api {
         return new external_function_parameters([
             'studentid' => new external_value(PARAM_INT, 'Student ID'),
             'tutorid' => new external_value(PARAM_INT, 'Tutor ID'),
-            'activitytype' => new external_value(PARAM_ALPHA, 'Activity type (meeting, email, feedback, etc.)'),
-            'title' => new external_value(PARAM_TEXT, 'Activity title'),
-            'description' => new external_value(PARAM_RAW, 'Activity description'),
+            'activitytype' => new external_value(PARAM_ALPHANUMEXT, 'Activity type shortname (e.g. convocatoria_reuniao)'),
+            'title' => new external_value(PARAM_TEXT, 'Deprecated, ignored by this version. Use description.'),
+            'description' => new external_value(PARAM_CLEANHTML, 'Activity description'),
             'courseid' => new external_value(PARAM_INT, 'Course ID', VALUE_DEFAULT, 0),
         ]);
     }
@@ -84,14 +84,14 @@ class add_history extends external_api {
         require_capability('local/studenttutor:managehistory', $context);
 
         try {
-            // Add history entry using manager
+            // Add history entry using manager: (studentid, tutorid, activitytype, description, courseid, createdby).
             $historyid = history_manager::add_history_entry(
                 $params['studentid'],
                 $params['tutorid'],
                 $params['activitytype'],
-                $params['title'],
                 $params['description'],
-                $params['courseid']
+                $params['courseid'],
+                $USER->id
             );
 
             if ($historyid) {
@@ -108,10 +108,11 @@ class add_history extends external_api {
                 ];
             }
         } catch (\Exception $e) {
+            debugging('Exception in external add_history: ' . $e->getMessage(), DEBUG_DEVELOPER);
             return [
                 'success' => false,
                 'historyid' => 0,
-                'message' => $e->getMessage(),
+                'message' => get_string('history_add_error', 'local_studenttutor'),
             ];
         }
     }

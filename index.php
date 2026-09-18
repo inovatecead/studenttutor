@@ -15,11 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Main Dashboard for Student-Tutor Plugin - Adaptive Interface
+ * Assignment list page for the Nexo Tutoria Acadêmica plugin.
  * Shows pedagogical dashboard for tutors and administrative dashboard for admins
  *
  * @package    local_studenttutor
- * @copyright  2025 Your Organization
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -34,9 +35,19 @@ require_login();
 $context = context_system::instance();
 require_capability('local/studenttutor:viewassignments', $context);
 
-// Determine user type and redirect to appropriate dashboard interface
+// Perfil do usuário nesta página de gestão de atribuições.
 $is_admin = has_capability('local/studenttutor:manageassignments', $context);
 $is_tutor = local_studenttutor_is_tutor($USER->id);
+
+// Sem permissão de gestão e sem vínculo de tutoria não há atribuições a exibir.
+if (!$is_admin && !$is_tutor) {
+    redirect(
+        new moodle_url('/local/studenttutor/reports.php'),
+        get_string('limited_access_redirect', 'local_studenttutor'),
+        null,
+        \core\output\notification::NOTIFY_INFO
+    );
+}
 
 // Check for legacy mode parameter (to access old interface if needed)
 $legacy_mode = optional_param('legacy', 0, PARAM_INT);
@@ -44,36 +55,22 @@ $legacy_mode = optional_param('legacy', 0, PARAM_INT);
 if ($legacy_mode) {
     // Continue with original index.php functionality for backward compatibility
     // This allows access to the old interface via ?legacy=1 parameter
-    
+
     // Legacy mode - preserve original functionality
     $user_context_filter = null;
-    
+
     // If user is not admin, filter by their assignments only
     if (!$is_admin) {
-        // Check if user is a tutor (has configured tutor role in any course)  
+        // Check if user is a tutor (has configured tutor role in any course)
         $user_is_tutor = local_studenttutor_is_tutor($USER->id);
-        
+
         if ($user_is_tutor) {
             $user_context_filter = 'tutor';
         }
     }
 } else {
-    // NEW DASHBOARD MODE - Redirect to appropriate dashboard based on user role
-    
-    if ($is_admin) {
-        // Admin users get the comprehensive administrative dashboard
-        include(__DIR__ . '/dashboard_admin.php');
-        exit;
-    } else if ($is_tutor) {
-        // Tutor users get the pedagogical dashboard focused on their students
-        include(__DIR__ . '/dashboard_tutor.php');  
-        exit;
-    } else {
-        // Other users get basic view or redirect to appropriate section
-        redirect(new moodle_url('/local/studenttutor/reports.php'), 
-                'Acesso limitado - redirecionando para relatórios', 
-                null, \core\output\notification::NOTIFY_INFO);
-    }
+    // Lista de atribuições: gestores veem todas, tutores veem apenas as próprias.
+    $user_context_filter = $is_admin ? null : 'tutor';
 }
 
 // Get filter parameters
@@ -92,27 +89,35 @@ $confirm_delete = optional_param('confirm', '', PARAM_ALPHA);
 
 if ($delete_id && $confirm_delete === 'yes' && confirm_sesskey()) {
     require_capability('local/studenttutor:manageassignments', $context);
-    
+
     if (assignment_manager::delete_assignment($delete_id)) {
-        redirect(new moodle_url('/local/studenttutor/index.php'), 
-                get_string('assignment_deleted', 'local_studenttutor'), 
-                null, \core\output\notification::NOTIFY_SUCCESS);
+        redirect(
+            new moodle_url('/local/studenttutor/index.php'),
+            get_string('assignment_deleted', 'local_studenttutor'),
+            null,
+            \core\output\notification::NOTIFY_SUCCESS
+        );
     } else {
-        redirect(new moodle_url('/local/studenttutor/index.php'), 
-                get_string('error_deleting_assignment', 'local_studenttutor'), 
-                null, \core\output\notification::NOTIFY_ERROR);
+        redirect(
+            new moodle_url('/local/studenttutor/index.php'),
+            get_string('error_deleting_assignment', 'local_studenttutor'),
+            null,
+            \core\output\notification::NOTIFY_ERROR
+        );
     }
 }
 
-$PAGE->set_url(new moodle_url('/local/studenttutor/index.php'), 
-    array(
-        'filter_tutor' => $filter_tutor, 
-        'filter_student' => $filter_student, 
+$PAGE->set_url(
+    new moodle_url('/local/studenttutor/index.php'),
+    [
+        'filter_tutor' => $filter_tutor,
+        'filter_student' => $filter_student,
         'filter_course' => $filter_course,
         'search' => $search_term,
         'page' => $page,
-        'perpage' => $perpage
-    ));
+        'perpage' => $perpage,
+    ]
+);
 $PAGE->set_context($context);
 $PAGE->set_title(get_string('assignments_title', 'local_studenttutor'));
 $PAGE->set_heading(get_string('assignments_title', 'local_studenttutor'));
@@ -125,15 +130,15 @@ $PAGE->requires->js_amd_inline('
 require(["jquery", "core/form-autocomplete"], function($, Autocomplete) {
     $(document).ready(function() {
         console.log("Initializing Moodle autocomplete filters");
-        
+
         // Convert select elements marked with data-autocomplete to Moodle autocomplete
         $("select[data-autocomplete=\"true\"]").each(function() {
             var $select = $(this);
             var placeholder = $select.attr("data-placeholder") || "Digite para buscar...";
             var multiple = $select.attr("data-multiple") === "true";
-            
+
             console.log("Converting select to autocomplete:", $select.attr("name"));
-            
+
             // Get options from the original select
             var options = [];
             $select.find("option").each(function() {
@@ -143,7 +148,7 @@ require(["jquery", "core/form-autocomplete"], function($, Autocomplete) {
                     label: $option.text()
                 });
             });
-            
+
             // Create autocomplete configuration
             var config = {
                 ajax: false,
@@ -154,7 +159,7 @@ require(["jquery", "core/form-autocomplete"], function($, Autocomplete) {
                 caseSensitive: false,
                 noSelectionString: options[0] ? options[0].label : "Selecione..."
             };
-            
+
             // Initialize Moodle autocomplete
             try {
                 Autocomplete.enhance($select[0], false, "", config, options);
@@ -175,7 +180,7 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('manage_assignments', 'local_studenttutor'));
 
 // Navigation buttons
-$buttons = array();
+$buttons = [];
 $buttons[] = $OUTPUT->single_button(
     new moodle_url('/local/studenttutor/assign.php'),
     get_string('add_assignment', 'local_studenttutor'),
@@ -190,14 +195,14 @@ $buttons[] = $OUTPUT->single_button(
 echo html_writer::div(implode(' ', $buttons), 'buttons');
 
 // Add filters
-echo html_writer::start_tag('div', array('class' => 'filters-form', 'style' => 'margin: 20px 0; padding: 15px; border: 1px solid #ddd; background: #f9f9f9;'));
-echo html_writer::tag('h4', get_string('filters', 'local_studenttutor'), array('style' => 'margin-top: 0;'));
+echo html_writer::start_tag('div', ['class' => 'filters-form', 'style' => 'margin: 20px 0; padding: 15px; border: 1px solid #ddd; background: #f9f9f9;']);
+echo html_writer::tag('h4', get_string('filters', 'local_studenttutor'), ['style' => 'margin-top: 0;']);
 
-echo html_writer::start_tag('form', array('method' => 'get', 'action' => '', 'style' => 'display: flex; gap: 15px; align-items: end; flex-wrap: wrap;'));
+echo html_writer::start_tag('form', ['method' => 'get', 'action' => '', 'style' => 'display: flex; gap: 15px; align-items: end; flex-wrap: wrap;']);
 
 // Tutor filter
 $tutor_roles = local_studenttutor_get_tutor_roles();
-list($role_sql, $role_params) = $DB->get_in_or_equal($tutor_roles);
+[$role_sql, $role_params] = $DB->get_in_or_equal($tutor_roles);
 $tutors = $DB->get_records_sql("
     SELECT DISTINCT u.id, u.firstname, u.lastname, u.firstnamephonetic, u.lastnamephonetic, u.middlename, u.alternatename
     FROM {user} u
@@ -208,22 +213,22 @@ $tutors = $DB->get_records_sql("
     AND r.shortname $role_sql
     ORDER BY u.lastname, u.firstname
 ", array_merge([50], $role_params));
-$tutor_options = array(0 => get_string('all_tutors', 'local_studenttutor'));
+$tutor_options = [0 => get_string('all_tutors', 'local_studenttutor')];
 foreach ($tutors as $tutor) {
     $tutor_options[$tutor->id] = fullname($tutor);
 }
 
 echo html_writer::start_tag('div');
-echo html_writer::tag('label', get_string('tutor', 'local_studenttutor'), array('style' => 'display: block; font-weight: bold; margin-bottom: 5px;'));
+echo html_writer::tag('label', get_string('tutor', 'local_studenttutor'), ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']);
 
 // Create select with data attributes for autocomplete conversion
-echo html_writer::select($tutor_options, 'filter_tutor', $filter_tutor, false, array(
+echo html_writer::select($tutor_options, 'filter_tutor', $filter_tutor, false, [
     'data-autocomplete' => 'true',
     'data-placeholder' => 'Digite para buscar um tutor...',
     'data-multiple' => 'false',
     'class' => 'form-autocomplete-original',
-    'style' => 'min-width: 200px;'
-));
+    'style' => 'min-width: 200px;',
+]);
 echo html_writer::end_tag('div');
 
 // Student filter
@@ -237,27 +242,27 @@ $students = $DB->get_records_sql("
     AND r.shortname = ?
     ORDER BY u.lastname, u.firstname
 ", [50, 'student']);
-$student_options = array(0 => get_string('all_students', 'local_studenttutor'));
+$student_options = [0 => get_string('all_students', 'local_studenttutor')];
 foreach ($students as $student) {
     $student_options[$student->id] = fullname($student);
 }
 
 echo html_writer::start_tag('div');
-echo html_writer::tag('label', get_string('student', 'local_studenttutor'), array('style' => 'display: block; font-weight: bold; margin-bottom: 5px;'));
+echo html_writer::tag('label', get_string('student', 'local_studenttutor'), ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']);
 
 // Create select with data attributes for autocomplete conversion
-echo html_writer::select($student_options, 'filter_student', $filter_student, false, array(
+echo html_writer::select($student_options, 'filter_student', $filter_student, false, [
     'data-autocomplete' => 'true',
     'data-placeholder' => 'Digite para buscar um estudante...',
     'data-multiple' => 'false',
     'class' => 'form-autocomplete-original',
-    'style' => 'min-width: 200px;'
-));
+    'style' => 'min-width: 200px;',
+]);
 echo html_writer::end_tag('div');
 
 // Course filter
-$courses = $DB->get_records('course', array('visible' => 1), 'fullname', 'id, fullname');
-$course_options = array(0 => get_string('all_courses', 'local_studenttutor'));
+$courses = $DB->get_records('course', ['visible' => 1], 'fullname', 'id, fullname');
+$course_options = [0 => get_string('all_courses', 'local_studenttutor')];
 foreach ($courses as $course) {
     if ($course->id != SITEID) {
         $course_options[$course->id] = $course->fullname;
@@ -265,32 +270,32 @@ foreach ($courses as $course) {
 }
 
 echo html_writer::start_tag('div');
-echo html_writer::tag('label', get_string('course', 'local_studenttutor'), array('style' => 'display: block; font-weight: bold; margin-bottom: 5px;'));
+echo html_writer::tag('label', get_string('course', 'local_studenttutor'), ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']);
 
 // Create select with data attributes for autocomplete conversion
-echo html_writer::select($course_options, 'filter_course', $filter_course, false, array(
+echo html_writer::select($course_options, 'filter_course', $filter_course, false, [
     'data-autocomplete' => 'true',
     'data-placeholder' => 'Digite para buscar um curso...',
     'data-multiple' => 'false',
     'class' => 'form-autocomplete-original',
-    'style' => 'min-width: 250px;'
-));
+    'style' => 'min-width: 250px;',
+]);
 echo html_writer::end_tag('div');
 
 // Filter buttons
-echo html_writer::start_tag('div', array('style' => 'display: flex; gap: 10px;'));
-echo html_writer::empty_tag('input', array('type' => 'submit', 'value' => get_string('filter', 'local_studenttutor'), 'class' => 'btn btn-primary'));
-echo html_writer::link(new moodle_url('/local/studenttutor/index.php'), get_string('clear', 'local_studenttutor'), array('class' => 'btn btn-secondary'));
+echo html_writer::start_tag('div', ['style' => 'display: flex; gap: 10px;']);
+echo html_writer::empty_tag('input', ['type' => 'submit', 'value' => get_string('filter', 'local_studenttutor'), 'class' => 'btn btn-primary']);
+echo html_writer::link(new moodle_url('/local/studenttutor/index.php'), get_string('clear', 'local_studenttutor'), ['class' => 'btn btn-secondary']);
 echo html_writer::end_tag('div');
 
 echo html_writer::end_tag('form');
 echo html_writer::end_tag('div');
 
 // Display current assignments
-echo html_writer::start_tag('div', array('class' => 'assignments-list'));
+echo html_writer::start_tag('div', ['class' => 'assignments-list']);
 
 // Build filters for assignment query
-$filters = array();
+$filters = [];
 if ($filter_tutor > 0) {
     $filters['tutorid'] = $filter_tutor;
 }
@@ -321,86 +326,81 @@ if ($assignments) {
     // Display results counter
     $start_item = ($page * $perpage) + 1;
     $end_item = min(($page + 1) * $perpage, $total_count);
-    echo html_writer::tag('p', 
+    echo html_writer::tag(
+        'p',
         "Mostrando {$start_item}-{$end_item} de {$total_count} resultados",
-        array('class' => 'text-muted mb-3')
+        ['class' => 'text-muted mb-3']
     );
 
     $table = new html_table();
     $table->attributes['class'] = 'table table-striped table-responsive';
-    $table->head = array(
+    $table->head = [
         'Tutor',
         'Estudante',
         'Curso',
         'Data Atribuição',
         'Status',
-        'Ações'
-    );
+        'Ações',
+    ];
 
     foreach ($assignments as $assignment) {
-        $tutor_name = fullname((object)array(
-            'firstname' => $assignment->tutor_firstname,
-            'lastname' => $assignment->tutor_lastname
-        ));
-        $student_name = fullname((object)array(
-            'firstname' => $assignment->student_firstname,
-            'lastname' => $assignment->student_lastname
-        ));
+        $tutor_name = fullname(username_load_fields_from_object((object)[], $assignment, 'tutor_'));
+        $student_name = fullname(username_load_fields_from_object((object)[], $assignment, 'student_'));
         $course_name = $assignment->course_name ? $assignment->course_name : 'Todos os cursos';
         $date_assigned = userdate($assignment->timeassigned);
-        
+
         // Improved status display with badges
         $status_class = $assignment->status == 'active' ? 'badge-success' : 'badge-secondary';
         $status_text = $assignment->status == 'active' ? 'Ativo' : 'Inativo';
-        $status = html_writer::tag('span', $status_text, array('class' => "badge $status_class"));
+        $status = html_writer::tag('span', $status_text, ['class' => "badge $status_class"]);
 
         $actions = '';
         if (has_capability('local/studenttutor:manageassignments', $context)) {
             // Add edit button
             $actions .= html_writer::link(
-                new moodle_url('/local/studenttutor/assign.php', array('id' => $assignment->id)),
+                new moodle_url('/local/studenttutor/assign.php', ['id' => $assignment->id]),
                 'Editar',
-                array('class' => 'btn btn-sm btn-secondary me-2', 'title' => 'Editar atribuição')
+                ['class' => 'btn btn-sm btn-secondary me-2', 'title' => 'Editar atribuição']
             );
-            
+
             // Add delete button with improved confirmation
-            $delete_url = new moodle_url('/local/studenttutor/index.php', array(
+            $delete_url = new moodle_url('/local/studenttutor/index.php', [
                 'delete' => $assignment->id,
                 'confirm' => 'yes',
-                'sesskey' => sesskey()
-            ));
+                'sesskey' => sesskey(),
+            ]);
             $actions .= html_writer::link(
                 $delete_url,
                 'Excluir',
-                array(
+                [
                     'class' => 'btn btn-sm btn-danger',
                     'title' => 'Excluir atribuição',
-                    'onclick' => 'return confirm("Tem certeza que deseja excluir esta atribuição?\\n\\nEsta ação não pode ser desfeita!");'
-                )
+                    'onclick' => 'return confirm("Tem certeza que deseja excluir esta atribuição?\\n\\nEsta ação não pode ser desfeita!");',
+                ]
             );
         }
 
-        $table->data[] = array(
+        $table->data[] = [
             $tutor_name,
             $student_name,
             $course_name,
             $date_assigned,
             $status,
-            $actions
-        );
+            $actions,
+        ];
     }
 
     echo html_writer::table($table);
-    
+
     // Add pagination if needed
     if ($total_count > $perpage) {
-        $pagingbar_url = new moodle_url('/local/studenttutor/index.php', array(
+        $pagingbar_url = new moodle_url('/local/studenttutor/index.php', [
             'filter_tutor' => $filter_tutor,
             'filter_student' => $filter_student,
             'filter_course' => $filter_course,
             'search' => $search_term,
-            'perpage' => $perpage
-        ));
+            'perpage' => $perpage,
+        ]);
         echo $OUTPUT->paging_bar($total_count, $page, $perpage, $pagingbar_url);
     }
 } else {

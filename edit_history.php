@@ -18,7 +18,8 @@
  * Edit history entry
  *
  * @package    local_studenttutor
- * @copyright  2025 Your Organization
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -26,6 +27,7 @@ require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/formslib.php');
 require_once(__DIR__ . '/lib.php');
 
+use local_studenttutor\form\edit_history_form;
 use local_studenttutor\history_manager;
 
 $courseid = required_param('courseid', PARAM_INT);
@@ -35,8 +37,8 @@ $historyid = required_param('historyid', PARAM_INT);
 require_login();
 
 // Get course, student and history entry
-$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
-$student = $DB->get_record('user', array('id' => $studentid), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
+$student = $DB->get_record('user', ['id' => $studentid], '*', MUST_EXIST);
 $context = context_course::instance($courseid);
 
 require_login($course);
@@ -56,85 +58,36 @@ $history_entry = $DB->get_record('local_studenttutor_history', [
     'id' => $historyid,
     'tutorid' => $USER->id,
     'studentid' => $studentid,
-    'courseid' => $courseid
+    'courseid' => $courseid,
 ]);
 
 if (!$history_entry) {
     throw new moodle_exception('nopermissions', 'error', '', get_string('history_not_found', 'local_studenttutor'));
 }
 
-$PAGE->set_url(new moodle_url('/local/studenttutor/edit_history.php'), 
-    array('courseid' => $courseid, 'studentid' => $studentid, 'historyid' => $historyid));
+$PAGE->set_url(
+    new moodle_url('/local/studenttutor/edit_history.php'),
+    ['courseid' => $courseid, 'studentid' => $studentid, 'historyid' => $historyid]
+);
 $PAGE->set_context($context);
 $PAGE->set_course($course);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_title(get_string('edit_history', 'local_studenttutor'));
 $PAGE->set_heading($course->fullname);
 
-// Create form
-class edit_history_form extends moodleform {
-    public function definition() {
-        global $DB;
-        
-        $mform = $this->_form;
-        $history_entry = $this->_customdata['history_entry'];
-        
-        // Activity type - using dynamic types from database
-        $types = \local_studenttutor\activity_type_manager::get_activity_types_options(true);
-        
-        $mform->addElement('select', 'activitytype', get_string('action_type', 'local_studenttutor'), $types);
-        $mform->setType('activitytype', PARAM_TEXT);
-        $mform->addRule('activitytype', get_string('required'), 'required', null, 'client');
-        $mform->setDefault('activitytype', $history_entry->activitytype);
-        
-        // Activity date (only if field exists in database)
-        // Try to check if field exists by attempting a simple query
-        try {
-            $DB->get_record_sql("SELECT activity_date FROM {local_studenttutor_history} WHERE 1=0");
-            $activity_date_exists = true;
-        } catch (dml_exception $e) {
-            $activity_date_exists = false;
-        }
-        
-        if ($activity_date_exists) {
-            $mform->addElement('date_selector', 'activity_date', get_string('activity_date', 'local_studenttutor'));
-            $mform->setDefault('activity_date', $history_entry->activity_date ?: time());
-            $mform->addHelpButton('activity_date', 'activity_date', 'local_studenttutor');
-        }
-        
-        // Description
-        $mform->addElement('textarea', 'description', get_string('description', 'local_studenttutor'), 
-            array('rows' => 6, 'cols' => 60));
-        $mform->setType('description', PARAM_TEXT);
-        $mform->addRule('description', get_string('required'), 'required', null, 'client');
-        $mform->setDefault('description', $history_entry->description);
-        
-        // Hidden fields
-        $mform->addElement('hidden', 'courseid');
-        $mform->setType('courseid', PARAM_INT);
-        
-        $mform->addElement('hidden', 'studentid');
-        $mform->setType('studentid', PARAM_INT);
-        
-        $mform->addElement('hidden', 'historyid');
-        $mform->setType('historyid', PARAM_INT);
-        
-        $this->add_action_buttons(true, get_string('savechanges'));
-    }
-}
-
-$form = new edit_history_form(null, array('history_entry' => $history_entry));
+// The form lives in classes/form/edit_history_form.php and is autoloaded.
+$form = new edit_history_form(null, ['history_entry' => $history_entry]);
 
 // Set default values
-$form->set_data(array(
+$form->set_data([
     'courseid' => $courseid,
     'studentid' => $studentid,
-    'historyid' => $historyid
-));
+    'historyid' => $historyid,
+]);
 
 $return_url = new moodle_url('/local/studenttutor/student_history.php', [
     'courseid' => $courseid,
-    'studentid' => $studentid
+    'studentid' => $studentid,
 ]);
 
 if ($form->is_cancelled()) {
@@ -142,39 +95,35 @@ if ($form->is_cancelled()) {
 } else if ($data = $form->get_data()) {
     try {
         // Update the history entry using the manager
-        $update_data = array(
+        $update_data = [
             'activitytype' => $data->activitytype,
-            'description' => $data->description
-        );
-        
-        // Only add activity_date if field exists
-        try {
-            $DB->get_record_sql("SELECT activity_date FROM {local_studenttutor_history} WHERE 1=0");
-            if (isset($data->activity_date)) {
-                $update_data['activity_date'] = $data->activity_date;
-            }
-        } catch (dml_exception $e) {
-            // Field doesn't exist, skip it
+            'description' => $data->description,
+        ];
+
+        if (isset($data->activity_date)) {
+            $update_data['activity_date'] = $data->activity_date;
         }
-        
+
         if (history_manager::update_history_entry($historyid, $update_data)) {
             \core\notification::success(get_string('history_updated_success', 'local_studenttutor'));
         } else {
             \core\notification::error(get_string('history_update_error', 'local_studenttutor'));
         }
-        
+
         redirect($return_url);
-        
     } catch (Exception $e) {
-        \core\notification::error(get_string('history_update_error', 'local_studenttutor') . ': ' . $e->getMessage());
+        debugging('Exception in edit_history: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        \core\notification::error(get_string('history_update_error', 'local_studenttutor'));
     }
 }
 
 echo $OUTPUT->header();
 
 // Breadcrumbs
-$PAGE->navbar->add(get_string('my_students', 'local_studenttutor'), 
-    new moodle_url('/local/studenttutor/course_view.php', ['courseid' => $courseid]));
+$PAGE->navbar->add(
+    get_string('my_students', 'local_studenttutor'),
+    new moodle_url('/local/studenttutor/course_view.php', ['courseid' => $courseid])
+);
 $PAGE->navbar->add(get_string('history_for_student', 'local_studenttutor', fullname($student)), $return_url);
 $PAGE->navbar->add(get_string('edit_history', 'local_studenttutor'));
 

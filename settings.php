@@ -15,49 +15,74 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Settings for Student-Tutor assignment plugin
+ * Settings for the Nexo Tutoria Acadêmica plugin
  *
  * @package    local_studenttutor
- * @copyright  2025 Your Organization
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $ADMIN->add('localplugins', new admin_category('local_studenttutor', 
-        get_string('pluginname', 'local_studenttutor')));
+    $ADMIN->add('localplugins', new admin_category(
+        'local_studenttutor',
+        get_string('pluginname', 'local_studenttutor')
+    ));
 
-    $settings = new admin_settingpage('local_studenttutor_settings', 
-        get_string('settings', 'local_studenttutor'));
+    $settings = new admin_settingpage(
+        'local_studenttutor_settings',
+        get_string('settings', 'local_studenttutor')
+    );
 
     if ($ADMIN->fulltree) {
-        $settings->add(new admin_setting_heading('local_studenttutor_general',
+        $settings->add(new admin_setting_heading(
+            'local_studenttutor_general',
             get_string('general_settings', 'local_studenttutor'),
-            get_string('general_settings_desc', 'local_studenttutor')));
+            get_string('general_settings_desc', 'local_studenttutor')
+        ));
 
-        $settings->add(new admin_setting_configcheckbox('local_studenttutor/enabled',
+        $settings->add(new admin_setting_configcheckbox(
+            'local_studenttutor/enabled',
             get_string('enable_plugin', 'local_studenttutor'),
             get_string('enable_plugin_desc', 'local_studenttutor'),
-            1));
+            1
+        ));
 
-        $settings->add(new admin_setting_configtext('local_studenttutor/maxassignments',
+        $settings->add(new admin_setting_configtext(
+            'local_studenttutor/maxassignments',
             get_string('max_assignments', 'local_studenttutor'),
             get_string('max_assignments_desc', 'local_studenttutor'),
-            10, PARAM_INT));
+            10,
+            PARAM_INT
+        ));
 
         // Configuração do papel de tutor
-        $settings->add(new admin_setting_configtext('local_studenttutor/tutor_role',
+        $settings->add(new admin_setting_configtext(
+            'local_studenttutor/tutor_role',
             get_string('tutor_role', 'local_studenttutor'),
             get_string('tutor_role_desc', 'local_studenttutor'),
-            'tutortematico', PARAM_TEXT));
+            'tutortematico',
+            PARAM_TEXT
+        ));
 
         // Configuração adicional: permitir múltiplos papéis
-        $settings->add(new admin_setting_configtext('local_studenttutor/additional_tutor_roles',
+        $settings->add(new admin_setting_configtext(
+            'local_studenttutor/additional_tutor_roles',
             get_string('additional_tutor_roles', 'local_studenttutor'),
             get_string('additional_tutor_roles_desc', 'local_studenttutor'),
-            '', PARAM_TEXT));
+            '',
+            PARAM_TEXT
+        ));
     }
+
+    $ADMIN->add('local_studenttutor', new admin_externalpage(
+        'local_studenttutor_activity_types',
+        get_string('manage_activity_types', 'local_studenttutor'),
+        new moodle_url('/local/studenttutor/manage_activity_types.php'),
+        'local/studenttutor:manageassignments'
+    ));
 
     $ADMIN->add('local_studenttutor', $settings);
 }

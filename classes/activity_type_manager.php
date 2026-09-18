@@ -15,10 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Activity Type manager class for Student-Tutor Assignment plugin.
+ * Activity Type manager class for the Nexo Tutoria Acadêmica plugin.
  *
  * @package    local_studenttutor
- * @copyright  2025 Your Organization
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,7 +31,6 @@ defined('MOODLE_INTERNAL') || die();
  * Class for managing activity types.
  */
 class activity_type_manager {
-
     /**
      * Get all active activity types
      *
@@ -40,7 +40,7 @@ class activity_type_manager {
     public static function get_activity_types($activeonly = true) {
         global $DB;
 
-        $conditions = array();
+        $conditions = [];
         if ($activeonly) {
             $conditions['active'] = 1;
         }
@@ -56,12 +56,12 @@ class activity_type_manager {
      */
     public static function get_activity_types_options($activeonly = true) {
         $types = self::get_activity_types($activeonly);
-        $options = array();
-        
+        $options = [];
+
         foreach ($types as $type) {
             $options[$type->shortname] = $type->name;
         }
-        
+
         return $options;
     }
 
@@ -73,7 +73,7 @@ class activity_type_manager {
      */
     public static function get_activity_type($shortname) {
         global $DB;
-        return $DB->get_record('local_studenttutor_activity_types', array('shortname' => $shortname));
+        return $DB->get_record('local_studenttutor_activity_types', ['shortname' => $shortname]);
     }
 
     /**
@@ -91,7 +91,7 @@ class activity_type_manager {
         }
 
         // Check if shortname already exists
-        if ($DB->record_exists('local_studenttutor_activity_types', array('shortname' => $data['shortname']))) {
+        if ($DB->record_exists('local_studenttutor_activity_types', ['shortname' => $data['shortname']])) {
             return false;
         }
 
@@ -124,15 +124,20 @@ class activity_type_manager {
     public static function update_activity_type($id, $data) {
         global $DB;
 
-        $record = $DB->get_record('local_studenttutor_activity_types', array('id' => $id));
+        $record = $DB->get_record('local_studenttutor_activity_types', ['id' => $id]);
         if (!$record) {
             return false;
         }
 
         // Check if shortname conflicts with another record
         if (isset($data['shortname']) && $data['shortname'] !== $record->shortname) {
-            if ($DB->record_exists_select('local_studenttutor_activity_types', 
-                'shortname = ? AND id != ?', array($data['shortname'], $id))) {
+            if (
+                $DB->record_exists_select(
+                    'local_studenttutor_activity_types',
+                    'shortname = ? AND id != ?',
+                    [$data['shortname'], $id]
+                )
+            ) {
                 return false;
             }
         }
@@ -165,20 +170,20 @@ class activity_type_manager {
     public static function delete_activity_type($id) {
         global $DB;
 
-        $record = $DB->get_record('local_studenttutor_activity_types', array('id' => $id));
+        $record = $DB->get_record('local_studenttutor_activity_types', ['id' => $id]);
         if (!$record) {
             return false;
         }
 
         // Check if this type is being used in history entries
-        $usage_count = $DB->count_records('local_studenttutor_history', array('activitytype' => $record->shortname));
+        $usage_count = $DB->count_records('local_studenttutor_history', ['activitytype' => $record->shortname]);
         if ($usage_count > 0) {
             // Instead of deleting, deactivate it
-            return self::update_activity_type($id, array('active' => 0));
+            return self::update_activity_type($id, ['active' => 0]);
         }
 
         try {
-            return $DB->delete_records('local_studenttutor_activity_types', array('id' => $id));
+            return $DB->delete_records('local_studenttutor_activity_types', ['id' => $id]);
         } catch (\Exception $e) {
             debugging('Error deleting activity type: ' . $e->getMessage(), DEBUG_DEVELOPER);
             return false;
@@ -196,8 +201,10 @@ class activity_type_manager {
 
         try {
             foreach ($order as $id => $sortorder) {
-                $DB->update_record('local_studenttutor_activity_types', 
-                    (object)array('id' => $id, 'sortorder' => $sortorder, 'timemodified' => time()));
+                $DB->update_record(
+                    'local_studenttutor_activity_types',
+                    (object)['id' => $id, 'sortorder' => $sortorder, 'timemodified' => time()]
+                );
             }
             return true;
         } catch (\Exception $e) {
@@ -213,7 +220,7 @@ class activity_type_manager {
      */
     private static function get_next_sortorder() {
         global $DB;
-        
+
         $max = $DB->get_field_sql('SELECT MAX(sortorder) FROM {local_studenttutor_activity_types}');
         return ($max ? $max + 1 : 1);
     }
@@ -243,11 +250,12 @@ class activity_type_manager {
      */
     public static function export_to_csv() {
         $types = self::get_activity_types(false);
-        
+
         $csv = "ID,Name,Shortname,Description,Icon,Color,Active,Sort Order,Created,Modified\n";
-        
+
         foreach ($types as $type) {
-            $csv .= sprintf('"%s","%s","%s","%s","%s","%s","%s","%s","%s","%s"' . "\n",
+            $csv .= sprintf(
+                '"%s","%s","%s","%s","%s","%s","%s","%s","%s","%s"' . "\n",
                 $type->id,
                 str_replace('"', '""', $type->name),
                 $type->shortname,
@@ -260,7 +268,7 @@ class activity_type_manager {
                 userdate($type->timemodified)
             );
         }
-        
+
         return $csv;
     }
 
@@ -272,7 +280,7 @@ class activity_type_manager {
      */
     public static function get_activity_type_by_shortname($shortname) {
         global $DB;
-        
-        return $DB->get_record('local_studenttutor_activity_types', array('shortname' => $shortname));
+
+        return $DB->get_record('local_studenttutor_activity_types', ['shortname' => $shortname]);
     }
 }

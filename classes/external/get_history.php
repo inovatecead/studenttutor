@@ -18,7 +18,8 @@
  * External API for getting history entries
  *
  * @package    local_studenttutor
- * @copyright  2025 Your Organization
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -39,7 +40,6 @@ use local_studenttutor\history_manager;
  * External API for getting history entries
  */
 class get_history extends external_api {
-
     /**
      * Returns description of method parameters
      * @return external_function_parameters
@@ -50,7 +50,7 @@ class get_history extends external_api {
                 'studentid' => new external_value(PARAM_INT, 'Student ID', VALUE_OPTIONAL),
                 'tutorid' => new external_value(PARAM_INT, 'Tutor ID', VALUE_OPTIONAL),
                 'courseid' => new external_value(PARAM_INT, 'Course ID', VALUE_OPTIONAL),
-                'activitytype' => new external_value(PARAM_ALPHA, 'Activity type', VALUE_OPTIONAL),
+                'activitytype' => new external_value(PARAM_ALPHANUMEXT, 'Activity type', VALUE_OPTIONAL),
             ], 'Filters for history entries', VALUE_DEFAULT, []),
             'sort' => new external_value(PARAM_TEXT, 'Sort order', VALUE_DEFAULT, 'h.timecreated DESC'),
             'limitfrom' => new external_value(PARAM_INT, 'Start position for pagination', VALUE_DEFAULT, 0),
@@ -91,7 +91,7 @@ class get_history extends external_api {
             $params['limitnum']
         );
 
-        // Format results
+        // Format results.
         $result = [];
         foreach ($history as $entry) {
             $result[] = [
@@ -100,19 +100,14 @@ class get_history extends external_api {
                 'tutorid' => $entry->tutorid,
                 'courseid' => $entry->courseid,
                 'activitytype' => $entry->activitytype,
-                'title' => $entry->title,
                 'description' => $entry->description,
                 'timecreated' => $entry->timecreated,
                 'timemodified' => $entry->timemodified,
                 'createdby' => $entry->createdby,
-                'tutor_name' => fullname((object)[
-                    'firstname' => $entry->tutor_firstname,
-                    'lastname' => $entry->tutor_lastname
-                ]),
-                'student_name' => fullname((object)[
-                    'firstname' => $entry->student_firstname,
-                    'lastname' => $entry->student_lastname
-                ]),
+                // See get_assignments: all name fields are copied so that the display
+                // name follows the site settings and fullname() does not warn.
+                'tutor_name' => fullname(username_load_fields_from_object((object)[], $entry, 'tutor_')),
+                'student_name' => fullname(username_load_fields_from_object((object)[], $entry, 'student_')),
                 'course_name' => $entry->course_name ?: get_string('general', 'local_studenttutor'),
             ];
         }
@@ -132,8 +127,7 @@ class get_history extends external_api {
                     'studentid' => new external_value(PARAM_INT, 'Student ID'),
                     'tutorid' => new external_value(PARAM_INT, 'Tutor ID'),
                     'courseid' => new external_value(PARAM_INT, 'Course ID'),
-                    'activitytype' => new external_value(PARAM_ALPHA, 'Activity type'),
-                    'title' => new external_value(PARAM_TEXT, 'Activity title'),
+                    'activitytype' => new external_value(PARAM_ALPHANUMEXT, 'Activity type'),
                     'description' => new external_value(PARAM_RAW, 'Activity description'),
                     'timecreated' => new external_value(PARAM_INT, 'Time created'),
                     'timemodified' => new external_value(PARAM_INT, 'Time modified'),

@@ -15,10 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Manage activity types for Student-Tutor plugin
+ * Manage activity types for the Nexo Tutoria Acadêmica plugin
  *
  * @package    local_studenttutor
- * @copyright  2025 Your Organization
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -47,28 +48,28 @@ if ($action && confirm_sesskey()) {
                 \core\notification::error(get_string('activity_type_delete_error', 'local_studenttutor'));
             }
             break;
-            
+
         case 'toggle':
             if ($id) {
-                $type = $DB->get_record('local_studenttutor_activity_types', array('id' => $id));
+                $type = $DB->get_record('local_studenttutor_activity_types', ['id' => $id]);
                 if ($type) {
                     $new_status = $type->active ? 0 : 1;
-                    if (activity_type_manager::update_activity_type($id, array('active' => $new_status))) {
+                    if (activity_type_manager::update_activity_type($id, ['active' => $new_status])) {
                         $message = $new_status ? 'activity_type_enabled' : 'activity_type_disabled';
                         \core\notification::success(get_string($message, 'local_studenttutor'));
                     }
                 }
             }
             break;
-            
+
         case 'reorder':
-            $order = optional_param_array('order', array(), PARAM_INT);
+            $order = optional_param_array('order', [], PARAM_INT);
             if (!empty($order) && activity_type_manager::reorder_activity_types($order)) {
                 \core\notification::success(get_string('activity_types_reordered', 'local_studenttutor'));
             }
             break;
     }
-    
+
     redirect(new moodle_url('/local/studenttutor/manage_activity_types.php'));
 }
 
@@ -82,16 +83,16 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('manage_activity_types', 'local_studenttutor'));
 
 // Action buttons
-echo html_writer::start_tag('div', array('class' => 'mb-3'));
+echo html_writer::start_tag('div', ['class' => 'mb-3']);
 echo html_writer::link(
     new moodle_url('/local/studenttutor/edit_activity_type.php'),
     get_string('add_activity_type', 'local_studenttutor'),
-    array('class' => 'btn btn-primary mr-2')
+    ['class' => 'btn btn-primary mr-2']
 );
 echo html_writer::link(
-    new moodle_url('/local/studenttutor/manage_activity_types.php', array('action' => 'export', 'sesskey' => sesskey())),
+    new moodle_url('/local/studenttutor/manage_activity_types.php', ['action' => 'export', 'sesskey' => sesskey()]),
     get_string('export_csv', 'local_studenttutor'),
-    array('class' => 'btn btn-secondary')
+    ['class' => 'btn btn-secondary']
 );
 echo html_writer::end_tag('div');
 
@@ -102,11 +103,11 @@ $statistics = activity_type_manager::get_statistics();
 if (empty($activity_types)) {
     echo $OUTPUT->notification(get_string('no_activity_types', 'local_studenttutor'), 'info');
 } else {
-    echo html_writer::start_tag('div', array('class' => 'activity-types-list'));
-    
+    echo html_writer::start_tag('div', ['class' => 'activity-types-list']);
+
     // Create sortable table
     $table = new html_table();
-    $table->head = array(
+    $table->head = [
         get_string('order', 'local_studenttutor'),
         get_string('preview', 'local_studenttutor'),
         get_string('name', 'local_studenttutor'),
@@ -114,11 +115,11 @@ if (empty($activity_types)) {
         get_string('description', 'local_studenttutor'),
         get_string('usage_count', 'local_studenttutor'),
         get_string('status', 'local_studenttutor'),
-        get_string('actions', 'local_studenttutor')
-    );
+        get_string('actions', 'local_studenttutor'),
+    ];
     $table->attributes['class'] = 'generaltable activity-types-table';
     $table->id = 'activity-types-table';
-    
+
     foreach ($activity_types as $type) {
         $usage_count = 0;
         foreach ($statistics as $stat) {
@@ -127,64 +128,69 @@ if (empty($activity_types)) {
                 break;
             }
         }
-        
+
         // Preview with icon and color
-        $preview = html_writer::tag('span', 
-            html_writer::tag('i', '', array('class' => 'fa ' . $type->icon, 'style' => 'color: ' . $type->color)),
-            array('class' => 'activity-type-preview mr-2')
-        ) . html_writer::tag('span', $type->name, array('style' => 'color: ' . $type->color));
-        
+        $preview = html_writer::tag(
+            'span',
+            html_writer::tag('i', '', ['class' => 'fa ' . $type->icon, 'style' => 'color: ' . $type->color]),
+            ['class' => 'activity-type-preview mr-2']
+        ) . html_writer::tag('span', $type->name, ['style' => 'color: ' . $type->color]);
+
         // Status badge
         $status_class = $type->active ? 'badge-success' : 'badge-secondary';
         $status_text = $type->active ? get_string('active') : get_string('inactive');
-        $status = html_writer::tag('span', $status_text, array('class' => 'badge ' . $status_class));
-        
+        $status = html_writer::tag('span', $status_text, ['class' => 'badge ' . $status_class]);
+
         // Actions
-        $actions = array();
-        
+        $actions = [];
+
         // Edit button
         $actions[] = html_writer::link(
-            new moodle_url('/local/studenttutor/edit_activity_type.php', array('id' => $type->id)),
-            html_writer::tag('i', '', array('class' => 'fa fa-edit')),
-            array('class' => 'btn btn-sm btn-outline-primary', 'title' => get_string('edit'))
+            new moodle_url('/local/studenttutor/edit_activity_type.php', ['id' => $type->id]),
+            html_writer::tag('i', '', ['class' => 'fa fa-edit']),
+            ['class' => 'btn btn-sm btn-outline-primary', 'title' => get_string('edit')]
         );
-        
+
         // Toggle active/inactive
         $toggle_icon = $type->active ? 'fa-eye-slash' : 'fa-eye';
         $toggle_title = $type->active ? get_string('disable') : get_string('enable');
         $actions[] = html_writer::link(
-            new moodle_url('/local/studenttutor/manage_activity_types.php', 
-                array('action' => 'toggle', 'id' => $type->id, 'sesskey' => sesskey())),
-            html_writer::tag('i', '', array('class' => 'fa ' . $toggle_icon)),
-            array('class' => 'btn btn-sm btn-outline-secondary', 'title' => $toggle_title)
+            new moodle_url(
+                '/local/studenttutor/manage_activity_types.php',
+                ['action' => 'toggle', 'id' => $type->id, 'sesskey' => sesskey()]
+            ),
+            html_writer::tag('i', '', ['class' => 'fa ' . $toggle_icon]),
+            ['class' => 'btn btn-sm btn-outline-secondary', 'title' => $toggle_title]
         );
-        
+
         // Delete button (only if not used)
         if ($usage_count == 0) {
             $actions[] = html_writer::link(
-                new moodle_url('/local/studenttutor/manage_activity_types.php', 
-                    array('action' => 'delete', 'id' => $type->id, 'sesskey' => sesskey())),
-                html_writer::tag('i', '', array('class' => 'fa fa-trash')),
-                array(
+                new moodle_url(
+                    '/local/studenttutor/manage_activity_types.php',
+                    ['action' => 'delete', 'id' => $type->id, 'sesskey' => sesskey()]
+                ),
+                html_writer::tag('i', '', ['class' => 'fa fa-trash']),
+                [
                     'class' => 'btn btn-sm btn-outline-danger',
                     'title' => get_string('delete'),
-                    'onclick' => 'return confirm("' . get_string('confirm_delete_activity_type', 'local_studenttutor') . '");'
-                )
+                    'onclick' => 'return confirm("' . get_string('confirm_delete_activity_type', 'local_studenttutor') . '");',
+                ]
             );
         }
-        
-        $table->data[] = array(
-            html_writer::tag('span', $type->sortorder, array('class' => 'sortorder-handle', 'data-id' => $type->id)),
+
+        $table->data[] = [
+            html_writer::tag('span', $type->sortorder, ['class' => 'sortorder-handle', 'data-id' => $type->id]),
             $preview,
             $type->name,
             $type->shortname,
             format_text($type->description, FORMAT_HTML),
             $usage_count,
             $status,
-            html_writer::tag('div', implode(' ', $actions), array('class' => 'btn-group'))
-        );
+            html_writer::tag('div', implode(' ', $actions), ['class' => 'btn-group']),
+        ];
     }
-    
+
     echo html_writer::table($table);
     echo html_writer::end_tag('div');
 }
@@ -194,22 +200,25 @@ $PAGE->requires->js_call_amd('local_studenttutor/activity_types_manager', 'init'
 
 // Statistics section
 if (!empty($statistics)) {
-    echo html_writer::tag('h3', get_string('activity_types_statistics', 'local_studenttutor'), array('class' => 'mt-4'));
-    
-    echo html_writer::start_tag('div', array('class' => 'row'));
+    echo html_writer::tag('h3', get_string('activity_types_statistics', 'local_studenttutor'), ['class' => 'mt-4']);
+
+    echo html_writer::start_tag('div', ['class' => 'row']);
     foreach ($statistics as $stat) {
-        echo html_writer::start_tag('div', array('class' => 'col-md-3 mb-3'));
-        echo html_writer::start_tag('div', array('class' => 'card'));
-        echo html_writer::start_tag('div', array('class' => 'card-body text-center'));
-        
-        echo html_writer::tag('i', '', array(
+        echo html_writer::start_tag('div', ['class' => 'col-md-3 mb-3']);
+        echo html_writer::start_tag('div', ['class' => 'card']);
+        echo html_writer::start_tag('div', ['class' => 'card-body text-center']);
+
+        echo html_writer::tag('i', '', [
             'class' => 'fa ' . $stat->icon . ' fa-2x mb-2',
-            'style' => 'color: ' . $stat->color
-        ));
-        echo html_writer::tag('h5', $stat->name, array('class' => 'card-title'));
-        echo html_writer::tag('p', $stat->usage_count . ' ' . get_string('uses', 'local_studenttutor'), 
-            array('class' => 'card-text'));
-        
+            'style' => 'color: ' . $stat->color,
+        ]);
+        echo html_writer::tag('h5', $stat->name, ['class' => 'card-title']);
+        echo html_writer::tag(
+            'p',
+            $stat->usage_count . ' ' . get_string('uses', 'local_studenttutor'),
+            ['class' => 'card-text']
+        );
+
         echo html_writer::end_tag('div');
         echo html_writer::end_tag('div');
         echo html_writer::end_tag('div');

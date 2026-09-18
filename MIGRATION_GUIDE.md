@@ -1,5 +1,14 @@
 # StudentTutor - Guia de Migração para Produção
 
+> ⚠️ **AVISO (2026-09-18) — scripts de migração removidos.**
+> Os scripts `fix_database.php`, `fix_database_cli.php` e `db/fix_activity_date.php`
+> foram **removidos** por falhas de segurança (execução sem autenticação e/ou sem
+> sesskey, DDL bruto fora da API XMLDB). A migração oficial passa a ser o caminho
+> padrão do Moodle: **Administração do site → Notificações**, que executa
+> `db/upgrade.php`.
+> As seções "Scripts de Migração" e "Verificação" abaixo estão **desatualizadas** e
+> serão reescritas na etapa de documentação (Eixo 8).
+
 ## Visão Geral
 Este guia contém as instruções para migrar o plugin StudentTutor para produção, incluindo a adição do campo `activity_date` e outras melhorias implementadas.
 

@@ -15,114 +15,143 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Language strings for Student-Tutor assignment plugin
+ * English language strings for the Nexo Tutoria Acadêmica plugin.
  *
  * @package    local_studenttutor
- * @copyright  2025 Your Organization
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Student-Tutor Assignment';
+defined('MOODLE_INTERNAL') || die();
 
-// Navigation
-$string['manage_assignments'] = 'Manage Student-Tutor Assignments';
+// Plugin and settings.
+$string['pluginname'] = 'Nexo Academic Tutoring';
+$string['settings'] = 'Settings';
+$string['general_settings'] = 'General Settings';
+$string['general_settings_desc'] = 'Configure the general settings of the plugin';
+$string['enable_plugin'] = 'Enable Plugin';
+$string['enable_plugin_desc'] = 'Enable or disable the Nexo Academic Tutoring plugin';
+$string['max_assignments'] = 'Maximum Assignments';
+$string['max_assignments_desc'] = 'Maximum number of students a tutor can be assigned to';
+$string['tutor_role'] = 'Tutor role';
+$string['tutor_role_desc'] = 'Shortname of the role used to identify tutors (default: tutortematico).';
+$string['additional_tutor_roles'] = 'Additional tutor roles';
+$string['additional_tutor_roles_desc'] = 'Comma separated list of additional role shortnames used to identify tutors.';
+$string['limited_access_redirect'] = 'Limited access. Redirecting to reports.';
+
+// Navigation and pages.
+$string['manage_assignments'] = 'Manage Tutoring Assignments';
 $string['view_history'] = 'View Tutoring History';
 $string['my_students'] = 'My Students';
-
-// Page titles
-$string['assignments_title'] = 'Student-Tutor Assignments';
+$string['assignments_title'] = 'Tutoring Assignments';
 $string['history_title'] = 'Tutoring History';
-$string['add_assignment_title'] = 'Assign Student to Tutor';
-$string['add_history_title'] = 'Add Tutoring Activity';
+$string['add_history_entry'] = 'Add Tutoring Activity';
+$string['edit_history'] = 'Edit Tutoring Record';
+$string['adding_history_for'] = 'Adding tutoring activity for: {$a}';
+$string['editing_history_for'] = 'Editing the tutoring record of {$a}';
+$string['add_interaction'] = 'Add Interaction';
+$string['history_for_student'] = 'Tutoring History for {$a}';
+$string['my_students_in_course'] = 'My Students in {$a}';
+$string['no_students_assigned'] = 'No students assigned to you in this course';
+$string['back_to_course'] = 'Back to Course';
+$string['back_to_students'] = 'Back to My Students';
+$string['back_to_assignments'] = 'Back to Assignments';
+$string['access_denied'] = 'Access denied';
+$string['student_not_assigned'] = 'This student is not assigned to you';
 
-// Form labels
-$string['select_tutor'] = 'Select Tutor';
-$string['select_student'] = 'Select Student';
-$string['select_course'] = 'Select Course';
+// Assignments.
+$string['add_assignment'] = 'Add Assignment';
+$string['date_assigned'] = 'Date Assigned';
+$string['assignment_created'] = 'Student successfully assigned to tutor';
+$string['assignment_deleted'] = 'Assignment removed successfully';
+$string['assignment_creation_failed'] = 'Failed to create assignment';
+$string['assignment_exists_for'] = 'Assignment already exists for student: {$a}';
+$string['assignmentalreadyexists'] = 'This assignment already exists';
+$string['assignmentnotfound'] = 'Assignment not found';
+$string['error_deleting_assignment'] = 'Error deleting assignment';
+
+// Tutoring history.
+$string['history_added'] = 'Activity added to history successfully';
+$string['history_added_success'] = 'Tutoring activity added successfully';
+$string['history_add_error'] = 'Error adding tutoring activity';
+$string['history_updated_success'] = 'Tutoring record updated successfully';
+$string['history_update_error'] = 'Error updating the tutoring record';
+$string['history_deleted_success'] = 'Tutoring record deleted successfully';
+$string['history_delete_error'] = 'Error deleting the tutoring record';
+$string['history_not_found'] = 'Tutoring record not found';
+$string['confirm_delete_history'] = 'Are you sure you want to delete this tutoring record?';
+$string['no_history'] = 'No history entries found';
+$string['no_history_entries'] = 'No tutoring activities recorded yet';
+
+// Form fields.
 $string['action_type'] = 'Activity Type';
-$string['activity_title'] = 'Activity Title';
-$string['activity_date'] = 'Data da Atividade';
+$string['activity_type'] = 'Activity Type';
 $string['description'] = 'Description';
-$string['created_on'] = 'Criado em';
-
-// Help strings
 $string['course_help'] = 'Select a course to filter students, or choose "All courses" for global assignments.';
-$string['activity_title_help'] = 'Enter a descriptive title for this activity.';
-$string['activity_date_help'] = 'Selecione a data em que esta atividade ocorreu.';
+$string['course_help_help'] = 'Choose the course to which the tutoring refers. Select "All courses" when the tutoring is not tied to a specific course.';
+$string['activity_date'] = 'Activity date';
+$string['activity_date_help'] = 'Select the date on which this tutoring activity took place.';
+$string['created_on'] = 'Created on';
+$string['name'] = 'Name';
+$string['send_message'] = 'Send Message';
+$string['status'] = 'Status';
 
-// Dashboard strings
-$string['dashboard'] = 'Tutoring Dashboard';
-$string['pedagogical_dashboard'] = 'Pedagogical Dashboard';
+// Table headers.
+$string['tutor'] = 'Tutor';
+$string['student'] = 'Student';
+$string['course'] = 'Course';
+$string['date'] = 'Date';
+$string['actions'] = 'Actions';
+$string['general'] = 'General';
+$string['value'] = 'Value';
+$string['total_records'] = 'Total records found';
 
-// Action types
-$string['action_meeting'] = 'Meeting';
-$string['action_email'] = 'Email Communication';
-$string['action_feedback'] = 'Feedback';
-$string['action_assessment'] = 'Assessment Review';
+// Status and actions.
+$string['active'] = 'Active';
+$string['inactive'] = 'Inactive';
+$string['edit'] = 'Edit';
+$string['delete'] = 'Delete';
+$string['other'] = 'Other';
 
-// Filter options
+// Filters.
 $string['filters'] = 'Filters';
 $string['filter'] = 'Filter';
 $string['clear'] = 'Clear';
 $string['all_tutors'] = 'All Tutors';
 $string['all_students'] = 'All Students';
+$string['all_courses'] = 'All Courses';
+$string['all_activity_types'] = 'All Activity Types';
+$string['date_from'] = 'Date From';
+$string['date_to'] = 'Date To';
+$string['select_tutors'] = 'Select tutors...';
+$string['select_students'] = 'Select students';
+$string['filters_active'] = 'Active filters';
 
-// Messages
-$string['assignment_created'] = 'Student successfully assigned to tutor';
-$string['assignment_updated'] = 'Assignment updated successfully';
-$string['assignment_deleted'] = 'Assignment removed successfully';
-$string['history_added'] = 'Activity added to history successfully';
-
-// Errors
-$string['error_no_permission'] = 'You do not have permission to perform this action';
-$string['error_invalid_user'] = 'Invalid user selected';
-$string['error_invalid_course'] = 'Invalid course selected';
-$string['error_assignment_exists'] = 'This student is already assigned to this tutor in this course';
-
-// Table headers
-$string['tutor'] = 'Tutor';
-$string['student'] = 'Student';
-$string['course'] = 'Course';
-$string['assigned_date'] = 'Assigned Date';
-$string['actions'] = 'Actions';
-$string['date'] = 'Date';
-$string['activity'] = 'Activity';
-
-// Buttons
-$string['assign_student'] = 'Assign Student';
-$string['add_activity'] = 'Add Activity';
-$string['edit'] = 'Edit';
-$string['delete'] = 'Delete';
-$string['view_details'] = 'View Details';
-$string['back'] = 'Back';
-
-// Reports
-$string['reports'] = 'Reports';
-$string['summary_report'] = 'Summary Report';
-$string['assignments_report'] = 'Assignments Report';
-$string['history_report'] = 'History Report';
-$string['statistic'] = 'Statistic';
-$string['value'] = 'Value';
+// Statistics.
 $string['total_assignments'] = 'Total Assignments';
 $string['active_assignments'] = 'Active Assignments';
 $string['total_activities'] = 'Total Activities';
 $string['unique_tutors'] = 'Unique Tutors';
 $string['unique_students'] = 'Unique Students';
-$string['recent_activity'] = 'Recent Activity (Last 7 days)';
-$string['activities_count'] = 'Activities Count';
-$string['no_recent_activity'] = 'No recent activity found';
-$string['download_assignments'] = 'Download Assignments Report';
-$string['download_history'] = 'Download History Report';
-$string['all_courses'] = 'All Courses';
-$string['activity_type'] = 'Activity Type';
-$string['unassign'] = 'Unassign';
+$string['quick_stats'] = 'Quick Statistics';
+$string['stats_total_students'] = 'Total students: {$a}';
+$string['stats_total_interactions'] = 'Total interactions: {$a}';
+$string['stats_recent_contact'] = 'Students contacted in last 7 days: {$a}';
+$string['interaction_summary'] = 'Interaction Summary';
+$string['first_contact'] = 'First contact';
+$string['last_contact'] = 'Last Contact';
+$string['total_interactions'] = 'Total Interactions';
+$string['interaction_types'] = 'Types of interactions';
+$string['never'] = 'Never';
 
-// Status strings
-$string['status_active'] = 'Active';
-$string['status_inactive'] = 'Inactive';
-$string['status_completed'] = 'Completed';
-
-// Activity types for reports
+// Activity type labels used by the history and reports.
+$string['action_meeting'] = 'Meeting';
+$string['action_email'] = 'Email Communication';
+$string['action_feedback'] = 'Feedback';
+$string['action_assessment'] = 'Assessment Review';
+$string['action_phone'] = 'Phone call';
+$string['action_other'] = 'Other';
 $string['activity_meeting'] = 'Meeting';
 $string['activity_email'] = 'Email Communication';
 $string['activity_feedback'] = 'Feedback';
@@ -130,119 +159,7 @@ $string['activity_assessment'] = 'Assessment Review';
 $string['activity_guidance'] = 'Academic Guidance';
 $string['activity_other'] = 'Other';
 
-// Additional messages
-$string['noassignments'] = 'No student-tutor assignments found.';
-$string['nohistory'] = 'No tutoring activities found.';
-
-// Settings
-$string['settings'] = 'Settings';
-$string['general_settings'] = 'General Settings';
-$string['general_settings_desc'] = 'Configure general plugin settings';
-$string['enable_plugin'] = 'Enable Plugin';
-$string['enable_plugin_desc'] = 'Enable or disable the Student-Tutor assignment plugin';
-$string['max_assignments'] = 'Maximum Assignments';
-$string['max_assignments_desc'] = 'Maximum number of students a tutor can be assigned to';
-
-// Additional form labels
-$string['add_assignment'] = 'Add Assignment';
-$string['edit_assignment'] = 'Edit Assignment';
-$string['assignment_created'] = 'Assignment created successfully';
-$string['assignment_updated'] = 'Assignment updated successfully';
-$string['assignment_exists'] = 'This assignment already exists';
-$string['add_history_entry'] = 'Add History Entry';
-$string['edit_assignment_info'] = 'When editing an assignment, only the course can be changed. The tutor and student cannot be modified.';
-
-// Table headers
-$string['tutor'] = 'Tutor';
-$string['student'] = 'Student';
-$string['course'] = 'Course';
-$string['date_assigned'] = 'Date Assigned';
-$string['status'] = 'Status';
-$string['actions'] = 'Actions';
-$string['date'] = 'Date';
-$string['activity_type'] = 'Activity Type';
-
-// Status
-$string['active'] = 'Active';
-$string['inactive'] = 'Inactive';
-
-// Messages
-$string['no_assignments'] = 'No assignments found';
-$string['no_history'] = 'No history entries found';
-$string['all_courses'] = 'All Courses';
-$string['general'] = 'General';
-
-// Events
-$string['event_assignment_created'] = 'Assignment created';
-$string['event_assignment_updated'] = 'Assignment updated';
-
-// Errors
-$string['error_no_permission'] = 'You do not have permission to perform this action';
-$string['error_invalid_assignment'] = 'Invalid assignment ID';
-$string['assignmentnotfound'] = 'Assignment not found';
-$string['assignmentalreadyexists'] = 'This assignment already exists';
-$string['assignment_creation_failed'] = 'Failed to create assignment';
-$string['assignment_update_failed'] = 'Failed to update assignment';
-
-// Course integration
-$string['my_students_in_course'] = 'My Students in {$a}';
-$string['no_students_assigned'] = 'No students assigned to you in this course';
-$string['back_to_course'] = 'Back to Course';
-$string['add_history_entry'] = 'Add Tutoring Activity';
-$string['add_interaction'] = 'Add Interaction';
-$string['send_message'] = 'Send Message';
-$string['last_contact'] = 'Last Contact';
-$string['total_interactions'] = 'Total Interactions';
-$string['never'] = 'Never';
-$string['quick_stats'] = 'Quick Statistics';
-$string['stats_total_students'] = 'Total students: {$a}';
-$string['stats_total_interactions'] = 'Total interactions: {$a}';
-$string['stats_recent_contact'] = 'Students contacted in last 7 days: {$a}';
-$string['history_added_success'] = 'Tutoring activity added successfully';
-$string['history_add_error'] = 'Error adding tutoring activity';
-$string['adding_history_for'] = 'Adding tutoring activity for: {$a}';
-$string['access_denied'] = 'Access denied';
-$string['studenttutor_settings'] = 'Student-Tutor Management';
-$string['other'] = 'Other';
-$string['student_not_assigned'] = 'This student is not assigned to you';
-$string['history_for_student'] = 'Tutoring History for {$a}';
-$string['back_to_students'] = 'Back to My Students';
-$string['no_history_entries'] = 'No tutoring activities recorded yet';
-$string['interaction_summary'] = 'Interaction Summary';
-$string['first_contact'] = 'First contact';
-$string['interaction_types'] = 'Types of interactions';
-$string['confirm_delete_assignment'] = 'Are you sure you want to delete this assignment?';
-$string['assignment_deleted'] = 'Assignment deleted successfully';
-$string['error_deleting_assignment'] = 'Error deleting assignment';
-
-// Filter strings
-$string['all_activity_types'] = 'All Activity Types';
-$string['date_from'] = 'Date From';
-$string['date_to'] = 'Date To';
-
-// Interface strings for reports
-$string['reports_title'] = 'Tutoring Reports';
-$string['filters_active'] = 'Active filters';
-$string['total_records'] = 'Total records found';
-$string['no_filters_active'] = 'No active filters';
-$string['select_tutors'] = 'Select tutors...';
-$string['select_students'] = 'Select students...';
-$string['back_to_assignments'] = 'Back to Assignments';
-
-// Multiple assignment messages
-$string['assignment_exists_for'] = 'Assignment already exists for student: {$a}';
-$string['assignments_created_multiple'] = '{$a} assignments created successfully';
-$string['assignments_partially_created'] = '{$a->success} assignments created successfully. Error for: {$a->errors}';
-$string['select_students'] = 'Select students';
-
-// Assignment management strings
-$string['edit_assignment'] = 'Edit Assignment';
-$string['assignment_updated'] = 'Assignment updated successfully';
-$string['assignments_created'] = '{$a} assignments created successfully';
-$string['assignmentnotfound'] = 'Assignment not found';
-$string['edit_temporarily_disabled'] = 'Assignment editing is temporarily disabled. Please contact the administrator if you need to modify an assignment.';
-
-// Activity Types Management
+// Activity types management.
 $string['manage_activity_types'] = 'Manage Activity Types';
 $string['add_activity_type'] = 'Add Activity Type';
 $string['edit_activity_type'] = 'Edit Activity Type';
@@ -265,8 +182,13 @@ $string['usage_count'] = 'Usage Count';
 $string['uses'] = 'uses';
 $string['order'] = 'Order';
 $string['preview'] = 'Preview';
+$string['shortname'] = 'Shortname';
+$string['icon'] = 'Icon';
+$string['color'] = 'Color';
+$string['sortorder'] = 'Sort Order';
+$string['export_csv'] = 'Export CSV';
 
-// Activity Type Form Fields
+// Activity type form fields.
 $string['activity_type_name'] = 'Activity Type Name';
 $string['activity_type_name_help'] = 'The display name for this activity type';
 $string['activity_type_shortname'] = 'Shortname';
@@ -282,7 +204,7 @@ $string['activity_type_active_help'] = 'Whether this activity type is available 
 $string['activity_type_sortorder'] = 'Sort Order';
 $string['activity_type_sortorder_help'] = 'Order in which this type appears in lists (lower numbers first)';
 
-// Icons
+// Activity type icons.
 $string['icon_users'] = 'Users (meetings)';
 $string['icon_envelope'] = 'Envelope (email)';
 $string['icon_comment'] = 'Comment (feedback)';
@@ -296,7 +218,7 @@ $string['icon_lightbulb'] = 'Lightbulb (ideas)';
 $string['icon_graduation'] = 'Graduation cap (academic)';
 $string['icon_other'] = 'Other';
 
-// Colors
+// Activity type colours.
 $string['color_green'] = 'Green';
 $string['color_blue'] = 'Blue';
 $string['color_yellow'] = 'Yellow';
@@ -306,9 +228,42 @@ $string['color_orange'] = 'Orange';
 $string['color_teal'] = 'Teal';
 $string['color_gray'] = 'Gray';
 
-$string['shortname'] = 'Shortname';
-$string['icon'] = 'Icon';
-$string['color'] = 'Color';
-$string['sortorder'] = 'Sort Order';
-$string['export_csv'] = 'Export CSV';
-$string['dashboard'] = 'Student Tutor Dashboard';
+// Events.
+$string['event_assignment_created'] = 'Assignment created';
+$string['event_assignment_updated'] = 'Assignment updated';
+
+// Data minimisation notice shown on the tutoring record form.
+$string['history_privacy_notice'] = 'Tutoring records are academic data about the student. Record only what is necessary for pedagogical follow-up and avoid sensitive personal data (health, racial or ethnic origin, religious conviction, political opinion, biometric or genetic data, sexual life).';
+
+// Capabilities (Moodle displays these in the permission screens).
+$string['studenttutor:manage'] = 'Manage the tutoring plugin settings';
+$string['studenttutor:viewassignments'] = 'View student-tutor assignments';
+$string['studenttutor:manageassignments'] = 'Manage student-tutor assignments';
+$string['studenttutor:viewhistory'] = 'View tutoring history';
+$string['studenttutor:managehistory'] = 'Manage tutoring history';
+$string['studenttutor:assign_students'] = 'Assign students to tutors in a course';
+$string['studenttutor:view_assignments'] = 'View assignments in a course';
+$string['studenttutor:manage_history'] = 'Manage tutoring history in a course';
+$string['studenttutor:view_own_students'] = 'View own assigned students';
+$string['studenttutor:view_all_history'] = 'View the tutoring history of all staff';
+$string['studenttutor:viewreports'] = 'View tutoring reports';
+
+// Privacy metadata (Privacy API - do not change the key names).
+$string['privacy:metadata'] = 'The Nexo Tutoring plugin stores which tutor is responsible for each student and the history of the tutoring interactions.';
+$string['privacy:metadata:local_studenttutor_assign'] = 'Information about which tutor is responsible for which student.';
+$string['privacy:metadata:local_studenttutor_history'] = 'Information about each tutoring interaction recorded by a tutor.';
+$string['privacy:path'] = 'Tutoring';
+$string['privacy:assignments'] = 'Assignments';
+$string['privacy:history'] = 'Tutoring history';
+$string['privacy:student'] = 'Student';
+$string['privacy:tutor'] = 'Tutor';
+$string['privacy:assignedby'] = 'Assigned by';
+$string['privacy:createdby'] = 'Created by';
+$string['privacy:course'] = 'Course';
+$string['privacy:activitytype'] = 'Activity type';
+$string['privacy:description'] = 'Tutoring notes';
+$string['privacy:activitydate'] = 'Activity date';
+$string['privacy:timecreated'] = 'Time created';
+$string['privacy:timemodified'] = 'Time modified';
+$string['privacy:timeassigned'] = 'Time assigned';
+$string['privacy:status'] = 'Status';

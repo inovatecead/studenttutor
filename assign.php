@@ -18,16 +18,17 @@
  * Assign students to tutors page
  *
  * @package    local_studenttutor
- * @copyright  2025 Your Organization
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/formslib.php');
-require_once(__DIR__ . '/classes/assignment_form.php');
 require_once(__DIR__ . '/lib.php');
 
 use local_studenttutor\assignment_manager;
+use local_studenttutor\form\assignment_form;
 
 require_login();
 
@@ -36,7 +37,7 @@ $context = context_system::instance();
 
 require_capability('local/studenttutor:manageassignments', $context);
 
-$PAGE->set_url(new moodle_url('/local/studenttutor/assign.php', array('id' => $id)));
+$PAGE->set_url(new moodle_url('/local/studenttutor/assign.php', ['id' => $id]));
 $PAGE->set_context($context);
 
 $returnurl = new moodle_url('/local/studenttutor/index.php');
@@ -60,37 +61,36 @@ if ($id > 0) {
     $PAGE->set_heading('Nova Atribuição');
 }
 
-$mform = new assignment_form(null, array('assignment' => $assignment));
+$mform = new assignment_form(null, ['assignment' => $assignment]);
 
 if ($mform->is_cancelled()) {
     redirect($returnurl);
 } else if ($data = $mform->get_data()) {
-    
     // Process student IDs from JSON or traditional array
-    $studentids = array();
+    $studentids = [];
     if (!empty($data->studentids_json)) {
         // From dynamic form (JSON)
         $studentids = json_decode($data->studentids_json, true);
-    } elseif (!empty($data->studentids)) {
+    } else if (!empty($data->studentids)) {
         // From traditional form (array)
         $studentids = $data->studentids;
     }
-    
+
     // Validação de dados obrigatórios
     if (empty($studentids) || empty($data->tutorid)) {
         redirect($returnurl, 'Dados obrigatórios não preenchidos', null, \core\output\notification::NOTIFY_ERROR);
     }
-    
+
     // Validação adicional: verificar se o tutor é válido
     if (!local_studenttutor_is_tutor($data->tutorid)) {
         redirect($returnurl, 'Tutor selecionado não é válido', null, \core\output\notification::NOTIFY_ERROR);
     }
-    
+
     global $DB, $USER;
     $success_count = 0;
     $duplicate_count = 0;
     $error_count = 0;
-    
+
     if ($is_edit_mode) {
         // EDIT MODE - Update existing assignment
         $record = new stdClass();
@@ -100,7 +100,7 @@ if ($mform->is_cancelled()) {
         $record->courseid = $data->courseid;
         $record->status = isset($data->status) ? $data->status : 'active';
         $record->timemodified = time();
-        
+
         if ($DB->update_record('local_studenttutor_assign', $record)) {
             redirect($returnurl, 'Atribuição atualizada com sucesso', null, \core\output\notification::NOTIFY_SUCCESS);
         } else {
@@ -108,37 +108,35 @@ if ($mform->is_cancelled()) {
         }
     } else {
         // CREATE MODE - Create new assignments with duplicate validation
-        $records_to_insert = array();
-        
+        $records_to_insert = [];
+
         foreach ($studentids as $studentid) {
             // Verificar se já existe atribuição
-            $existing = $DB->get_record('local_studenttutor_assign', array(
+            $existing = $DB->get_record('local_studenttutor_assign', [
                 'studentid' => $studentid,
                 'tutorid' => $data->tutorid,
                 'courseid' => $data->courseid,
-                'status' => 'active'
-            ));
-            
+                'status' => 'active',
+            ]);
+
             if ($existing) {
                 $duplicate_count++;
                 continue; // Pular esta atribuição
             }
-            
+
             // Preparar registro para inserção
             $record = new stdClass();
             $record->studentid = $studentid;
             $record->tutorid = $data->tutorid;
             $record->courseid = $data->courseid;
             $record->assignedby = $USER->id;
-            $record->createdby = $USER->id;
             $record->status = 'active';
             $record->timeassigned = time();
-            $record->timecreated = time();
             $record->timemodified = time();
-            
+
             $records_to_insert[] = $record;
         }
-        
+
         // Inserção otimizada para lotes grandes
         if (!empty($records_to_insert)) {
             if (count($records_to_insert) > 10) {
@@ -167,9 +165,9 @@ if ($mform->is_cancelled()) {
                 }
             }
         }
-        
+
         // Mensagem de resultado detalhada
-        $messages = array();
+        $messages = [];
         if ($success_count > 0) {
             $messages[] = "{$success_count} atribuição(ões) criada(s) com sucesso";
         }
@@ -179,10 +177,10 @@ if ($mform->is_cancelled()) {
         if ($error_count > 0) {
             $messages[] = "{$error_count} erro(s) ao criar atribuições";
         }
-        
+
         $final_message = implode('. ', $messages);
         $notification_type = $success_count > 0 ? \core\output\notification::NOTIFY_SUCCESS : \core\output\notification::NOTIFY_WARNING;
-        
+
         redirect($returnurl, $final_message, null, $notification_type);
     }
 }
@@ -191,23 +189,8 @@ if ($mform->is_cancelled()) {
 $PAGE->requires->css('/local/studenttutor/styles/assign_form.css');
 $PAGE->requires->css('/local/studenttutor/styles/assign_enhanced.css');
 
-// Add JavaScript for dynamic student loading
-// Temporarily disabled due to AMD module issues
-// $PAGE->requires->js_call_amd('local_studenttutor/assign_dynamic', 'init');
-
-// Add fallback JavaScript (vanilla JS)
+// Dynamic student loading.
 $PAGE->requires->js('/local/studenttutor/scripts/assign_simple.js');
-
-// Add debug JavaScript to verify module loading
-// Temporarily disabled due to AMD module issues
-/*
-$PAGE->requires->js_amd_inline("
-require(['local_studenttutor/assign_dynamic'], function(assignDynamic) {
-    console.log('assign_dynamic module loaded successfully');
-    assignDynamic.init();
-});
-");
-*/
 
 echo $OUTPUT->header();
 

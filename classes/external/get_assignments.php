@@ -18,7 +18,8 @@
  * External API for getting assignments
  *
  * @package    local_studenttutor
- * @copyright  2025 Your Organization
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -39,7 +40,6 @@ use local_studenttutor\assignment_manager;
  * External API for getting assignments
  */
 class get_assignments extends external_api {
-
     /**
      * Returns description of method parameters
      * @return external_function_parameters
@@ -52,7 +52,7 @@ class get_assignments extends external_api {
                 'courseid' => new external_value(PARAM_INT, 'Course ID', VALUE_OPTIONAL),
                 'status' => new external_value(PARAM_ALPHA, 'Assignment status', VALUE_OPTIONAL),
             ], 'Filters for assignments', VALUE_DEFAULT, []),
-            'sort' => new external_value(PARAM_TEXT, 'Sort order', VALUE_DEFAULT, 'a.timecreated DESC'),
+            'sort' => new external_value(PARAM_TEXT, 'Sort order', VALUE_DEFAULT, 'a.timeassigned DESC'),
             'limitfrom' => new external_value(PARAM_INT, 'Start position for pagination', VALUE_DEFAULT, 0),
             'limitnum' => new external_value(PARAM_INT, 'Number of records to return', VALUE_DEFAULT, 0),
         ]);
@@ -67,7 +67,7 @@ class get_assignments extends external_api {
      * @param int $limitnum Number of records
      * @return array
      */
-    public static function execute($filters = [], $sort = 'a.timecreated DESC', $limitfrom = 0, $limitnum = 0) {
+    public static function execute($filters = [], $sort = 'a.timeassigned DESC', $limitfrom = 0, $limitnum = 0) {
         global $USER;
 
         // Validate parameters
@@ -91,7 +91,8 @@ class get_assignments extends external_api {
             $params['limitnum']
         );
 
-        // Format results
+        // Format results. The public field names are kept for API compatibility:
+        // timecreated maps to the real timeassigned column and createdby to assignedby.
         $result = [];
         foreach ($assignments as $assignment) {
             $result[] = [
@@ -100,17 +101,14 @@ class get_assignments extends external_api {
                 'tutorid' => $assignment->tutorid,
                 'courseid' => $assignment->courseid,
                 'status' => $assignment->status,
-                'timecreated' => $assignment->timecreated,
+                'timecreated' => $assignment->timeassigned,
                 'timemodified' => $assignment->timemodified,
-                'createdby' => $assignment->createdby,
-                'tutor_name' => fullname((object)[
-                    'firstname' => $assignment->tutor_firstname,
-                    'lastname' => $assignment->tutor_lastname
-                ]),
-                'student_name' => fullname((object)[
-                    'firstname' => $assignment->student_firstname,
-                    'lastname' => $assignment->student_lastname
-                ]),
+                'createdby' => $assignment->assignedby,
+                // username_load_fields_from_object() copies every name field selected by
+                // \core_user\fields::for_name(), so the display name honours the site
+                // settings and fullname() does not warn about missing name fields.
+                'tutor_name' => fullname(username_load_fields_from_object((object)[], $assignment, 'tutor_')),
+                'student_name' => fullname(username_load_fields_from_object((object)[], $assignment, 'student_')),
                 'course_name' => $assignment->course_name ?: get_string('all_courses', 'local_studenttutor'),
             ];
         }

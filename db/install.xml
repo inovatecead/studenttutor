@@ -3,6 +3,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
+  <!--
+    Este arquivo descreve o schema REAL em produção desde novembro/2025.
+    NÃO adicione aqui colunas que não existam no banco (createdby/timecreated em
+    local_studenttutor_assign, title em local_studenttutor_history): elas nunca
+    foram criadas e os passos correspondentes de db/upgrade.php não têm efeito.
+  -->
   <TABLES>
     <TABLE NAME="local_studenttutor_assign" COMMENT="Student-tutor assignments">
       <FIELDS>
@@ -39,6 +45,7 @@
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="activity_date" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -52,6 +59,28 @@
         <INDEX NAME="course_hist_idx" UNIQUE="false" FIELDS="courseid"/>
         <INDEX NAME="activitytype_idx" UNIQUE="false" FIELDS="activitytype"/>
         <INDEX NAME="timecreated_idx" UNIQUE="false" FIELDS="timecreated"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="local_studenttutor_activity_types" COMMENT="Tutoring activity types">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="shortname" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="icon" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="fa-circle" SEQUENCE="false"/>
+        <FIELD NAME="color" TYPE="char" LENGTH="7" NOTNULL="false" DEFAULT="#007bff" SEQUENCE="false"/>
+        <FIELD NAME="active" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
+        <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="shortname" UNIQUE="true" FIELDS="shortname"/>
+        <INDEX NAME="active" UNIQUE="false" FIELDS="active"/>
+        <INDEX NAME="sortorder" UNIQUE="false" FIELDS="sortorder"/>
       </INDEXES>
     </TABLE>
   </TABLES>

@@ -15,167 +15,255 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings de idioma para o plugin de atribuição Estudante-Tutor
+ * Brazilian Portuguese language strings for the Nexo Tutoria Acadêmica plugin.
  *
  * @package    local_studenttutor
- * @copyright  2025 Sua Organização
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Atribuição Estudante-Tutor';
+defined('MOODLE_INTERNAL') || die();
 
-// Navegação
-$string['manage_assignments'] = 'Gerenciar Atribuições Estudante-Tutor';
-$string['view_history'] = 'Ver Histórico de Tutoria';
-$string['my_students'] = 'Meus Estudantes';
-
-// Títulos de páginas
-$string['assignments_title'] = 'Atribuições Estudante-Tutor';
-$string['history_title'] = 'Histórico de Tutoria';
-$string['add_assignment_title'] = 'Atribuir Estudante a Tutor';
-$string['add_history_title'] = 'Adicionar Atividade de Tutoria';
-
-// Rótulos de formulário
-$string['select_tutor'] = 'Selecionar Tutor';
-$string['select_student'] = 'Selecionar Estudante';
-$string['select_course'] = 'Selecionar Curso';
-$string['action_type'] = 'Tipo de Atividade';
-$string['activity_title'] = 'Título da Atividade';
-$string['description'] = 'Descrição';
-
-// Strings de ajuda
-$string['course_help'] = 'Selecione um curso para filtrar estudantes, ou escolha "Todos os cursos" para atribuições globais.';
-
-// Dashboard strings
-$string['dashboard'] = 'Painel de Tutoria';
-$string['pedagogical_dashboard'] = 'Painel Pedagógico';
-
-// Tipos de ação
-$string['action_meeting'] = 'Encontro/Reunião';
-$string['action_email'] = 'Comunicação por Email';
-$string['action_feedback'] = 'Feedback/Retorno';
-$string['action_assessment'] = 'Revisão de Avaliação';
-
-// Configurações
+// Plugin e configurações.
+$string['pluginname'] = 'Nexo Tutoria Acadêmica';
 $string['settings'] = 'Configurações';
 $string['general_settings'] = 'Configurações Gerais';
 $string['general_settings_desc'] = 'Configure as configurações gerais do plugin';
 $string['enable_plugin'] = 'Habilitar Plugin';
-$string['enable_plugin_desc'] = 'Habilitar ou desabilitar o plugin de atribuição Estudante-Tutor';
+$string['enable_plugin_desc'] = 'Habilitar ou desabilitar o plugin Nexo Tutoria Acadêmica';
 $string['max_assignments'] = 'Máximo de Atribuições';
 $string['max_assignments_desc'] = 'Número máximo de estudantes que um tutor pode ter atribuído';
+$string['tutor_role'] = 'Papel de tutor';
+$string['tutor_role_desc'] = 'Shortname do papel usado para identificar tutores (padrão: tutortematico).';
+$string['additional_tutor_roles'] = 'Papéis adicionais de tutor';
+$string['additional_tutor_roles_desc'] = 'Lista de shortnames de papéis adicionais separados por vírgula, usados para identificar tutores.';
+$string['limited_access_redirect'] = 'Acesso limitado. Redirecionando para os relatórios.';
 
-// Rótulos de formulário adicionais
+// Navegação e páginas.
+$string['manage_assignments'] = 'Gerenciar Atribuições de Tutoria';
+$string['view_history'] = 'Ver Histórico de Tutoria';
+$string['my_students'] = 'Meus Estudantes';
+$string['assignments_title'] = 'Atribuições de Tutoria';
+$string['history_title'] = 'Histórico de Tutoria';
+$string['add_history_entry'] = 'Adicionar Atividade de Tutoria';
+$string['edit_history'] = 'Editar Registro de Tutoria';
+$string['adding_history_for'] = 'Adicionando atividade de tutoria para: {$a}';
+$string['editing_history_for'] = 'Editando o registro de tutoria de {$a}';
+$string['add_interaction'] = 'Adicionar Interação';
+$string['history_for_student'] = 'Histórico de Tutoria de {$a}';
+$string['my_students_in_course'] = 'Meus Estudantes em {$a}';
+$string['no_students_assigned'] = 'Nenhum estudante atribuído a você neste curso';
+$string['back_to_course'] = 'Voltar ao Curso';
+$string['back_to_students'] = 'Voltar aos Meus Estudantes';
+$string['back_to_assignments'] = 'Voltar às Atribuições';
+$string['access_denied'] = 'Acesso negado';
+$string['student_not_assigned'] = 'Este estudante não está atribuído a você';
+
+// Atribuições.
 $string['add_assignment'] = 'Adicionar Atribuição';
-$string['edit_assignment'] = 'Editar Atribuição';
-$string['assignment_created'] = 'Atribuição criada com sucesso';
-$string['assignment_updated'] = 'Atribuição atualizada com sucesso';
-$string['assignment_exists'] = 'Esta atribuição já existe';
-$string['add_history_entry'] = 'Adicionar Entrada no Histórico';
-$string['edit_assignment_info'] = 'Ao editar uma atribuição, apenas o curso pode ser alterado. O tutor e estudante não podem ser modificados.';
+$string['date_assigned'] = 'Data de Atribuição';
+$string['assignment_created'] = 'Estudante atribuído ao tutor com sucesso';
+$string['assignment_deleted'] = 'Atribuição removida com sucesso';
+$string['assignment_creation_failed'] = 'Falha ao criar atribuição';
+$string['assignment_exists_for'] = 'Atribuição já existe para o estudante: {$a}';
+$string['assignmentalreadyexists'] = 'Esta atribuição já existe';
+$string['assignmentnotfound'] = 'Atribuição não encontrada';
+$string['error_deleting_assignment'] = 'Erro ao excluir atribuição';
 
-// Cabeçalhos de tabela
+// Histórico de tutoria.
+$string['history_added'] = 'Atividade adicionada ao histórico com sucesso';
+$string['history_added_success'] = 'Atividade de tutoria adicionada com sucesso';
+$string['history_add_error'] = 'Erro ao adicionar atividade de tutoria';
+$string['history_updated_success'] = 'Registro de tutoria atualizado com sucesso';
+$string['history_update_error'] = 'Erro ao atualizar o registro de tutoria';
+$string['history_deleted_success'] = 'Registro de tutoria excluído com sucesso';
+$string['history_delete_error'] = 'Erro ao excluir o registro de tutoria';
+$string['history_not_found'] = 'Registro de tutoria não encontrado';
+$string['confirm_delete_history'] = 'Tem certeza que deseja excluir este registro de tutoria?';
+$string['no_history'] = 'Nenhuma entrada no histórico encontrada';
+$string['no_history_entries'] = 'Nenhuma atividade de tutoria registrada ainda';
+
+// Campos de formulário.
+$string['action_type'] = 'Tipo de Atividade';
+$string['activity_type'] = 'Tipo de Atividade';
+$string['description'] = 'Descrição';
+$string['course_help'] = 'Selecione um curso para filtrar estudantes, ou escolha "Todos os cursos" para atribuições globais.';
+$string['course_help_help'] = 'Escolha a disciplina à qual a tutoria se refere. Selecione "Todos os cursos" quando a tutoria não estiver vinculada a uma disciplina específica.';
+$string['activity_date'] = 'Data da atividade';
+$string['activity_date_help'] = 'Selecione a data em que esta atividade de tutoria ocorreu.';
+$string['created_on'] = 'Criado em';
+$string['name'] = 'Nome';
+$string['send_message'] = 'Enviar Mensagem';
+$string['status'] = 'Situação';
+
+// Cabeçalhos de tabela.
 $string['tutor'] = 'Tutor';
 $string['student'] = 'Estudante';
 $string['course'] = 'Curso';
-$string['date_assigned'] = 'Data de Atribuição';
-$string['status'] = 'Status';
-$string['actions'] = 'Ações';
 $string['date'] = 'Data';
-$string['activity_type'] = 'Tipo de Atividade';
+$string['actions'] = 'Ações';
+$string['general'] = 'Geral';
+$string['value'] = 'Valor';
+$string['total_records'] = 'Total de registros encontrados';
 
-// Status
+// Situação e ações.
 $string['active'] = 'Ativo';
 $string['inactive'] = 'Inativo';
+$string['edit'] = 'Editar';
+$string['delete'] = 'Excluir';
+$string['other'] = 'Outro';
 
-// Mensagens
-$string['no_assignments'] = 'Nenhuma atribuição encontrada';
-$string['no_history'] = 'Nenhuma entrada no histórico encontrada';
-$string['all_courses'] = 'Todos os Cursos';
-$string['general'] = 'Geral';
-
-// Eventos
-$string['event_assignment_created'] = 'Atribuição criada';
-$string['event_assignment_updated'] = 'Atribuição atualizada';
-
-// Erros
-$string['error_no_permission'] = 'Você não tem permissão para executar esta ação';
-$string['error_invalid_assignment'] = 'ID de atribuição inválido';
-$string['assignmentnotfound'] = 'Atribuição não encontrada';
-$string['assignmentalreadyexists'] = 'Esta atribuição já existe';
-$string['assignment_creation_failed'] = 'Falha ao criar atribuição';
-$string['assignment_update_failed'] = 'Falha ao atualizar atribuição';
-$string['error_deleting_assignment'] = 'Erro ao excluir atribuição';
-
-// Opções de filtro
+// Filtros.
 $string['filters'] = 'Filtros';
 $string['filter'] = 'Filtrar';
 $string['clear'] = 'Limpar';
 $string['all_tutors'] = 'Todos os Tutores';
 $string['all_students'] = 'Todos os Estudantes';
-
-// Integração com curso
-$string['my_students_in_course'] = 'Meus Alunos em {$a}';
-$string['no_students_assigned'] = 'Nenhum aluno atribuído a você neste curso';
-$string['back_to_course'] = 'Voltar ao Curso';
-$string['add_history_entry'] = 'Adicionar Atividade de Tutoria';
-$string['add_interaction'] = 'Adicionar Interação';
-$string['send_message'] = 'Enviar Mensagem';
-$string['last_contact'] = 'Último Contato';
-$string['total_interactions'] = 'Total de Interações';
-$string['never'] = 'Nunca';
-$string['quick_stats'] = 'Estatísticas Rápidas';
-$string['stats_total_students'] = 'Total de alunos: {$a}';
-$string['stats_total_interactions'] = 'Total de interações: {$a}';
-$string['stats_recent_contact'] = 'Alunos contatados nos últimos 7 dias: {$a}';
-$string['history_added_success'] = 'Atividade de tutoria adicionada com sucesso';
-$string['history_add_error'] = 'Erro ao adicionar atividade de tutoria';
-$string['adding_history_for'] = 'Adicionando atividade de tutoria para: {$a}';
-$string['access_denied'] = 'Acesso negado';
-$string['studenttutor_settings'] = 'Gestão Aluno-Tutor';
-$string['other'] = 'Outro';
-$string['student_not_assigned'] = 'Este aluno não está atribuído a você';
-$string['history_for_student'] = 'Histórico de Tutoria para {$a}';
-$string['back_to_students'] = 'Voltar aos Meus Alunos';
-$string['no_history_entries'] = 'Nenhuma atividade de tutoria registrada ainda';
-$string['interaction_summary'] = 'Resumo das Interações';
-$string['first_contact'] = 'Primeiro contato';
-$string['interaction_types'] = 'Tipos de interações';
-$string['confirm_delete_assignment'] = 'Tem certeza que deseja excluir esta atribuição?';
-$string['assignment_deleted'] = 'Atribuição excluída com sucesso';
-
-// Strings de filtro
+$string['all_courses'] = 'Todos os Cursos';
 $string['all_activity_types'] = 'Todos os Tipos de Atividade';
 $string['date_from'] = 'Data Inicial';
 $string['date_to'] = 'Data Final';
-$string['all_courses'] = 'Todos os Cursos';
+$string['select_tutors'] = 'Selecione os tutores...';
+$string['select_students'] = 'Selecione os estudantes';
+$string['filters_active'] = 'Filtros ativos';
 
-// Atividades de tutoria para exibição
+// Estatísticas.
+$string['total_assignments'] = 'Total de Atribuições';
+$string['active_assignments'] = 'Atribuições Ativas';
+$string['total_activities'] = 'Total de Atividades';
+$string['unique_tutors'] = 'Tutores Distintos';
+$string['unique_students'] = 'Estudantes Distintos';
+$string['quick_stats'] = 'Estatísticas Rápidas';
+$string['stats_total_students'] = 'Total de estudantes: {$a}';
+$string['stats_total_interactions'] = 'Total de interações: {$a}';
+$string['stats_recent_contact'] = 'Estudantes contatados nos últimos 7 dias: {$a}';
+$string['interaction_summary'] = 'Resumo das Interações';
+$string['first_contact'] = 'Primeiro contato';
+$string['last_contact'] = 'Último contato';
+$string['total_interactions'] = 'Total de Interações';
+$string['interaction_types'] = 'Tipos de interações';
+$string['never'] = 'Nunca';
+
+// Rótulos de tipos de atividade usados pelo histórico e relatórios.
+$string['action_meeting'] = 'Encontro/Reunião';
+$string['action_email'] = 'Comunicação por E-mail';
+$string['action_feedback'] = 'Feedback/Retorno';
+$string['action_assessment'] = 'Revisão de Avaliação';
+$string['action_phone'] = 'Ligação telefônica';
+$string['action_other'] = 'Outro';
 $string['activity_meeting'] = 'Encontro/Reunião';
-$string['activity_email'] = 'Comunicação por Email';
+$string['activity_email'] = 'Comunicação por E-mail';
 $string['activity_feedback'] = 'Feedback/Retorno';
 $string['activity_assessment'] = 'Revisão de Avaliação';
+$string['activity_guidance'] = 'Orientação Acadêmica';
 $string['activity_other'] = 'Outro';
 
-// Interface de relatórios
-$string['reports_title'] = 'Relatórios de Tutoria';
-$string['filters_active'] = 'Filtros ativos';
-$string['total_records'] = 'Total de registros encontrados';
-$string['no_filters_active'] = 'Nenhum filtro ativo';
-$string['select_tutors'] = 'Selecione os tutores...';
-$string['select_students'] = 'Selecione os estudantes...';
-$string['back_to_assignments'] = 'Voltar às Atribuições';
+// Gerenciamento de tipos de atividade.
+$string['manage_activity_types'] = 'Gerenciar Tipos de Atividade';
+$string['add_activity_type'] = 'Adicionar Tipo de Atividade';
+$string['edit_activity_type'] = 'Editar Tipo de Atividade';
+$string['activity_type_created'] = 'Tipo de atividade criado com sucesso';
+$string['activity_type_updated'] = 'Tipo de atividade atualizado com sucesso';
+$string['activity_type_deleted'] = 'Tipo de atividade excluído com sucesso';
+$string['activity_type_enabled'] = 'Tipo de atividade habilitado';
+$string['activity_type_disabled'] = 'Tipo de atividade desabilitado';
+$string['activity_types_reordered'] = 'Tipos de atividade reordenados com sucesso';
+$string['no_activity_types'] = 'Nenhum tipo de atividade encontrado';
+$string['confirm_delete_activity_type'] = 'Tem certeza que deseja excluir este tipo de atividade?';
+$string['activity_type_create_error'] = 'Erro ao criar tipo de atividade';
+$string['activity_type_update_error'] = 'Erro ao atualizar tipo de atividade';
+$string['activity_type_delete_error'] = 'Erro ao excluir tipo de atividade';
+$string['activity_type_save_error'] = 'Erro ao salvar tipo de atividade';
+$string['editing_activity_type'] = 'Editando tipo de atividade: {$a}';
+$string['shortnameexists'] = 'Este shortname já existe';
+$string['activity_types_statistics'] = 'Estatísticas de Uso';
+$string['usage_count'] = 'Quantidade de usos';
+$string['uses'] = 'usos';
+$string['order'] = 'Ordem';
+$string['preview'] = 'Pré-visualização';
+$string['shortname'] = 'Shortname';
+$string['icon'] = 'Ícone';
+$string['color'] = 'Cor';
+$string['sortorder'] = 'Ordem de exibição';
+$string['export_csv'] = 'Exportar CSV';
 
-// Mensagens de atribuição múltipla
-$string['assignment_exists_for'] = 'Atribuição já existe para o estudante: {$a}';
-$string['assignments_created_multiple'] = '{$a} atribuições criadas com sucesso';
-$string['assignments_partially_created'] = '{$a->success} atribuições criadas com sucesso. Erro para: {$a->errors}';
-$string['select_students'] = 'Selecione os estudantes';
+// Campos do formulário de tipo de atividade.
+$string['activity_type_name'] = 'Nome do Tipo de Atividade';
+$string['activity_type_name_help'] = 'O nome exibido para este tipo de atividade';
+$string['activity_type_shortname'] = 'Shortname';
+$string['activity_type_shortname_help'] = 'Um identificador único para este tipo de atividade (apenas letras, números e sublinhado)';
+$string['activity_type_description'] = 'Descrição';
+$string['activity_type_description_help'] = 'Uma breve descrição de quando usar este tipo de atividade';
+$string['activity_type_icon'] = 'Ícone';
+$string['activity_type_icon_help'] = 'Ícone FontAwesome exibido com este tipo de atividade';
+$string['activity_type_color'] = 'Cor';
+$string['activity_type_color_help'] = 'Cor usada na exibição deste tipo de atividade';
+$string['activity_type_active'] = 'Ativo';
+$string['activity_type_active_help'] = 'Se este tipo de atividade está disponível para seleção';
+$string['activity_type_sortorder'] = 'Ordem de exibição';
+$string['activity_type_sortorder_help'] = 'Ordem em que este tipo aparece nas listas (números menores primeiro)';
 
-// Strings de gerenciamento de atribuições
-$string['edit_assignment'] = 'Editar Atribuição';
-$string['assignment_updated'] = 'Atribuição atualizada com sucesso';
-$string['assignments_created'] = '{$a} atribuições criadas com sucesso';
-$string['assignmentnotfound'] = 'Atribuição não encontrada';
-$string['edit_temporarily_disabled'] = 'A edição de atribuições está temporariamente desabilitada. Entre em contato com o administrador se precisar modificar uma atribuição.';
-$string['dashboard'] = 'Painel de Tutoria';
+// Ícones de tipos de atividade.
+$string['icon_users'] = 'Pessoas (reuniões)';
+$string['icon_envelope'] = 'Envelope (e-mail)';
+$string['icon_comment'] = 'Comentário (feedback)';
+$string['icon_clipboard'] = 'Prancheta (avaliação)';
+$string['icon_compass'] = 'Bússola (orientação)';
+$string['icon_phone'] = 'Telefone (ligações)';
+$string['icon_video'] = 'Vídeo (videochamadas)';
+$string['icon_file'] = 'Arquivo (documentos)';
+$string['icon_chart'] = 'Gráfico (análises)';
+$string['icon_lightbulb'] = 'Lâmpada (ideias)';
+$string['icon_graduation'] = 'Capelo (acadêmico)';
+$string['icon_other'] = 'Outro';
+
+// Cores de tipos de atividade.
+$string['color_green'] = 'Verde';
+$string['color_blue'] = 'Azul';
+$string['color_yellow'] = 'Amarelo';
+$string['color_red'] = 'Vermelho';
+$string['color_purple'] = 'Roxo';
+$string['color_orange'] = 'Laranja';
+$string['color_teal'] = 'Verde-azulado';
+$string['color_gray'] = 'Cinza';
+
+// Eventos.
+$string['event_assignment_created'] = 'Atribuição criada';
+$string['event_assignment_updated'] = 'Atribuição atualizada';
+
+// Aviso de minimização de dados exibido no formulário de registro.
+$string['history_privacy_notice'] = 'Os registros de tutoria são dados acadêmicos do estudante. Registre somente o necessário ao acompanhamento pedagógico e evite dados pessoais sensíveis (saúde, origem racial ou étnica, convicção religiosa, opinião política, dados biométricos ou genéticos, vida sexual).';
+
+// Capabilities (o Moodle exibe estas descrições nas telas de permissão).
+$string['studenttutor:manage'] = 'Gerenciar as configurações do plugin de tutoria';
+$string['studenttutor:viewassignments'] = 'Ver atribuições estudante-tutor';
+$string['studenttutor:manageassignments'] = 'Gerenciar atribuições estudante-tutor';
+$string['studenttutor:viewhistory'] = 'Ver histórico de tutoria';
+$string['studenttutor:managehistory'] = 'Gerenciar histórico de tutoria';
+$string['studenttutor:assign_students'] = 'Atribuir estudantes a tutores em um curso';
+$string['studenttutor:view_assignments'] = 'Ver atribuições em um curso';
+$string['studenttutor:manage_history'] = 'Gerenciar histórico de tutoria em um curso';
+$string['studenttutor:view_own_students'] = 'Ver os próprios estudantes atribuídos';
+$string['studenttutor:view_all_history'] = 'Ver o histórico de tutoria de toda a equipe';
+$string['studenttutor:viewreports'] = 'Ver relatórios de tutoria';
+
+// Metadados de privacidade (Privacy API - não altere os nomes das chaves).
+$string['privacy:metadata'] = 'O plugin Nexo Tutoria Acadêmica armazena qual tutor é responsável por cada estudante e o histórico das interações de tutoria.';
+$string['privacy:metadata:local_studenttutor_assign'] = 'Informações sobre qual tutor é responsável por qual estudante.';
+$string['privacy:metadata:local_studenttutor_history'] = 'Informações sobre cada interação de tutoria registrada por um tutor.';
+$string['privacy:path'] = 'Tutoria';
+$string['privacy:assignments'] = 'Atribuições';
+$string['privacy:history'] = 'Histórico de tutoria';
+$string['privacy:student'] = 'Estudante';
+$string['privacy:tutor'] = 'Tutor';
+$string['privacy:assignedby'] = 'Atribuído por';
+$string['privacy:createdby'] = 'Criado por';
+$string['privacy:course'] = 'Curso';
+$string['privacy:activitytype'] = 'Tipo de atividade';
+$string['privacy:description'] = 'Relato da tutoria';
+$string['privacy:activitydate'] = 'Data da atividade';
+$string['privacy:timecreated'] = 'Criado em';
+$string['privacy:timemodified'] = 'Modificado em';
+$string['privacy:timeassigned'] = 'Atribuído em';
+$string['privacy:status'] = 'Situação';

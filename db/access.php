@@ -18,105 +18,106 @@
  * Plugin capabilities
  *
  * @package    local_studenttutor
- * @copyright  2025 Your Organization
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
-    'local/studenttutor:manage' => array(
+$capabilities = [
+    'local/studenttutor:manage' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
+        'archetypes' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'local/studenttutor:viewassignments' => array(
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+    'local/studenttutor:viewassignments' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
+        'archetypes' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'local/studenttutor:manageassignments' => array(
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+    'local/studenttutor:manageassignments' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'local/studenttutor:viewhistory' => array(
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+    'local/studenttutor:viewhistory' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
+        'archetypes' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'local/studenttutor:managehistory' => array(
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+    'local/studenttutor:managehistory' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
+        'archetypes' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'local/studenttutor:assign_students' => array(
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+    'local/studenttutor:assign_students' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'local/studenttutor:view_assignments' => array(
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+    'local/studenttutor:view_assignments' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'local/studenttutor:manage_history' => array(
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+    'local/studenttutor:manage_history' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'local/studenttutor:view_own_students' => array(
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+    'local/studenttutor:view_own_students' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW
-        )
-    ),
-    'local/studenttutor:view_all_history' => array(
+            'editingteacher' => CAP_ALLOW,
+        ],
+    ],
+    'local/studenttutor:view_all_history' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'local/studenttutor:viewreports' => array(
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+    'local/studenttutor:viewreports' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    )
-);
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+];

@@ -1,5 +1,15 @@
 # 🎯 PROPOSTA: DASHBOARD INTELIGENTE PARA GESTÃO PEDAGÓGICA EAD
 
+> ⚠️ **DOCUMENTO HISTÓRICO (2026-09-18).** Este documento descreve uma **proposta** de
+> dashboard que foi implementada como protótipo e **removida** na versão 1.1.0
+> (`dashboard.php`, `dashboard_admin.php`, `dashboard_tutor.php`,
+> `dashboard_pedagogical.php`, `dashboard_api.php`, `dashboard_config.php`).
+> Motivo: exibia **métricas fictícias** (progresso aleatório, satisfação fixa,
+> horários/dias fixos) e dependia de colunas e capabilities inexistentes.
+> O que permanece no produto: listagem de atribuições (`index.php`), histórico por
+> estudante (`student_history.php`), relatórios (`reports.php`) e a API REST.
+> As seções abaixo **não** descrevem o software entregue.
+
 ## 📊 **ANÁLISE DA SITUAÇÃO ATUAL**
 
 ### ✅ **O que já existe e funciona:**

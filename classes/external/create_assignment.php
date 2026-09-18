@@ -18,7 +18,8 @@
  * External API for creating assignments
  *
  * @package    local_studenttutor
- * @copyright  2025 Your Organization
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -38,7 +39,6 @@ use local_studenttutor\assignment_manager;
  * External API for creating assignments
  */
 class create_assignment extends external_api {
-
     /**
      * Returns description of method parameters
      * @return external_function_parameters
@@ -48,7 +48,12 @@ class create_assignment extends external_api {
             'tutorid' => new external_value(PARAM_INT, 'Tutor ID'),
             'studentid' => new external_value(PARAM_INT, 'Student ID'),
             'courseid' => new external_value(PARAM_INT, 'Course ID', VALUE_DEFAULT, 0),
-            'assignedby' => new external_value(PARAM_INT, 'Assigned by user ID', VALUE_OPTIONAL),
+            'assignedby' => new external_value(
+                PARAM_INT,
+                'Deprecated, ignored. The acting user is always recorded.',
+                VALUE_DEFAULT,
+                0
+            ),
         ]);
     }
 
@@ -65,11 +70,12 @@ class create_assignment extends external_api {
         global $USER;
 
         // Validate parameters
+        // The 'assignedby' parameter is accepted for backward compatibility but is
+        // not passed on: the acting user is always recorded as the author.
         $params = self::validate_parameters(self::execute_parameters(), [
             'tutorid' => $tutorid,
             'studentid' => $studentid,
             'courseid' => $courseid,
-            'assignedby' => $assignedby,
         ]);
 
         // Check permissions
@@ -78,12 +84,12 @@ class create_assignment extends external_api {
         require_capability('local/studenttutor:manageassignments', $context);
 
         try {
-            // Create assignment using manager
+            // Create assignment using manager: (studentid, tutorid, courseid, assignedby).
             $assignmentid = assignment_manager::create_assignment(
-                $params['tutorid'],
                 $params['studentid'],
+                $params['tutorid'],
                 $params['courseid'],
-                $params['assignedby']
+                $USER->id
             );
 
             if ($assignmentid) {
@@ -100,10 +106,11 @@ class create_assignment extends external_api {
                 ];
             }
         } catch (\moodle_exception $e) {
+            debugging('Exception in external create_assignment: ' . $e->getMessage(), DEBUG_DEVELOPER);
             return [
                 'success' => false,
                 'assignmentid' => 0,
-                'message' => $e->getMessage(),
+                'message' => get_string('assignment_creation_failed', 'local_studenttutor'),
             ];
         }
     }

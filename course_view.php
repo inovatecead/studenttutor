@@ -18,7 +18,8 @@
  * Course-specific view for tutors to manage their students
  *
  * @package    local_studenttutor
- * @copyright  2025 Your Organization
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -36,7 +37,7 @@ $studentid = optional_param('studentid', 0, PARAM_INT);
 require_login();
 
 // Get course and context
-$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 $context = context_course::instance($courseid);
 
 require_login($course);
@@ -48,7 +49,7 @@ if (!$is_tutor) {
     throw new moodle_exception('nopermissions', 'error', '', get_string('access_denied', 'local_studenttutor'));
 }
 
-$PAGE->set_url(new moodle_url('/local/studenttutor/course_view.php'), array('courseid' => $courseid));
+$PAGE->set_url(new moodle_url('/local/studenttutor/course_view.php'), ['courseid' => $courseid]);
 $PAGE->set_context($context);
 $PAGE->set_course($course);
 $PAGE->set_pagelayout('incourse');
@@ -80,7 +81,7 @@ if (empty($assignments)) {
     echo '<div class="alert alert-info">';
     echo '<h4>' . get_string('no_students_assigned', 'local_studenttutor') . '</h4>';
     echo '<p>Não há estudantes atribuídos a você neste curso.</p>';
-    echo '<p>Para atribuir estudantes, acesse a página de atribuições do plugin Student-Tutor.</p>';
+    echo '<p>Para atribuir estudantes, acesse a página de atribuições do Nexo Tutoria Acadêmica.</p>';
     echo '</div>';
     echo $OUTPUT->continue_button(new moodle_url('/course/view.php', ['id' => $courseid]));
     echo $OUTPUT->footer();
@@ -114,17 +115,17 @@ $table->head = [
     get_string('date_assigned', 'local_studenttutor'),
     get_string('last_contact', 'local_studenttutor'),
     get_string('total_interactions', 'local_studenttutor'),
-    get_string('actions', 'local_studenttutor')
+    get_string('actions', 'local_studenttutor'),
 ];
 
 $table->attributes['class'] = 'table table-striped generaltable';
 
 foreach ($assignments as $assignment) {
     $student = $DB->get_record('user', ['id' => $assignment->studentid]);
-    
+
     // Get last history entry for this student
     $last_history = $DB->get_record_sql("
-        SELECT h.*, h.timecreated 
+        SELECT h.*, h.timecreated
         FROM {local_studenttutor_history} h
         WHERE h.studentid = :studentid AND h.tutorid = :tutorid AND h.courseid = :courseid
         ORDER BY h.timecreated DESC
@@ -132,70 +133,70 @@ foreach ($assignments as $assignment) {
     ", [
         'studentid' => $assignment->studentid,
         'tutorid' => $USER->id,
-        'courseid' => $courseid
+        'courseid' => $courseid,
     ]);
-    
+
     // Count total interactions
     $total_interactions = $DB->count_records('local_studenttutor_history', [
         'studentid' => $assignment->studentid,
         'tutorid' => $USER->id,
-        'courseid' => $courseid
+        'courseid' => $courseid,
     ]);
-    
+
     $student_name = fullname($student);
-    
+
     // Create profile link for student name
     $profile_url = new moodle_url('/user/profile.php', ['id' => $assignment->studentid]);
     $student_name_with_link = html_writer::link($profile_url, $student_name, [
         'title' => get_string('viewprofile', 'core'),
-        'class' => 'student-profile-link'
+        'class' => 'student-profile-link',
     ]);
-    
+
     $date_assigned = userdate($assignment->timecreated, get_string('strftimedate'));
     $last_contact = $last_history ? userdate($last_history->timecreated, get_string('strftimedate')) : get_string('never', 'local_studenttutor');
-    
+
     // Actions
     $actions = [];
-    
+
     $actions[] = html_writer::link(
         new moodle_url('/user/profile.php', ['id' => $assignment->studentid]),
         get_string('viewprofile', 'core'),
         ['class' => 'btn btn-sm btn-outline-info', 'title' => get_string('viewprofile', 'core')]
     );
-    
+
     $actions[] = html_writer::link(
         new moodle_url('/local/studenttutor/student_history.php', [
             'courseid' => $courseid,
-            'studentid' => $assignment->studentid
+            'studentid' => $assignment->studentid,
         ]),
         get_string('view_history', 'local_studenttutor'),
         ['class' => 'btn btn-sm btn-outline-primary']
     );
-    
+
     $actions[] = html_writer::link(
         new moodle_url('/local/studenttutor/add_history.php', [
             'courseid' => $courseid,
-            'studentid' => $assignment->studentid
+            'studentid' => $assignment->studentid,
         ]),
         get_string('add_interaction', 'local_studenttutor'),
         ['class' => 'btn btn-sm btn-success']
     );
-    
+
     $actions[] = html_writer::link(
         new moodle_url('/message/index.php', [
-            'id' => $assignment->studentid
+            'id' => $assignment->studentid,
         ]),
         get_string('send_message', 'local_studenttutor'),
         ['class' => 'btn btn-sm btn-outline-secondary']
     );
-    
+
     $table->data[] = [
         $student_name_with_link,
         $student->email,
         $date_assigned,
         $last_contact,
         $total_interactions,
-        implode(' ', $actions)
+        implode(' ', $actions),
     ];
 }
 
@@ -205,28 +206,28 @@ echo html_writer::table($table);
 if (count($assignments) > 0) {
     echo html_writer::start_tag('div', ['class' => 'mt-4 p-3 bg-light rounded']);
     echo html_writer::tag('h5', get_string('quick_stats', 'local_studenttutor'));
-    
+
     $total_students = count($assignments);
     $total_all_interactions = $DB->count_records_sql("
         SELECT COUNT(*) FROM {local_studenttutor_history} h
         WHERE h.tutorid = :tutorid AND h.courseid = :courseid
     ", ['tutorid' => $USER->id, 'courseid' => $courseid]);
-    
+
     $students_with_recent_contact = $DB->count_records_sql("
-        SELECT COUNT(DISTINCT h.studentid) 
+        SELECT COUNT(DISTINCT h.studentid)
         FROM {local_studenttutor_history} h
-        WHERE h.tutorid = :tutorid AND h.courseid = :courseid 
+        WHERE h.tutorid = :tutorid AND h.courseid = :courseid
         AND h.timecreated > :since
     ", [
-        'tutorid' => $USER->id, 
+        'tutorid' => $USER->id,
         'courseid' => $courseid,
-        'since' => time() - (7 * 24 * 60 * 60) // Last 7 days
+        'since' => time() - (7 * 24 * 60 * 60), // Last 7 days
     ]);
-    
+
     echo html_writer::tag('p', get_string('stats_total_students', 'local_studenttutor', $total_students));
     echo html_writer::tag('p', get_string('stats_total_interactions', 'local_studenttutor', $total_all_interactions));
     echo html_writer::tag('p', get_string('stats_recent_contact', 'local_studenttutor', $students_with_recent_contact));
-    
+
     echo html_writer::end_tag('div');
 }
 

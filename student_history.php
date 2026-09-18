@@ -18,7 +18,8 @@
  * View history for a specific student in course context
  *
  * @package    local_studenttutor
- * @copyright  2025 Your Organization
+ * @author     Rodrigo Severo Ribeiro
+ * @copyright  2025-2026 Universidade Federal de Mato Grosso (UFMT) - INOVATEC/UFMT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -35,8 +36,8 @@ $historyid = optional_param('historyid', 0, PARAM_INT);
 require_login();
 
 // Get course and context
-$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
-$student = $DB->get_record('user', array('id' => $studentid), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
+$student = $DB->get_record('user', ['id' => $studentid], '*', MUST_EXIST);
 $context = context_course::instance($courseid);
 
 require_login($course);
@@ -51,8 +52,8 @@ if (!$is_tutor) {
 // Verify that this student is assigned to this tutor (course-specific or global)
 $assignment = $DB->get_record_sql("
     SELECT * FROM {local_studenttutor_assign}
-    WHERE tutorid = :tutorid 
-    AND studentid = :studentid 
+    WHERE tutorid = :tutorid
+    AND studentid = :studentid
     AND (courseid = :courseid OR courseid = 0)
     AND status = :status
     LIMIT 1
@@ -60,7 +61,7 @@ $assignment = $DB->get_record_sql("
     'tutorid' => $USER->id,
     'studentid' => $studentid,
     'courseid' => $courseid,
-    'status' => 'active'
+    'status' => 'active',
 ]);
 
 if (!$assignment) {
@@ -70,16 +71,16 @@ if (!$assignment) {
 // Handle actions (delete, edit)
 if ($action && $historyid && confirm_sesskey()) {
     require_capability('local/studenttutor:managehistory', $context);
-    
+
     if ($action === 'delete') {
         // Verify the history entry belongs to this tutor and student
         $history_entry = $DB->get_record('local_studenttutor_history', [
             'id' => $historyid,
             'tutorid' => $USER->id,
             'studentid' => $studentid,
-            'courseid' => $courseid
+            'courseid' => $courseid,
         ]);
-        
+
         if ($history_entry) {
             if ($DB->delete_records('local_studenttutor_history', ['id' => $historyid])) {
                 \core\notification::success(get_string('history_deleted_success', 'local_studenttutor'));
@@ -89,16 +90,18 @@ if ($action && $historyid && confirm_sesskey()) {
         } else {
             \core\notification::error(get_string('history_not_found', 'local_studenttutor'));
         }
-        
+
         redirect(new moodle_url('/local/studenttutor/student_history.php', [
             'courseid' => $courseid,
-            'studentid' => $studentid
+            'studentid' => $studentid,
         ]));
     }
 }
 
-$PAGE->set_url(new moodle_url('/local/studenttutor/student_history.php'), 
-    array('courseid' => $courseid, 'studentid' => $studentid));
+$PAGE->set_url(
+    new moodle_url('/local/studenttutor/student_history.php'),
+    ['courseid' => $courseid, 'studentid' => $studentid]
+);
 $PAGE->set_context($context);
 $PAGE->set_course($course);
 $PAGE->set_pagelayout('incourse');
@@ -108,8 +111,10 @@ $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 
 // Breadcrumbs
-$PAGE->navbar->add(get_string('my_students', 'local_studenttutor'), 
-    new moodle_url('/local/studenttutor/course_view.php', ['courseid' => $courseid]));
+$PAGE->navbar->add(
+    get_string('my_students', 'local_studenttutor'),
+    new moodle_url('/local/studenttutor/course_view.php', ['courseid' => $courseid])
+);
 $PAGE->navbar->add(get_string('history_for_student', 'local_studenttutor', fullname($student)));
 
 echo $OUTPUT->heading(get_string('history_for_student', 'local_studenttutor', fullname($student)));
@@ -119,7 +124,7 @@ echo html_writer::start_tag('div', ['class' => 'mb-3']);
 echo html_writer::link(
     new moodle_url('/local/studenttutor/add_history.php', [
         'courseid' => $courseid,
-        'studentid' => $studentid
+        'studentid' => $studentid,
     ]),
     get_string('add_interaction', 'local_studenttutor'),
     ['class' => 'btn btn-primary mr-2']
@@ -132,105 +137,92 @@ echo html_writer::link(
 );
 echo html_writer::end_tag('div');
 
-// Get history for this student and tutor in this course
-// Try with activity_date first, fallback to timecreated only if field doesn't exist
-try {
-    $history_entries = $DB->get_records_sql("
-        SELECT h.*, h.timecreated, h.activity_date
-        FROM {local_studenttutor_history} h
-        WHERE h.studentid = :studentid AND h.tutorid = :tutorid AND h.courseid = :courseid
-        ORDER BY h.activity_date DESC, h.timecreated DESC
-    ", [
-        'studentid' => $studentid,
-        'tutorid' => $USER->id,
-        'courseid' => $courseid
-    ]);
-    $activity_date_exists = true;
-} catch (dml_exception $e) {
-    // Field doesn't exist, use fallback query
-    $history_entries = $DB->get_records_sql("
-        SELECT h.*, h.timecreated
-        FROM {local_studenttutor_history} h
-        WHERE h.studentid = :studentid AND h.tutorid = :tutorid AND h.courseid = :courseid
-        ORDER BY h.timecreated DESC
-    ", [
-        'studentid' => $studentid,
-        'tutorid' => $USER->id,
-        'courseid' => $courseid
-    ]);
-    $activity_date_exists = false;
-}
+// Get history for this student and tutor in this course.
+$history_entries = $DB->get_records_sql("
+    SELECT h.*
+    FROM {local_studenttutor_history} h
+    WHERE h.studentid = :studentid AND h.tutorid = :tutorid AND h.courseid = :courseid
+    ORDER BY h.activity_date DESC, h.timecreated DESC
+", [
+    'studentid' => $studentid,
+    'tutorid' => $USER->id,
+    'courseid' => $courseid,
+]);
 
 if (empty($history_entries)) {
     echo $OUTPUT->notification(get_string('no_history_entries', 'local_studenttutor'), 'info');
 } else {
     echo html_writer::start_tag('div', ['class' => 'history-timeline']);
-    
+
     foreach ($history_entries as $entry) {
         echo html_writer::start_tag('div', ['class' => 'card mb-3']);
         echo html_writer::start_tag('div', ['class' => 'card-header d-flex justify-content-between align-items-center']);
-        
+
         echo html_writer::start_tag('div');
-        
+
         // Get activity type name
         $activity_type = \local_studenttutor\activity_type_manager::get_activity_type_by_shortname($entry->activitytype);
         $type_name = $activity_type ? $activity_type->name : $entry->activitytype;
-        
+
         echo html_writer::tag('h6', $type_name, ['class' => 'mb-0']);
-        
+
         // Show activity date if field exists and is different from created date
-        if ($activity_date_exists && isset($entry->activity_date)) {
+        if (!empty($entry->activity_date)) {
             $activity_date = $entry->activity_date ?: $entry->timecreated;
-            echo html_writer::tag('small', 
-                get_string('activity_date', 'local_studenttutor') . ': ' . userdate($activity_date, get_string('strftimedaydate')), 
-                ['class' => 'text-info d-block']);
+            echo html_writer::tag(
+                'small',
+                get_string('activity_date', 'local_studenttutor') . ': ' . userdate($activity_date, get_string('strftimedaydate')),
+                ['class' => 'text-info d-block']
+            );
         }
-        echo html_writer::tag('small', 
-            get_string('created_on', 'local_studenttutor') . ': ' . userdate($entry->timecreated), 
-            ['class' => 'text-muted d-block']);
+        echo html_writer::tag(
+            'small',
+            get_string('created_on', 'local_studenttutor') . ': ' . userdate($entry->timecreated),
+            ['class' => 'text-muted d-block']
+        );
         echo html_writer::end_tag('div');
-        
+
         // Action buttons
         if (has_capability('local/studenttutor:managehistory', $context)) {
             echo html_writer::start_tag('div', ['class' => 'btn-group btn-group-sm']);
-            
+
             // Edit button (will redirect to edit form)
             echo html_writer::link(
                 new moodle_url('/local/studenttutor/edit_history.php', [
                     'courseid' => $courseid,
                     'studentid' => $studentid,
-                    'historyid' => $entry->id
+                    'historyid' => $entry->id,
                 ]),
                 get_string('edit'),
                 ['class' => 'btn btn-outline-primary btn-sm', 'title' => get_string('edit')]
             );
-            
+
             // Delete button with confirmation
             $delete_url = new moodle_url('/local/studenttutor/student_history.php', [
                 'courseid' => $courseid,
                 'studentid' => $studentid,
                 'action' => 'delete',
                 'historyid' => $entry->id,
-                'sesskey' => sesskey()
+                'sesskey' => sesskey(),
             ]);
-            
+
             echo html_writer::link(
                 $delete_url,
                 get_string('delete'),
                 [
                     'class' => 'btn btn-outline-danger btn-sm',
                     'title' => get_string('delete'),
-                    'onclick' => 'return confirm("' . get_string('confirm_delete_history', 'local_studenttutor') . '");'
+                    'onclick' => 'return confirm("' . get_string('confirm_delete_history', 'local_studenttutor') . '");',
                 ]
             );
-            
+
             echo html_writer::end_tag('div');
         }
-        
+
         echo html_writer::end_tag('div');
-        
+
         echo html_writer::start_tag('div', ['class' => 'card-body']);
-        
+
         // Map activity types to display strings
         $activity_types = [
             'meeting' => get_string('action_meeting', 'local_studenttutor'),
@@ -238,38 +230,38 @@ if (empty($history_entries)) {
             'feedback' => get_string('action_feedback', 'local_studenttutor'),
             'assessment' => get_string('action_assessment', 'local_studenttutor'),
             'phone' => get_string('action_phone', 'local_studenttutor'),
-            'other' => get_string('action_other', 'local_studenttutor')
+            'other' => get_string('action_other', 'local_studenttutor'),
         ];
-        
-        $type_string = isset($activity_types[$entry->activitytype]) ? 
-            $activity_types[$entry->activitytype] : 
+
+        $type_string = isset($activity_types[$entry->activitytype]) ?
+            $activity_types[$entry->activitytype] :
             ucfirst($entry->activitytype);
-            
+
         echo html_writer::tag('span', $type_string, ['class' => 'badge badge-secondary mb-2']);
-        
+
         echo html_writer::tag('p', nl2br(s($entry->description)), ['class' => 'mb-0']);
-        
+
         echo html_writer::end_tag('div');
         echo html_writer::end_tag('div');
     }
-    
+
     echo html_writer::end_tag('div');
-    
+
     // Statistics
     echo html_writer::start_tag('div', ['class' => 'mt-4 p-3 bg-light rounded']);
     echo html_writer::tag('h5', get_string('interaction_summary', 'local_studenttutor'));
-    
+
     $total_entries = count($history_entries);
-    $types_count = array();
+    $types_count = [];
     $first_contact = null;
     $last_contact = null;
-    
+
     foreach ($history_entries as $entry) {
         if (!isset($types_count[$entry->activitytype])) {
             $types_count[$entry->activitytype] = 0;
         }
         $types_count[$entry->activitytype]++;
-        
+
         if ($first_contact === null || $entry->timecreated < $first_contact) {
             $first_contact = $entry->timecreated;
         }
@@ -277,23 +269,23 @@ if (empty($history_entries)) {
             $last_contact = $entry->timecreated;
         }
     }
-    
+
     echo html_writer::tag('p', get_string('stats_total_interactions', 'local_studenttutor', $total_entries));
-    echo html_writer::tag('p', get_string('first_contact', 'local_studenttutor') . ': ' . 
+    echo html_writer::tag('p', get_string('first_contact', 'local_studenttutor') . ': ' .
         ($first_contact ? userdate($first_contact) : get_string('never', 'local_studenttutor')));
-    echo html_writer::tag('p', get_string('last_contact', 'local_studenttutor') . ': ' . 
+    echo html_writer::tag('p', get_string('last_contact', 'local_studenttutor') . ': ' .
         ($last_contact ? userdate($last_contact) : get_string('never', 'local_studenttutor')));
-    
+
     if (!empty($types_count)) {
         echo html_writer::tag('h6', get_string('interaction_types', 'local_studenttutor'));
         foreach ($types_count as $type => $count) {
-            $type_string = isset($activity_types[$type]) ? 
-                $activity_types[$type] : 
+            $type_string = isset($activity_types[$type]) ?
+                $activity_types[$type] :
                 ucfirst($type);
             echo html_writer::tag('p', "{$type_string}: {$count}", ['class' => 'mb-1']);
         }
     }
-    
+
     echo html_writer::end_tag('div');
 }
 
