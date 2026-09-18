@@ -1,0 +1,118 @@
+/* Student Tutor Assignment Form Styles */
+
+/* Autocomplete fields styling */
+.form-autocomplete-selection {
+    min-height: 38px;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    background-color: #fff;
+}
+
+.form-autocomplete-selection:focus-within {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-autocomplete-suggestions {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ced4da;
+    border-top: none;
+    background: white;
+    z-index: 1000;
+}
+
+.form-autocomplete-suggestion {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.form-autocomplete-suggestion:hover,
+.form-autocomplete-suggestion.highlighted {
+    background-color: #f8f9fa;
+}
+
+/* Course and Tutor field enhancements */
+#fitem_id_courseid .form-control,
+#fitem_id_tutorid .form-control {
+    font-size: 14px;
+}
+
+#fitem_id_courseid label,
+#fitem_id_tutorid label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.students-selection {
+    margin: 20px 0;
+}
+
+.students-list {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    padding: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.students-list .form-check {
+    margin-bottom: 10px;
+    padding: 5px 0;
+}
+
+.students-list .form-check:last-child {
+    margin-bottom: 0;
+}
+
+.students-list .form-check-label {
+    font-weight: normal;
+    cursor: pointer;
+    display: block;
+    padding: 5px 10px;
+    border-radius: 0.25rem;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.students-list .form-check-label:hover {
+    background-color: #e9ecef;
+}
+
+.students-list .form-check-input {
+    margin-right: 8px;
+}
+
+#select_all_students {
+    font-weight: bold;
+}
+
+#selected-count {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.loading-indicator {
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+}
+
+.loading-indicator .fa-spinner {
+    margin-right: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .students-list {
+        max-height: 200px;
+        padding: 10px;
+    }
+    
+    .students-list .form-check-label {
+        font-size: 0.9rem;
+        padding: 3px 5px;
+    }
+}

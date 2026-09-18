@@ -1,0 +1,250 @@
+/* Enhanced styles for student assignment with groups */
+
+.students-summary {
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+.students-by-category {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.category-section {
+    margin-bottom: 25px;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.category-header {
+    margin: 0;
+    padding: 15px 20px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: white;
+}
+
+.category-no-tutor .category-header {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.category-one-tutor .category-header {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+}
+
+.category-multiple-tutors .category-header {
+    background: linear-gradient(135deg, #dc3545, #e83e8c);
+}
+
+.students-list {
+    padding: 15px;
+    background: #f8f9fa;
+}
+
+.student-item {
+    padding: 10px 12px;
+    margin: 4px 0;
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    display: flex;
+    align-items: flex-start;
+    transition: all 0.2s ease;
+}
+
+.student-item:hover {
+    background: #e3f2fd;
+    border-color: #2196f3;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.student-item.has-group {
+    border-left: 4px solid #4caf50;
+}
+
+.student-item.no-group {
+    border-left: 4px solid #ff9800;
+}
+
+.student-item input[type="checkbox"] {
+    margin-right: 12px;
+    margin-top: 2px;
+    transform: scale(1.2);
+}
+
+.student-item label {
+    margin-bottom: 0;
+    cursor: pointer;
+    flex-grow: 1;
+    line-height: 1.3;
+}
+
+.student-name {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.student-details {
+    font-size: 0.85em;
+    color: #666;
+}
+
+.student-details .text-muted {
+    color: #6c757d !important;
+}
+
+/* Group indicators */
+.group-indicator {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: 500;
+    margin-left: 8px;
+}
+
+.group-indicator.has-group {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.group-indicator.no-group {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+/* Loading state */
+.loading-indicator {
+    text-align: center;
+    padding: 30px;
+    color: #6c757d;
+}
+
+.loading-indicator i {
+    font-size: 1.5em;
+    margin-right: 10px;
+}
+
+/* Selection counter */
+.selection-counter {
+    position: sticky;
+    bottom: 0;
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .student-item {
+        padding: 8px 10px;
+    }
+    
+    .student-name {
+        font-size: 0.95em;
+    }
+    
+    .student-details {
+        font-size: 0.8em;
+    }
+    
+    .category-header {
+        padding: 12px 15px;
+        font-size: 1em;
+    }
+    
+    .students-by-category {
+        max-height: 400px;
+    }
+}
+
+/* Filter buttons */
+.student-filters {
+    margin: 10px 0;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.student-filters .btn {
+    padding: 5px 10px;
+    font-size: 0.9em;
+    border-radius: 20px;
+}
+
+.student-filters .btn.active {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Animation for category sections */
+.category-section {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Highlight selected students */
+.student-item input[type="checkbox"]:checked + label {
+    background: rgba(40, 167, 69, 0.1);
+    border-radius: 4px;
+    padding: 5px;
+}
+
+/* Enhanced checkbox styling */
+.student-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #28a745;
+}
+
+/* Summary statistics enhanced */
+.stats-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 10px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.stat-number {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #495057;
+}
+
+.stat-label {
+    font-size: 0.8em;
+    color: #6c757d;
+    margin-top: 5px;
+}

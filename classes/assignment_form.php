@@ -59,27 +59,51 @@ class assignment_form extends moodleform {
             $student_options[$user->id] = $fullname;
         }
 
-        // Form fields - Only creation mode
-        $mform->addElement('select', 'courseid', get_string('select_course', 'local_studenttutor'), $course_options);
-        $mform->setType('courseid', PARAM_INT);
-
-        $mform->addElement('autocomplete', 'tutorid', get_string('select_tutor', 'local_studenttutor'), $tutor_options, array(
+        // Form fields
+        $mform->addElement('autocomplete', 'courseid', 'Selecionar Curso', $course_options, array(
             'multiple' => false,
-            'placeholder' => get_string('select_tutor', 'local_studenttutor'),
+            'placeholder' => 'Digite para buscar um curso...',
+            'showsuggestions' => true,
+            'tags' => false,
+            'noselectionstring' => 'Todos os cursos'
+        ));
+        $mform->setType('courseid', PARAM_INT);
+        $mform->addHelpButton('courseid', 'course_help', 'local_studenttutor');
+
+        $mform->addElement('autocomplete', 'tutorid', 'Selecionar Tutor', $tutor_options, array(
+            'multiple' => false,
+            'placeholder' => 'Digite para buscar um tutor...',
             'showsuggestions' => true,
             'tags' => false
         ));
         $mform->setType('tutorid', PARAM_INT);
-        $mform->addRule('tutorid', get_string('required'), 'required', null, 'client');
+        $mform->addRule('tutorid', 'Campo obrigatório', 'required', null, 'client');
 
-        $mform->addElement('autocomplete', 'studentids', get_string('select_students', 'local_studenttutor'), $student_options, array(
-            'multiple' => true,
-            'placeholder' => get_string('select_students', 'local_studenttutor'),
-            'showsuggestions' => true,
-            'tags' => false
-        ));
-        $mform->setType('studentids', PARAM_SEQUENCE);
-        $mform->addRule('studentids', get_string('required'), 'required', null, 'client');
+        // Students will be loaded dynamically by JavaScript
+        // Add a placeholder for student selection
+        $mform->addElement('html', '<div id="students-dynamic-container">
+            <div class="form-group">
+                <label class="col-form-label">Estudantes</label>
+                <div id="students-selection-area">
+                    <p class="text-muted">Selecione um curso para ver os estudantes disponíveis.</p>
+                </div>
+            </div>
+        </div>');
+
+        // Hidden field to store selected student IDs (will be populated by JavaScript)
+        $mform->addElement('hidden', 'studentids_json', '');
+        $mform->setType('studentids_json', PARAM_TEXT);
+
+        // Status field for edit mode
+        if ($assignment) {
+            $status_options = array(
+                'active' => 'Ativo',
+                'inactive' => 'Inativo'
+            );
+            $mform->addElement('select', 'status', 'Status', $status_options);
+            $mform->setType('status', PARAM_TEXT);
+            $mform->setDefault('status', 'active');
+        }
 
         $this->add_action_buttons();
     }

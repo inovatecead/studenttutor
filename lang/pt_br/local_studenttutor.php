@@ -43,6 +43,13 @@ $string['action_type'] = 'Tipo de Atividade';
 $string['activity_title'] = 'Título da Atividade';
 $string['description'] = 'Descrição';
 
+// Strings de ajuda
+$string['course_help'] = 'Selecione um curso para filtrar estudantes, ou escolha "Todos os cursos" para atribuições globais.';
+
+// Dashboard strings
+$string['dashboard'] = 'Painel de Tutoria';
+$string['pedagogical_dashboard'] = 'Painel Pedagógico';
+
 // Tipos de ação
 $string['action_meeting'] = 'Encontro/Reunião';
 $string['action_email'] = 'Comunicação por Email';
@@ -171,3 +178,4 @@ $string['assignment_updated'] = 'Atribuição atualizada com sucesso';
 $string['assignments_created'] = '{$a} atribuições criadas com sucesso';
 $string['assignmentnotfound'] = 'Atribuição não encontrada';
 $string['edit_temporarily_disabled'] = 'A edição de atribuições está temporariamente desabilitada. Entre em contato com o administrador se precisar modificar uma atribuição.';
+$string['dashboard'] = 'Painel de Tutoria';

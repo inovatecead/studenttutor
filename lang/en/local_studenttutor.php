@@ -46,8 +46,13 @@ $string['description'] = 'Description';
 $string['created_on'] = 'Criado em';
 
 // Help strings
+$string['course_help'] = 'Select a course to filter students, or choose "All courses" for global assignments.';
 $string['activity_title_help'] = 'Enter a descriptive title for this activity.';
 $string['activity_date_help'] = 'Selecione a data em que esta atividade ocorreu.';
+
+// Dashboard strings
+$string['dashboard'] = 'Tutoring Dashboard';
+$string['pedagogical_dashboard'] = 'Pedagogical Dashboard';
 
 // Action types
 $string['action_meeting'] = 'Meeting';
@@ -306,3 +311,4 @@ $string['icon'] = 'Icon';
 $string['color'] = 'Color';
 $string['sortorder'] = 'Sort Order';
 $string['export_csv'] = 'Export CSV';
+$string['dashboard'] = 'Student Tutor Dashboard';
