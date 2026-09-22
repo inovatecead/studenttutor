@@ -126,6 +126,8 @@ $PAGE->set_heading(get_string('assignments_title', 'local_studenttutor'));
 $PAGE->requires->js_call_amd('core/form-autocomplete', 'init');
 
 // Add custom JavaScript for filter autocomplete (AMD style)
+// Built with json_encode() so that a translated string can never break the script.
+$searchplaceholder = json_encode(get_string('search_placeholder', 'local_studenttutor'));
 $PAGE->requires->js_amd_inline('
 require(["jquery", "core/form-autocomplete"], function($, Autocomplete) {
     $(document).ready(function() {
@@ -134,7 +136,7 @@ require(["jquery", "core/form-autocomplete"], function($, Autocomplete) {
         // Convert select elements marked with data-autocomplete to Moodle autocomplete
         $("select[data-autocomplete=\"true\"]").each(function() {
             var $select = $(this);
-            var placeholder = $select.attr("data-placeholder") || "Digite para buscar...";
+            var placeholder = $select.attr("data-placeholder") || ' . $searchplaceholder . ';
             var multiple = $select.attr("data-multiple") === "true";
 
             console.log("Converting select to autocomplete:", $select.attr("name"));
@@ -195,10 +197,12 @@ $buttons[] = $OUTPUT->single_button(
 echo html_writer::div(implode(' ', $buttons), 'buttons');
 
 // Add filters
-echo html_writer::start_tag('div', ['class' => 'filters-form', 'style' => 'margin: 20px 0; padding: 15px; border: 1px solid #ddd; background: #f9f9f9;']);
+echo html_writer::start_tag('div', ['class' => 'filters-form', 'style' => 'margin: 20px 0; padding: 15px;'
+    . ' border: 1px solid #ddd; background: #f9f9f9;']);
 echo html_writer::tag('h4', get_string('filters', 'local_studenttutor'), ['style' => 'margin-top: 0;']);
 
-echo html_writer::start_tag('form', ['method' => 'get', 'action' => '', 'style' => 'display: flex; gap: 15px; align-items: end; flex-wrap: wrap;']);
+echo html_writer::start_tag('form', ['method' => 'get', 'action' => '',
+    'style' => 'display: flex; gap: 15px; align-items: end; flex-wrap: wrap;']);
 
 // Tutor filter
 $tutor_roles = local_studenttutor_get_tutor_roles();
@@ -219,12 +223,16 @@ foreach ($tutors as $tutor) {
 }
 
 echo html_writer::start_tag('div');
-echo html_writer::tag('label', get_string('tutor', 'local_studenttutor'), ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']);
+echo html_writer::tag(
+    'label',
+    get_string('tutor', 'local_studenttutor'),
+    ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']
+);
 
 // Create select with data attributes for autocomplete conversion
 echo html_writer::select($tutor_options, 'filter_tutor', $filter_tutor, false, [
     'data-autocomplete' => 'true',
-    'data-placeholder' => 'Digite para buscar um tutor...',
+    'data-placeholder' => get_string('search_tutor_placeholder', 'local_studenttutor'),
     'data-multiple' => 'false',
     'class' => 'form-autocomplete-original',
     'style' => 'min-width: 200px;',
@@ -248,12 +256,16 @@ foreach ($students as $student) {
 }
 
 echo html_writer::start_tag('div');
-echo html_writer::tag('label', get_string('student', 'local_studenttutor'), ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']);
+echo html_writer::tag(
+    'label',
+    get_string('student', 'local_studenttutor'),
+    ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']
+);
 
 // Create select with data attributes for autocomplete conversion
 echo html_writer::select($student_options, 'filter_student', $filter_student, false, [
     'data-autocomplete' => 'true',
-    'data-placeholder' => 'Digite para buscar um estudante...',
+    'data-placeholder' => get_string('search_student_placeholder', 'local_studenttutor'),
     'data-multiple' => 'false',
     'class' => 'form-autocomplete-original',
     'style' => 'min-width: 200px;',
@@ -270,12 +282,16 @@ foreach ($courses as $course) {
 }
 
 echo html_writer::start_tag('div');
-echo html_writer::tag('label', get_string('course', 'local_studenttutor'), ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']);
+echo html_writer::tag(
+    'label',
+    get_string('course', 'local_studenttutor'),
+    ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']
+);
 
 // Create select with data attributes for autocomplete conversion
 echo html_writer::select($course_options, 'filter_course', $filter_course, false, [
     'data-autocomplete' => 'true',
-    'data-placeholder' => 'Digite para buscar um curso...',
+    'data-placeholder' => get_string('search_course_placeholder', 'local_studenttutor'),
     'data-multiple' => 'false',
     'class' => 'form-autocomplete-original',
     'style' => 'min-width: 250px;',
@@ -284,8 +300,13 @@ echo html_writer::end_tag('div');
 
 // Filter buttons
 echo html_writer::start_tag('div', ['style' => 'display: flex; gap: 10px;']);
-echo html_writer::empty_tag('input', ['type' => 'submit', 'value' => get_string('filter', 'local_studenttutor'), 'class' => 'btn btn-primary']);
-echo html_writer::link(new moodle_url('/local/studenttutor/index.php'), get_string('clear', 'local_studenttutor'), ['class' => 'btn btn-secondary']);
+echo html_writer::empty_tag('input', ['type' => 'submit', 'value' => get_string('filter', 'local_studenttutor'),
+    'class' => 'btn btn-primary']);
+echo html_writer::link(
+    new moodle_url('/local/studenttutor/index.php'),
+    get_string('clear', 'local_studenttutor'),
+    ['class' => 'btn btn-secondary']
+);
 echo html_writer::end_tag('div');
 
 echo html_writer::end_tag('form');
@@ -328,7 +349,11 @@ if ($assignments) {
     $end_item = min(($page + 1) * $perpage, $total_count);
     echo html_writer::tag(
         'p',
-        "Mostrando {$start_item}-{$end_item} de {$total_count} resultados",
+        get_string('showing_results', 'local_studenttutor', [
+            'start' => $start_item,
+            'end' => $end_item,
+            'total' => $total_count,
+        ]),
         ['class' => 'text-muted mb-3']
     );
 
@@ -359,8 +384,8 @@ if ($assignments) {
             // Add edit button
             $actions .= html_writer::link(
                 new moodle_url('/local/studenttutor/assign.php', ['id' => $assignment->id]),
-                'Editar',
-                ['class' => 'btn btn-sm btn-secondary me-2', 'title' => 'Editar atribuição']
+                get_string('edit'),
+                ['class' => 'btn btn-sm btn-secondary me-2', 'title' => get_string('edit_assignment', 'local_studenttutor')]
             );
 
             // Add delete button with improved confirmation
@@ -371,11 +396,12 @@ if ($assignments) {
             ]);
             $actions .= html_writer::link(
                 $delete_url,
-                'Excluir',
+                get_string('delete'),
                 [
                     'class' => 'btn btn-sm btn-danger',
-                    'title' => 'Excluir atribuição',
-                    'onclick' => 'return confirm("Tem certeza que deseja excluir esta atribuição?\\n\\nEsta ação não pode ser desfeita!");',
+                    'title' => get_string('delete_assignment', 'local_studenttutor'),
+                    'onclick' => 'return confirm('
+                        . json_encode(get_string('confirm_delete_assignment', 'local_studenttutor')) . ');',
                 ]
             );
         }
@@ -404,7 +430,7 @@ if ($assignments) {
         echo $OUTPUT->paging_bar($total_count, $page, $perpage, $pagingbar_url);
     }
 } else {
-    echo html_writer::div('Nenhuma atribuição encontrada.', 'alert alert-info');
+    echo html_writer::div(get_string('no_assignments_found', 'local_studenttutor'), 'alert alert-info');
 }
 
 echo html_writer::end_tag('div');

@@ -107,7 +107,8 @@ function xmldb_local_studenttutor_upgrade($oldversion) {
             $dbman->add_field($table, $field);
 
             // Atualizar registros existentes para usar timeassigned como timecreated
-            $DB->execute('UPDATE {local_studenttutor_assign} SET timecreated = timeassigned WHERE timecreated IS NULL OR timecreated = 0');
+            $DB->execute('UPDATE {local_studenttutor_assign} SET timecreated = timeassigned
+                          WHERE timecreated IS NULL OR timecreated = 0');
 
             // Agora tornar o campo NOT NULL
             $field = new xmldb_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'timeassigned');
@@ -118,7 +119,8 @@ function xmldb_local_studenttutor_upgrade($oldversion) {
         $field = new xmldb_field('timeassigned', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'assignedby');
         if ($dbman->field_exists($table, $field)) {
             // Atualizar registros existentes sem timeassigned
-            $DB->execute('UPDATE {local_studenttutor_assign} SET timeassigned = timemodified WHERE timeassigned IS NULL OR timeassigned = 0');
+            $DB->execute('UPDATE {local_studenttutor_assign} SET timeassigned = timemodified
+                          WHERE timeassigned IS NULL OR timeassigned = 0');
         }
 
         // Studenttutor savepoint reached.

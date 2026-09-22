@@ -31,7 +31,6 @@ defined('MOODLE_INTERNAL') || die();
  * Event fired when a student-tutor assignment is updated.
  */
 class assignment_updated extends \core\event\base {
-
     /**
      * Set the event properties.
      */

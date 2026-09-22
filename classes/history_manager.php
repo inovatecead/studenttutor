@@ -64,7 +64,15 @@ class history_manager {
      * @param int $activity_date Date when the activity occurred (optional, defaults to current time)
      * @return int|false History entry ID or false on failure
      */
-    public static function add_history_entry($studentid, $tutorid, $activitytype, $description, $courseid = 0, $createdby = null, $activity_date = null) {
+    public static function add_history_entry(
+        $studentid,
+        $tutorid,
+        $activitytype,
+        $description,
+        $courseid = 0,
+        $createdby = null,
+        $activity_date = null
+    ) {
         global $DB, $USER;
 
         // Validation.

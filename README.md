@@ -1,296 +1,161 @@
-# Student-Tutor Assignment Plugin
+# Nexo Tutoria Acadêmica
 
-Um plugin robusto para Moodle que permite gerenciar atribuições entre tutores e estudantes, incluindo registro detalhado de atividades de tutoria e geração de relatórios abrangentes.
+Plugin de tutoria acadêmica para Moodle: atribui estudantes a tutores e registra o histórico das
+atividades de tutoria, com relatórios e API de integração.
 
-## 📋 Análise do Plugin
+| | |
+|---|---|
+| **Nome do produto** | Nexo Tutoria Acadêmica |
+| **Componente técnico** | `local_studenttutor` (não alterado) |
+| **Versão** | 1.1.0 |
+| **Tipo** | Plugin local (`local`) para Moodle |
+| **Autoria** | Rodrigo Severo Ribeiro |
+| **Titular** | Universidade Federal de Mato Grosso (UFMT) — INOVATEC/UFMT |
+| **Licença** | GPL v3 ou superior (GNU GPL v3+) |
+| **Criação funcional** | Agosto de 2025 |
+| **Em produção desde** | Novembro de 2025 |
 
-### Funcionalidades Principais
+> Este repositório contém o código-fonte do plugin. O histórico anterior à versão 1.1.0 está
+> preservado em [`docs/historico/`](docs/historico/).
 
-- **Gestão de Atribuições**: 
-  - Atribuir tutores a estudantes por curso específico ou atribuições globais
-  - Sistema de múltiplas atribuições com suporte a autocomplete
-  - Validação de duplicatas e prevenção de auto-atribuição
-  
-- **Histórico de Atividades**: 
-  - Registro de diferentes tipos de atividades (reuniões, emails, feedback, avaliações, orientações)
-  - Sistema de comentários e descrições detalhadas
-  - Timestamps automáticos e rastreamento de criador
-  
-- **Relatórios e Analytics**: 
-  - Visualização de histórico com filtros avançados por data, tipo de atividade e usuários
-  - Estatísticas rápidas (total de interações, primeiro/último contato, tipos de interação)
-  - Exportação de dados para análise externa
-  
-- **API REST Completa**: 
-  - Endpoints para criação, leitura e gestão de atribuições
-  - Integração com sistemas externos via web services
-  - Autenticação e autorização baseada em capabilities do Moodle
-  
-- **Integração Nativa com Moodle**: 
-  - Menu "Meus Alunos" integrado na navegação de cursos para tutores
-  - Sistema de permissões baseado em roles (teacher, editingteacher, manager)
-  - Suporte a contextos de curso e sistema
-  
-- **Interface Multilíngue**: 
-  - Suporte completo a português (pt_br) e inglês (en)
-  - Strings localizáveis para fácil tradução
+## O que o plugin faz
 
-### Arquitetura Técnica
+- **Atribuições tutor–estudante**: vínculos por curso específico ou globais (todos os cursos do
+  estudante), com validação de duplicidade e bloqueio de auto-atribuição.
+- **Histórico de tutoria**: registro datado das interações, com tipo de atividade configurável,
+  descrição, autor e vínculo com o par estudante–tutor.
+- **Área do tutor**: menu "Meus Alunos" na navegação do curso, lista de estudantes atribuídos e
+  registro de novas atividades.
+- **Relatórios**: filtros por tutor, estudante, curso, tipo de atividade e período, com estatísticas
+  de primeiro/último contato e distribuição por tipo.
+- **Tipos de atividade administráveis**: nomes, atalhos, ícones, cores e ordem definidos pelo
+  administrador (11 tipos já cadastrados no ambiente da UFMT).
+- **API de integração**: quatro funções de web service, disponíveis também no serviço oficial do
+  aplicativo Moodle Mobile.
 
-- **Padrão MVC**: Separação clara entre lógica de negócio (managers), apresentação (páginas) e dados
-- **Event System**: Eventos para criação e atualização de atribuições
-- **Database Design**: Duas tabelas principais com relacionamentos bem definidos
-- **Security First**: Validações de input, verificações de permissão e sanitização de dados
+## Requisitos
 
-## 🗂️ Estrutura de Arquivos
+| Item | Valor |
+|---|---|
+| Moodle | 4.0 ou superior (`$plugin->requires = 2022041900`); **desenvolvido e testado em 4.3.5** (`2023100905.04`) |
+| Faixa declarada | `$plugin->supported = [400, 405]` |
+| PHP | 8.0 ou superior (exigência do Moodle 4.x); testado em PHP 8.2.31 |
+| Banco de dados | MySQL/MariaDB (testado em MariaDB 11.8.6), PostgreSQL ou SQL Server — usa apenas a API XMLDB |
+| Papéis | um papel de tutor no curso (por padrão `tutortematico`, configurável) |
+
+## Instalação resumida
+
+1. Copie a pasta `studenttutor` para `local/` da instalação Moodle:
+   `local/studenttutor/`
+2. Acesse **Administração do site → Notificações** e conclua a instalação (executa `db/install.xml`
+   e `db/upgrade.php`).
+3. **Execute a limpeza de caches** (Administração do site → Desenvolvimento → Limpar caches).
+   As classes novas só passam a ser carregadas depois disso.
+4. Revise as configurações em **Administração do site → Plugins → Plugins locais → Nexo Tutoria
+   Acadêmica** (papel de tutor, papéis adicionais, limite de atribuições por tutor).
+5. Conceda as capabilities às roles desejadas (ver [`docs/PERMISSIONS.md`](docs/PERMISSIONS.md)).
+
+O passo a passo completo, incluindo verificação pós-instalação, está em
+[`docs/INSTALL.md`](docs/INSTALL.md).
+
+## Estrutura do plugin
 
 ```
 local/studenttutor/
-├── 📄 Core Pages
-│   ├── index.php               # Dashboard principal - listagem e filtros de atribuições
-│   ├── assign.php              # Formulário de criação de atribuições (múltiplas)
-│   ├── course_view.php         # Visualização específica por curso para tutores
-│   ├── student_history.php     # Histórico detalhado de um estudante específico
-│   ├── add_history.php         # Formulário para adicionar atividades de tutoria
-│   ├── edit_history.php        # Edição de registros de histórico
-│   └── reports.php             # Relatórios e análises com filtros avançados
-│
-├── ⚙️ Configuration
-│   ├── lib.php                 # Hooks de navegação e integração com Moodle
-│   ├── settings.php            # Configurações administrativas
-│   └── version.php             # Metadados da versão (v1.1.0)
-│
-├── 🏗️ Classes (Business Logic)
-│   ├── assignment_form.php     # Formulário Moodle para atribuições
-│   ├── assignment_manager.php  # Lógica de negócio para atribuições
-│   ├── history_manager.php     # Gestão de histórico de atividades
-│   ├── event/
-│   │   ├── assignment_created.php  # Evento de criação
-│   │   └── assignment_updated.php  # Evento de atualização
-│   └── external/               # Web Services API
-│       ├── create_assignment.php   # API para criar atribuições
-│       ├── get_assignments.php     # API para listar atribuições
-│       ├── get_history.php         # API para histórico
-│       └── add_history.php         # API para adicionar atividades
-│
-├── 🗄️ Database
-│   ├── install.xml             # Schema das tabelas (assign + history)
-│   ├── upgrade.php             # Scripts de migração
-│   ├── access.php              # Definição de capabilities
-│   └── services.php            # Configuração de web services
-│
-├── 🌐 Internationalization
-│   ├── en/local_studenttutor.php   # Strings em inglês (245+ strings)
-│   └── pt_br/local_studenttutor.php # Strings em português
-│
-└── 🎨 Assets
-    └── styles/multiselect.css      # Estilos para componentes
+├── index.php, assign.php                 # lista/filtros de atribuições e formulário de atribuição
+├── course_view.php, student_history.php  # área do tutor e histórico por estudante
+├── add_history.php, edit_history.php     # registro e edição de atividades de tutoria
+├── reports.php                           # relatórios e estatísticas
+├── manage_activity_types.php, edit_activity_type.php
+├── ajax_get_students.php                 # endpoint AJAX da seleção de estudantes
+├── lib.php, settings.php, version.php
+├── classes/
+│   ├── assignment_manager.php            # regras de atribuição (validação, eventos)
+│   ├── history_manager.php               # regras do histórico
+│   ├── activity_type_manager.php         # tipos de atividade
+│   ├── event/                            # eventos assignment_created / assignment_updated
+│   ├── external/                         # 4 funções de web service
+│   ├── form/                             # formulários (moodleform)
+│   └── privacy/provider.php              # API de privacidade (LGPD)
+├── db/                                   # install.xml, upgrade.php, access.php, services.php
+├── lang/en, lang/pt_br                   # 222 strings por idioma, em paridade
+├── scripts/, styles/                     # JS/CSS próprios
+├── tests/                                # 73 testes automatizados (PHPUnit)
+└── docs/                                 # documentação técnica e funcional
 ```
 
-### Database Schema
+## Permissões (resumo)
 
-**local_studenttutor_assign**: Armazena atribuições tutor-estudante
-- Suporte a atribuições globais (courseid=0) e específicas por curso
-- Status: active, inactive, completed
-- Timestamps: timeassigned, timecreated, timemodified
-- Foreign keys: studentid, tutorid, courseid, assignedby
+O plugin declara **11 capabilities** em `db/access.php`, das quais **4 são efetivamente verificadas
+pelo código** (as demais são legadas e foram mantidas por compatibilidade com configurações de papel
+existentes). As quatro usadas são de contexto de sistema (`CONTEXT_SYSTEM`):
 
-**local_studenttutor_history**: Log de atividades de tutoria
-- Tipos: meeting, email, feedback, assessment, guidance, other
-- Campos: description, activitytype, timecreated, timemodified
-- Relacionamento: studentid + tutorid + courseid
+| Capability | Para que serve |
+|---|---|
+| `local/studenttutor:viewassignments` | Ver a lista de atribuições |
+| `local/studenttutor:manageassignments` | Criar, editar e excluir atribuições; administrar tipos de atividade |
+| `local/studenttutor:viewhistory` | Ver relatórios e histórico |
+| `local/studenttutor:managehistory` | Registrar e editar atividades de tutoria |
 
-## 🚀 Instalação
+A tabela completa, com arquétipos padrão e a capability exigida por cada página, está em
+[`docs/PERMISSIONS.md`](docs/PERMISSIONS.md).
 
-1. **Deploy do Plugin**
-   ```bash
-   # Copie o plugin para o diretório correto
-   cp -r studenttutor/ /path/to/moodle/local/
-   ```
+## API de integração
 
-2. **Instalação via Interface Web**
-   - Acesse: Administração > Notificações
-   - Execute o processo de instalação automática
-   - Verifique se as tabelas foram criadas corretamente
+| Função | Tipo | Capability |
+|---|---|---|
+| `local_studenttutor_get_assignments` | leitura | `local/studenttutor:viewassignments` |
+| `local_studenttutor_create_assignment` | escrita | `local/studenttutor:manageassignments` |
+| `local_studenttutor_get_history` | leitura | `local/studenttutor:viewhistory` |
+| `local_studenttutor_add_history` | escrita | `local/studenttutor:managehistory` |
 
-3. **Configuração de Permissões**
-   - Acesse: Administração > Usuários > Permissões > Definir roles
-   - Configure as capabilities necessárias por role
+As quatro funções compõem o serviço **Nexo Tutoria Acadêmica API** (`studenttutor_api`) e também
+estão expostas no serviço oficial do aplicativo Moodle Mobile. Parâmetros, retornos e exemplos estão
+em [`docs/API.md`](docs/API.md).
 
-## 🔐 Sistema de Permissões
+## Privacidade e proteção de dados (LGPD)
 
-| Capability | Descrição | Roles Padrão |
-|------------|-----------|--------------|
-| `local/studenttutor:viewassignments` | Visualizar atribuições | Teacher, Manager |
-| `local/studenttutor:manageassignments` | Criar/editar/excluir atribuições | EditingTeacher, Manager |
-| `local/studenttutor:viewhistory` | Visualizar histórico de atividades | Teacher, Manager |
-| `local/studenttutor:managehistory` | Gerenciar histórico de atividades | Teacher, Manager |
-| `local/studenttutor:view_own_students` | Ver apenas estudantes próprios | Teacher |
-| `local/studenttutor:assign_students` | Atribuir estudantes | EditingTeacher, Manager |
+O plugin armazena apenas os dados necessários à tutoria (identificadores de usuário, curso, tipo de
+atividade, descrição e datas) — **não coleta e-mail, IP, notas, gênero, raça ou qualquer dado
+sensível**. Implementa a API de privacidade do Moodle, com exportação e exclusão por titular.
 
-## 🔧 Configurações do Sistema
+- [`PRIVACY.md`](PRIVACY.md) — quais dados são tratados, finalidade, retenção e direitos do titular.
+- [`SECURITY.md`](SECURITY.md) — postura de segurança e canal para relato de vulnerabilidades.
 
-O plugin oferece configurações administrativas para:
-- Número máximo de atribuições por tutor
-- Habilitação/desabilitação de funcionalidades
-- Configurações de notificações e eventos
+## Testes
 
-## 📊 Fluxo de Uso
-
-### Para Administradores:
-1. **index.php**: Dashboard com todas as atribuições e filtros avançados
-2. **assign.php**: Criar múltiplas atribuições simultaneamente
-3. **reports.php**: Relatórios estatísticos e exportação de dados
-
-### Para Tutores:
-1. **course_view.php**: Acessível via menu "Meus Alunos" no curso
-2. **student_history.php**: Histórico detalhado de cada estudante
-3. **add_history.php**: Registrar novas atividades de tutoria
-
-### Integração com Navegação:
-- Menu automático "Meus Alunos" aparece na navegação do curso para tutores
-- Links contextuais para perfis de estudantes
-- Breadcrumbs e navegação intuitiva
-
-## 🌐 API REST
-
-O plugin fornece uma API REST completa para integração com sistemas externos:
-
-### Endpoints Disponíveis:
-
-| Endpoint | Método | Descrição | Capabilities Necessárias |
-|----------|---------|-----------|--------------------------|
-| `local_studenttutor_create_assignment` | POST | Criar nova atribuição | manageassignments |
-| `local_studenttutor_get_assignments` | GET | Listar atribuições com filtros | viewassignments |
-| `local_studenttutor_get_history` | GET | Obter histórico de atividades | viewhistory |
-| `local_studenttutor_add_history` | POST | Adicionar atividade ao histórico | managehistory |
-
-### Exemplo de Uso:
-```php
-// Criar atribuição via web service
-$assignment = external_api::call_external_function(
-    'local_studenttutor_create_assignment',
-    [
-        'tutorid' => 123,
-        'studentid' => 456,
-        'courseid' => 789
-    ]
-);
+```
+73 testes, 808 assertivas — OK
 ```
 
-## 📈 Funcionalidades Avançadas
+Os testes automatizados cobrem os managers, as funções de web service, os formulários, a
+integridade de esquema/capabilities/strings e a conformidade com a API de privacidade. Como executar
+(pré-requisitos de ambiente, locale e dataroot isolado) está em [`docs/TESTING.md`](docs/TESTING.md).
 
-### Sistema de Filtros:
-- **Por Usuário**: Tutores, estudantes específicos
-- **Por Curso**: Atribuições globais ou específicas por curso
-- **Por Data**: Períodos personalizados para histórico
-- **Por Tipo de Atividade**: Meeting, email, feedback, assessment, etc.
+## Padrões de código
 
-### Estatísticas e Analytics:
-- Total de estudantes por tutor
-- Frequência de interações
-- Primeiro e último contato
-- Distribuição por tipo de atividade
-- Estudantes contatados recentemente (últimos 7 dias)
+O código segue o padrão oficial do Moodle (`moodlehq/moodle-cs`), com cabeçalhos GPL, docblocks em
+todas as classes/funções públicas e `@covers` nos testes. O comando de verificação, o resultado
+atual e os desvios aceitos (com justificativa e comparação com o próprio núcleo do Moodle) estão em
+[`docs/PADROES_DE_CODIGO.md`](docs/PADROES_DE_CODIGO.md).
 
-### Recursos de UX:
-- Autocomplete para seleção de usuários
-- Confirmações antes de exclusões
-- Mensagens de feedback contextuais
-- Links rápidos para perfis e mensagens
-- Interface responsiva
+## Documentação
 
-## 🔄 Estados e Workflow
+| Documento | Conteúdo |
+|---|---|
+| [`docs/INSTALL.md`](docs/INSTALL.md) | instalação e verificação pós-instalação |
+| [`docs/UPGRADE.md`](docs/UPGRADE.md) | atualização de versões anteriores e migração de dados |
+| [`docs/PERMISSIONS.md`](docs/PERMISSIONS.md) | capabilities, arquétipos e permisssões por página |
+| [`docs/DATABASE.md`](docs/DATABASE.md) | tabelas, campos, índices e regras de integridade |
+| [`docs/API.md`](docs/API.md) | funções de web service e endpoints AJAX |
+| [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md) | camadas, fluxo de requisição e decisões de projeto |
+| [`docs/MANUAL_FUNCIONAL.md`](docs/MANUAL_FUNCIONAL.md) | manual do administrador e do tutor |
+| [`docs/TESTING.md`](docs/TESTING.md) | como executar e escrever testes |
+| [`docs/DEPENDENCIES.md`](docs/DEPENDENCIES.md) | dependências e código de terceiros |
+| [`docs/PADROES_DE_CODIGO.md`](docs/PADROES_DE_CODIGO.md) | verificação de estilo e desvios documentados |
+| [`CHANGELOG.md`](CHANGELOG.md) | histórico de versões |
 
-### Status de Atribuições:
-- **Active**: Atribuição ativa e funcional
-- **Inactive**: Temporariamente desabilitada
-- **Completed**: Atribuição finalizada
+## Licença
 
-### Tipos de Atividades:
-- **Meeting**: Reuniões presenciais ou virtuais
-- **Email**: Comunicações por email
-- **Feedback**: Feedback sobre trabalhos/avaliações
-- **Assessment**: Revisão de avaliações
-- **Guidance**: Orientação acadêmica geral
-- **Other**: Outras atividades personalizadas
-
-## 🛠️ Aspectos Técnicos
-
-### Padrões Implementados:
-- **PSR-4**: Autoloading de classes
-- **Moodle Coding Standards**: Seguindo padrões oficiais
-- **Event Driven**: Sistema de eventos para auditoria
-- **Security by Design**: Validações e sanitização rigorosas
-
-### Performance:
-- Queries otimizadas com JOINs eficientes
-- Paginação em listagens grandes
-- Índices estratégicos nas tabelas
-- Cache de consultas frequentes
-
-### Compatibilidade:
-- **Moodle**: 3.9+ (requer 2020061500)
-- **PHP**: 7.4+
-- **MySQL/PostgreSQL**: Suporte completo
-- **Browsers**: Modernos com JavaScript habilitado
-
-## 🐛 Desenvolvimento e Debug
-
-### Logs e Debugging:
-O plugin implementa debugging detalhado em pontos críticos:
-```php
-debugging("get_tutor_students_including_global: Found " . count($results) . " assignments", DEBUG_DEVELOPER);
-```
-
-### Tratamento de Erros:
-- Validações rigorosas de entrada
-- Try-catch em operações críticas
-- Mensagens de erro localizadas
-- Fallbacks para situações de erro
-
-### Extensibilidade:
-- Managers bem estruturados para fácil extensão
-- Event system para hooks customizados
-- Constantes bem definidas para status e tipos
-- Interfaces claras entre componentes
-
-## 📚 Suporte e Documentação
-
-### Recursos Disponíveis:
-- **Código Autodocumentado**: Comentários PHPDoc em todas as classes
-- **Language Strings**: Mais de 245 strings traduzíveis
-- **Database Schema**: Documentação inline no install.xml
-- **Examples**: Código de exemplo em comentários
-
-### Para Desenvolvedores:
-- Arquitetura modular facilita manutenção
-- Separation of concerns bem implementada
-- Testes de validação em formulários
-- APIs consistentes entre managers
-
-### Troubleshooting Comum:
-1. **Permissions**: Verificar capabilities nos roles
-2. **Database**: Confirmar instalação das tabelas
-3. **Cache**: Limpar cache após modificações
-4. **Logs**: Verificar logs do Moodle para erros
-
-## 📄 Licença e Créditos
-
-**Licença**: GNU GPL v3 or later  
-**Versão**: 1.1.0 (2025063010)  
-**Compatibilidade**: Moodle 3.9+  
-**Arquitetura**: Plugin Local para Moodle  
-
-### Características da Versão Atual:
-- ✅ Sistema completo de atribuições
-- ✅ Histórico de atividades robusto  
-- ✅ API REST funcional
-- ✅ Interface multilíngue
-- ✅ Integração nativa com Moodle
-- ⚠️ Edição de atribuições temporariamente desabilitada
-- 🔄 Sistema de eventos implementado
-
----
-
-**Desenvolvido para facilitar o acompanhamento pedagógico e fortalecer a relação tutor-estudante no ambiente Moodle.**
+GNU General Public License, versão 3 ou superior (GPLv3+), a mesma do Moodle. Consulte o cabeçalho
+de cada arquivo e o texto integral em <https://www.gnu.org/licenses/gpl-3.0.html>.

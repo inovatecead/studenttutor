@@ -89,7 +89,10 @@ if ($form->is_cancelled()) {
 echo $OUTPUT->header();
 
 // Breadcrumb
-$PAGE->navbar->add(get_string('my_students', 'local_studenttutor'), new moodle_url('/local/studenttutor/course_view.php', ['courseid' => $courseid]));
+$PAGE->navbar->add(
+    get_string('my_students', 'local_studenttutor'),
+    new moodle_url('/local/studenttutor/course_view.php', ['courseid' => $courseid])
+);
 $PAGE->navbar->add(get_string('add_history_entry', 'local_studenttutor'));
 
 echo $OUTPUT->heading(get_string('add_history_entry', 'local_studenttutor'));

@@ -185,7 +185,7 @@ class history_manager_test extends \advanced_testcase {
         $this->assertEquals('tipob', $record->activitytype);
         $this->assertEquals('Descrição atualizada', $record->description);
         $this->assertEquals($activitydate, $record->activity_date);
-        // studentid is not an allowed field, so it must stay untouched.
+        // The studentid field is not allowed, so it must stay untouched.
         $this->assertEquals($student->id, $record->studentid);
     }
 

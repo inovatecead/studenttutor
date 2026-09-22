@@ -50,15 +50,20 @@ if ($id > 0) {
     // EDIT MODE - Load existing assignment
     $assignment = assignment_manager::get_assignment($id);
     if (!$assignment) {
-        redirect($returnurl, 'Atribuição não encontrada', null, \core\output\notification::NOTIFY_ERROR);
+        redirect(
+            $returnurl,
+            get_string('assignmentnotfound', 'local_studenttutor'),
+            null,
+            \core\output\notification::NOTIFY_ERROR
+        );
     }
     $is_edit_mode = true;
-    $PAGE->set_title('Editar Atribuição');
-    $PAGE->set_heading('Editar Atribuição');
+    $PAGE->set_title(get_string('edit_assignment', 'local_studenttutor'));
+    $PAGE->set_heading(get_string('edit_assignment', 'local_studenttutor'));
 } else {
     // CREATE MODE
-    $PAGE->set_title('Nova Atribuição');
-    $PAGE->set_heading('Nova Atribuição');
+    $PAGE->set_title(get_string('add_assignment', 'local_studenttutor'));
+    $PAGE->set_heading(get_string('add_assignment', 'local_studenttutor'));
 }
 
 $mform = new assignment_form(null, ['assignment' => $assignment]);
@@ -78,12 +83,22 @@ if ($mform->is_cancelled()) {
 
     // Validação de dados obrigatórios
     if (empty($studentids) || empty($data->tutorid)) {
-        redirect($returnurl, 'Dados obrigatórios não preenchidos', null, \core\output\notification::NOTIFY_ERROR);
+        redirect(
+            $returnurl,
+            get_string('required_fields_missing', 'local_studenttutor'),
+            null,
+            \core\output\notification::NOTIFY_ERROR
+        );
     }
 
     // Validação adicional: verificar se o tutor é válido
     if (!local_studenttutor_is_tutor($data->tutorid)) {
-        redirect($returnurl, 'Tutor selecionado não é válido', null, \core\output\notification::NOTIFY_ERROR);
+        redirect(
+            $returnurl,
+            get_string('invalid_tutor', 'local_studenttutor'),
+            null,
+            \core\output\notification::NOTIFY_ERROR
+        );
     }
 
     global $DB, $USER;
@@ -102,9 +117,19 @@ if ($mform->is_cancelled()) {
         $record->timemodified = time();
 
         if ($DB->update_record('local_studenttutor_assign', $record)) {
-            redirect($returnurl, 'Atribuição atualizada com sucesso', null, \core\output\notification::NOTIFY_SUCCESS);
+            redirect(
+                $returnurl,
+                get_string('assignment_updated_success', 'local_studenttutor'),
+                null,
+                \core\output\notification::NOTIFY_SUCCESS
+            );
         } else {
-            redirect($returnurl, 'Erro ao atualizar atribuição', null, \core\output\notification::NOTIFY_ERROR);
+            redirect(
+                $returnurl,
+                get_string('assignment_update_error', 'local_studenttutor'),
+                null,
+                \core\output\notification::NOTIFY_ERROR
+            );
         }
     } else {
         // CREATE MODE - Create new assignments with duplicate validation
@@ -169,17 +194,18 @@ if ($mform->is_cancelled()) {
         // Mensagem de resultado detalhada
         $messages = [];
         if ($success_count > 0) {
-            $messages[] = "{$success_count} atribuição(ões) criada(s) com sucesso";
+            $messages[] = get_string('assignments_created_count', 'local_studenttutor', $success_count);
         }
         if ($duplicate_count > 0) {
-            $messages[] = "{$duplicate_count} atribuição(ões) já existia(m)";
+            $messages[] = get_string('assignments_duplicated_count', 'local_studenttutor', $duplicate_count);
         }
         if ($error_count > 0) {
-            $messages[] = "{$error_count} erro(s) ao criar atribuições";
+            $messages[] = get_string('assignments_error_count', 'local_studenttutor', $error_count);
         }
 
         $final_message = implode('. ', $messages);
-        $notification_type = $success_count > 0 ? \core\output\notification::NOTIFY_SUCCESS : \core\output\notification::NOTIFY_WARNING;
+        $notification_type = $success_count > 0 ? \core\output\notification::NOTIFY_SUCCESS
+            : \core\output\notification::NOTIFY_WARNING;
 
         redirect($returnurl, $final_message, null, $notification_type);
     }
@@ -194,7 +220,8 @@ $PAGE->requires->js('/local/studenttutor/scripts/assign_simple.js');
 
 echo $OUTPUT->header();
 
-echo $OUTPUT->heading($is_edit_mode ? 'Editar Atribuição' : 'Nova Atribuição');
+echo $OUTPUT->heading($is_edit_mode ? get_string('edit_assignment', 'local_studenttutor')
+    : get_string('add_assignment', 'local_studenttutor'));
 
 $mform->display();
 

@@ -66,32 +66,32 @@ class assignment_form extends \moodleform {
         }
 
         // Form fields.
-        $mform->addElement('autocomplete', 'courseid', 'Selecionar Curso', $course_options, [
+        $mform->addElement('autocomplete', 'courseid', get_string('select_course', 'local_studenttutor'), $course_options, [
             'multiple' => false,
-            'placeholder' => 'Digite para buscar um curso...',
+            'placeholder' => get_string('search_course_placeholder', 'local_studenttutor'),
             'showsuggestions' => true,
             'tags' => false,
-            'noselectionstring' => 'Todos os cursos',
+            'noselectionstring' => get_string('all_courses', 'local_studenttutor'),
         ]);
         $mform->setType('courseid', PARAM_INT);
         $mform->addHelpButton('courseid', 'course_help', 'local_studenttutor');
 
-        $mform->addElement('autocomplete', 'tutorid', 'Selecionar Tutor', $tutor_options, [
+        $mform->addElement('autocomplete', 'tutorid', get_string('select_tutor', 'local_studenttutor'), $tutor_options, [
             'multiple' => false,
-            'placeholder' => 'Digite para buscar um tutor...',
+            'placeholder' => get_string('search_tutor_placeholder', 'local_studenttutor'),
             'showsuggestions' => true,
             'tags' => false,
         ]);
         $mform->setType('tutorid', PARAM_INT);
-        $mform->addRule('tutorid', 'Campo obrigatório', 'required', null, 'client');
+        $mform->addRule('tutorid', get_string('required'), 'required', null, 'client');
 
         // Students are loaded dynamically by JavaScript (scripts/assign_simple.js),
         // which requests them through ajax_get_students.php.
         $mform->addElement('html', '<div id="students-dynamic-container">
             <div class="form-group">
-                <label class="col-form-label">Estudantes</label>
+                <label class="col-form-label">' . s(get_string('students', 'local_studenttutor')) . '</label>
                 <div id="students-selection-area">
-                    <p class="text-muted">Selecione um curso para ver os estudantes disponíveis.</p>
+                    <p class="text-muted">' . s(get_string('select_course_to_see_students', 'local_studenttutor')) . '</p>
                 </div>
             </div>
         </div>');
@@ -103,10 +103,10 @@ class assignment_form extends \moodleform {
         // Status field for edit mode.
         if ($assignment) {
             $status_options = [
-                'active' => 'Ativo',
-                'inactive' => 'Inativo',
+                'active' => get_string('active'),
+                'inactive' => get_string('inactive'),
             ];
-            $mform->addElement('select', 'status', 'Status', $status_options);
+            $mform->addElement('select', 'status', get_string('status', 'local_studenttutor'), $status_options);
             $mform->setType('status', PARAM_TEXT);
             $mform->setDefault('status', 'active');
         }

@@ -104,9 +104,9 @@ class get_assignments extends external_api {
                 'timecreated' => $assignment->timeassigned,
                 'timemodified' => $assignment->timemodified,
                 'createdby' => $assignment->assignedby,
-                // username_load_fields_from_object() copies every name field selected by
-                // \core_user\fields::for_name(), so the display name honours the site
-                // settings and fullname() does not warn about missing name fields.
+                // Every name field selected by username_load_fields_from_object() is
+                // copied, so the display name honours the site settings and fullname()
+                // does not warn about missing name fields.
                 'tutor_name' => fullname(username_load_fields_from_object((object)[], $assignment, 'tutor_')),
                 'student_name' => fullname(username_load_fields_from_object((object)[], $assignment, 'student_')),
                 'course_name' => $assignment->course_name ?: get_string('all_courses', 'local_studenttutor'),

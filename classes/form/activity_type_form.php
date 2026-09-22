@@ -103,7 +103,7 @@ class activity_type_form extends \moodleform {
         $mform->addHelpButton('color', 'activity_type_color', 'local_studenttutor');
 
         // Active status.
-        $mform->addElement('advcheckbox', 'active', get_string('active', 'local_studenttutor'));
+        $mform->addElement('advcheckbox', 'active', get_string('active'));
         $mform->setDefault('active', 1);
         $mform->addHelpButton('active', 'activity_type_active', 'local_studenttutor');
 

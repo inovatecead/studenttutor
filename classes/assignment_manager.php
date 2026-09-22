@@ -490,7 +490,12 @@ class assignment_manager {
      * @param int $limitnum Number of records to return
      * @return array Array of assignment records with details
      */
-    public static function get_all_assignments_with_details($filters = [], $sort = 'a.timeassigned DESC', $limitfrom = 0, $limitnum = 0) {
+    public static function get_all_assignments_with_details(
+        $filters = [],
+        $sort = 'a.timeassigned DESC',
+        $limitfrom = 0,
+        $limitnum = 0
+    ) {
         global $DB;
 
         $nameselects = \core_user\fields::for_name()->get_sql('tu', false, 'tutor_')->selects .

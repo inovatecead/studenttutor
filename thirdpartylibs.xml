@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Bibliotecas de terceiros empacotadas neste plugin.
+
+  O plugin local_studenttutor NÃO empacota bibliotecas de terceiros:
+  - scripts/assign_simple.js, styles/assign_form.css e styles/assign_enhanced.css são de autoria
+    própria (GPL v3+), portanto não entram nesta lista;
+  - Bootstrap, FontAwesome, jQuery e o módulo AMD core/form-autocomplete são referências a recursos
+    já distribuídos pelo próprio Moodle/tema, não cópias dentro do plugin.
+
+  Ver docs/DEPENDENCIES.md para a verificação executada.
+-->
+<libraries>
+</libraries>

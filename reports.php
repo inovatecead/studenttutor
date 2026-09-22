@@ -62,10 +62,12 @@ echo html_writer::div(
 );
 
 // Add filters form
-echo html_writer::start_tag('div', ['class' => 'filters-form', 'style' => 'margin: 20px 0; padding: 15px; border: 1px solid #ddd; background: #f9f9f9;']);
+echo html_writer::start_tag('div', ['class' => 'filters-form', 'style' => 'margin: 20px 0; padding: 15px;'
+    . ' border: 1px solid #ddd; background: #f9f9f9;']);
 echo html_writer::tag('h4', get_string('filters', 'local_studenttutor'), ['style' => 'margin-top: 0;']);
 
-echo html_writer::start_tag('form', ['method' => 'get', 'action' => '', 'style' => 'display: flex; gap: 15px; align-items: end; flex-wrap: wrap;']);
+echo html_writer::start_tag('form', ['method' => 'get', 'action' => '',
+    'style' => 'display: flex; gap: 15px; align-items: end; flex-wrap: wrap;']);
 
 
 // Tutor filter - Simple multiple select
@@ -81,7 +83,11 @@ $tutors = $DB->get_records_sql("
 ");
 
 echo html_writer::start_tag('div');
-echo html_writer::tag('label', get_string('tutor', 'local_studenttutor'), ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']);
+echo html_writer::tag(
+    'label',
+    get_string('tutor', 'local_studenttutor'),
+    ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']
+);
 
 // Create simple multiple select
 echo '<select name="filter_tutor[]" multiple size="4" style="min-width: 250px; min-height: 80px;">';
@@ -93,7 +99,8 @@ foreach ($tutors as $tutor) {
 }
 
 echo '</select>';
-echo '<div style="font-size: 0.8em; color: #666; margin-top: 5px;">Segure Ctrl (ou Cmd) para selecionar múltiplos</div>';
+echo '<div style="font-size: 0.8em; color: #666; margin-top: 5px;">'
+    . s(get_string('hold_ctrl_multi_select', 'local_studenttutor')) . '</div>';
 echo html_writer::end_tag('div');
 
 // Student filter - Simple multiple select
@@ -109,7 +116,11 @@ $students = $DB->get_records_sql("
 ");
 
 echo html_writer::start_tag('div');
-echo html_writer::tag('label', get_string('student', 'local_studenttutor'), ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']);
+echo html_writer::tag(
+    'label',
+    get_string('student', 'local_studenttutor'),
+    ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']
+);
 
 // Create simple multiple select
 echo '<select name="filter_student[]" multiple size="4" style="min-width: 250px; min-height: 80px;">';
@@ -121,7 +132,8 @@ foreach ($students as $student) {
 }
 
 echo '</select>';
-echo '<div style="font-size: 0.8em; color: #666; margin-top: 5px;">Segure Ctrl (ou Cmd) para selecionar múltiplos</div>';
+echo '<div style="font-size: 0.8em; color: #666; margin-top: 5px;">'
+    . s(get_string('hold_ctrl_multi_select', 'local_studenttutor')) . '</div>';
 echo html_writer::end_tag('div');
 
 // Course filter
@@ -140,7 +152,11 @@ foreach ($courses as $course) {
 }
 
 echo html_writer::start_tag('div');
-echo html_writer::tag('label', get_string('course', 'local_studenttutor'), ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']);
+echo html_writer::tag(
+    'label',
+    get_string('course', 'local_studenttutor'),
+    ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']
+);
 echo html_writer::select($course_options, 'filter_course', $filter_course, false, ['style' => 'min-width: 200px;']);
 echo html_writer::end_tag('div');
 
@@ -156,38 +172,48 @@ $activity_types = [
 ];
 
 echo html_writer::start_tag('div');
-echo html_writer::tag('label', get_string('activity_type', 'local_studenttutor'), ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']);
+echo html_writer::tag(
+    'label',
+    get_string('activity_type', 'local_studenttutor'),
+    ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']
+);
 echo html_writer::select($activity_types, 'filter_activity_type', $filter_activity_type, false, ['style' => 'min-width: 120px;']);
 echo html_writer::end_tag('div');
 
 // Date filters
 echo html_writer::start_tag('div');
-echo html_writer::tag('label', get_string('date_from', 'local_studenttutor'), ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']);
-echo html_writer::empty_tag('input', ['type' => 'date', 'name' => 'filter_date_from', 'value' => $filter_date_from, 'style' => 'min-width: 120px;']);
+echo html_writer::tag(
+    'label',
+    get_string('date_from', 'local_studenttutor'),
+    ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']
+);
+echo html_writer::empty_tag('input', ['type' => 'date', 'name' => 'filter_date_from',
+    'value' => $filter_date_from, 'style' => 'min-width: 120px;']);
 echo html_writer::end_tag('div');
 
 echo html_writer::start_tag('div');
-echo html_writer::tag('label', get_string('date_to', 'local_studenttutor'), ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']);
-echo html_writer::empty_tag('input', ['type' => 'date', 'name' => 'filter_date_to', 'value' => $filter_date_to, 'style' => 'min-width: 120px;']);
+echo html_writer::tag(
+    'label',
+    get_string('date_to', 'local_studenttutor'),
+    ['style' => 'display: block; font-weight: bold; margin-bottom: 5px;']
+);
+echo html_writer::empty_tag('input', ['type' => 'date', 'name' => 'filter_date_to',
+    'value' => $filter_date_to, 'style' => 'min-width: 120px;']);
 echo html_writer::end_tag('div');
 
 // Filter buttons
 echo html_writer::start_tag('div', ['style' => 'display: flex; gap: 10px;']);
-echo html_writer::empty_tag('input', ['type' => 'submit', 'value' => get_string('filter', 'local_studenttutor'), 'class' => 'btn btn-primary']);
-echo html_writer::link(new moodle_url('/local/studenttutor/reports.php'), get_string('clear', 'local_studenttutor'), ['class' => 'btn btn-secondary']);
+echo html_writer::empty_tag('input', ['type' => 'submit', 'value' => get_string('filter', 'local_studenttutor'),
+    'class' => 'btn btn-primary']);
+echo html_writer::link(
+    new moodle_url('/local/studenttutor/reports.php'),
+    get_string('clear', 'local_studenttutor'),
+    ['class' => 'btn btn-secondary']
+);
 echo html_writer::end_tag('div');
 
 echo html_writer::end_tag('form');
 echo html_writer::end_tag('div');
-
-// Add new history entry button
-// if (has_capability('local/studenttutor:managehistory', $context)) {
-// echo $OUTPUT->single_button(
-// new moodle_url('/local/studenttutor/add_history.php'),
-// get_string('add_history_entry', 'local_studenttutor'),
-// 'get'
-// );
-// }
 
 // Display history entries
 echo html_writer::start_tag('div', ['class' => 'history-list']);
@@ -252,7 +278,8 @@ if ($filter_course > 0) {
     $active_filters[] = get_string('course', 'local_studenttutor') . ': ' . $course_name;
 }
 if (!empty($filter_activity_type)) {
-    $active_filters[] = get_string('activity_type', 'local_studenttutor') . ': ' . get_string('activity_' . $filter_activity_type, 'local_studenttutor');
+    $active_filters[] = get_string('activity_type', 'local_studenttutor') . ': '
+        . get_string('activity_' . $filter_activity_type, 'local_studenttutor');
 }
 if (!empty($filter_date_from)) {
     $active_filters[] = get_string('date_from', 'local_studenttutor') . ': ' . $filter_date_from;

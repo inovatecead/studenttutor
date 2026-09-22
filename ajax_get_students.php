@@ -148,15 +148,15 @@ try {
         if ($tutor_count == 0) {
             $summary['without_tutors']++;
             $category = 'without_tutors';
-            $category_label = 'Sem tutores';
+            $category_label = get_string('without_tutors', 'local_studenttutor');
         } else if ($tutor_count == 1) {
             $summary['with_one_tutor']++;
             $category = 'with_one_tutor';
-            $category_label = 'Com 1 tutor';
+            $category_label = get_string('with_one_tutor', 'local_studenttutor');
         } else {
             $summary['with_multiple_tutors']++;
             $category = 'with_multiple_tutors';
-            $category_label = 'Com múltiplos tutores';
+            $category_label = get_string('with_multiple_tutors', 'local_studenttutor');
         }
 
         // Count groups summary
@@ -174,7 +174,8 @@ try {
             'tutor_names' => $tutor_names,
             'group_names' => $group_names,
             'group_ids' => $group_ids,
-            'group_display' => !empty($group_names) ? implode(', ', $group_names) : 'Sem grupo',
+            'group_display' => !empty($group_names) ? implode(', ', $group_names)
+                : get_string('without_group', 'local_studenttutor'),
             'has_tutors' => $tutor_count > 0,
             'has_groups' => !empty($group_names),
             'category' => $category,

@@ -276,7 +276,7 @@ class plugin_integrity_test extends \advanced_testcase {
 
             $contents = file_get_contents($path);
 
-            // get_string() calls that read a string from another component.
+            // Calls to get_string() that read a string from another component.
             if (
                 preg_match_all(
                     "/get_string\\(\\s*'([a-zA-Z0-9_:]+)'\\s*,\\s*'([^']+)'/",
@@ -293,7 +293,8 @@ class plugin_integrity_test extends \advanced_testcase {
                 }
             }
 
-            // addHelpButton() looks for the "{identifier}_help" string.
+            // Calls to addHelpButton() look for the "{identifier}_help" string and,
+            // when the element has no label, for the "{identifier}" string as the title.
             if (
                 preg_match_all(
                     "/addHelpButton\\(\\s*'[^']+'\\s*,\\s*'([^']+)'\\s*,\\s*'local_studenttutor'/",
@@ -303,6 +304,7 @@ class plugin_integrity_test extends \advanced_testcase {
             ) {
                 foreach ($matches[1] as $identifier) {
                     $help[$identifier . '_help'] = true;
+                    $help[$identifier] = true;
                 }
             }
         }

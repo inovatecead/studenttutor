@@ -31,7 +31,6 @@ defined('MOODLE_INTERNAL') || die();
  * Event fired when a student is assigned to a tutor.
  */
 class assignment_created extends \core\event\base {
-
     /**
      * Set the event properties.
      */

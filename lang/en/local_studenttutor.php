@@ -69,6 +69,18 @@ $string['assignment_creation_failed'] = 'Failed to create assignment';
 $string['assignment_exists_for'] = 'Assignment already exists for student: {$a}';
 $string['assignmentalreadyexists'] = 'This assignment already exists';
 $string['assignmentnotfound'] = 'Assignment not found';
+$string['edit_assignment'] = 'Edit Assignment';
+$string['delete_assignment'] = 'Delete Assignment';
+$string['confirm_delete_assignment'] = 'Are you sure you want to delete this assignment?\n\nThis action cannot be undone!';
+$string['assignment_updated_success'] = 'Assignment updated successfully';
+$string['assignment_update_error'] = 'Error updating the assignment';
+$string['required_fields_missing'] = 'Required data was not provided';
+$string['invalid_tutor'] = 'The selected tutor is not valid';
+$string['assignments_created_count'] = '{$a} assignment(s) created successfully';
+$string['assignments_duplicated_count'] = '{$a} assignment(s) already existed';
+$string['assignments_error_count'] = '{$a} error(s) while creating assignments';
+$string['no_assignments_found'] = 'No assignments found.';
+$string['assign_students_hint'] = 'To assign students, open the assignments page.';
 $string['error_deleting_assignment'] = 'Error deleting assignment';
 
 // Tutoring history.
@@ -104,15 +116,7 @@ $string['course'] = 'Course';
 $string['date'] = 'Date';
 $string['actions'] = 'Actions';
 $string['general'] = 'General';
-$string['value'] = 'Value';
 $string['total_records'] = 'Total records found';
-
-// Status and actions.
-$string['active'] = 'Active';
-$string['inactive'] = 'Inactive';
-$string['edit'] = 'Edit';
-$string['delete'] = 'Delete';
-$string['other'] = 'Other';
 
 // Filters.
 $string['filters'] = 'Filters';
@@ -121,6 +125,20 @@ $string['clear'] = 'Clear';
 $string['all_tutors'] = 'All Tutors';
 $string['all_students'] = 'All Students';
 $string['all_courses'] = 'All Courses';
+$string['select_course'] = 'Select Course';
+$string['select_tutor'] = 'Select Tutor';
+$string['students'] = 'Students';
+$string['select_course_to_see_students'] = 'Select a course to see the available students.';
+$string['search_placeholder'] = 'Type to search...';
+$string['search_course_placeholder'] = 'Type to search a course...';
+$string['search_tutor_placeholder'] = 'Type to search a tutor...';
+$string['search_student_placeholder'] = 'Type to search a student...';
+$string['showing_results'] = 'Showing {$a->start}-{$a->end} of {$a->total} results';
+$string['hold_ctrl_multi_select'] = 'Hold Ctrl (or Cmd) to select multiple items';
+$string['without_tutors'] = 'Without tutors';
+$string['with_one_tutor'] = 'With 1 tutor';
+$string['with_multiple_tutors'] = 'With multiple tutors';
+$string['without_group'] = 'No group';
 $string['all_activity_types'] = 'All Activity Types';
 $string['date_from'] = 'Date From';
 $string['date_to'] = 'Date To';
@@ -129,11 +147,6 @@ $string['select_students'] = 'Select students';
 $string['filters_active'] = 'Active filters';
 
 // Statistics.
-$string['total_assignments'] = 'Total Assignments';
-$string['active_assignments'] = 'Active Assignments';
-$string['total_activities'] = 'Total Activities';
-$string['unique_tutors'] = 'Unique Tutors';
-$string['unique_students'] = 'Unique Students';
 $string['quick_stats'] = 'Quick Statistics';
 $string['stats_total_students'] = 'Total students: {$a}';
 $string['stats_total_interactions'] = 'Total interactions: {$a}';
@@ -192,7 +205,7 @@ $string['export_csv'] = 'Export CSV';
 $string['activity_type_name'] = 'Activity Type Name';
 $string['activity_type_name_help'] = 'The display name for this activity type';
 $string['activity_type_shortname'] = 'Shortname';
-$string['activity_type_shortname_help'] = 'A unique identifier for this activity type (letters, numbers, and underscores only)';
+$string['activity_type_shortname_help'] = 'A unique identifier for this activity type (letters, numbers and underscores only)';
 $string['activity_type_description'] = 'Description';
 $string['activity_type_description_help'] = 'A brief description of when to use this activity type';
 $string['activity_type_icon'] = 'Icon';
@@ -204,7 +217,7 @@ $string['activity_type_active_help'] = 'Whether this activity type is available 
 $string['activity_type_sortorder'] = 'Sort Order';
 $string['activity_type_sortorder_help'] = 'Order in which this type appears in lists (lower numbers first)';
 
-// Activity type icons.
+// Icons for the activity types.
 $string['icon_users'] = 'Users (meetings)';
 $string['icon_envelope'] = 'Envelope (email)';
 $string['icon_comment'] = 'Comment (feedback)';

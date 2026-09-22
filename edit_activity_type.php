@@ -90,9 +90,11 @@ echo $OUTPUT->header();
 
 // Breadcrumbs
 $PAGE->navbar->add(get_string('manage_activity_types', 'local_studenttutor'), $return_url);
-$PAGE->navbar->add($activity_type ? get_string('edit_activity_type', 'local_studenttutor') : get_string('add_activity_type', 'local_studenttutor'));
+$PAGE->navbar->add($activity_type ? get_string('edit_activity_type', 'local_studenttutor')
+    : get_string('add_activity_type', 'local_studenttutor'));
 
-echo $OUTPUT->heading($activity_type ? get_string('edit_activity_type', 'local_studenttutor') : get_string('add_activity_type', 'local_studenttutor'));
+echo $OUTPUT->heading($activity_type ? get_string('edit_activity_type', 'local_studenttutor')
+    : get_string('add_activity_type', 'local_studenttutor'));
 
 if ($activity_type) {
     echo $OUTPUT->notification(get_string('editing_activity_type', 'local_studenttutor', $activity_type->name), 'info');

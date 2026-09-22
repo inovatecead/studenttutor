@@ -80,8 +80,8 @@ $assignments = assignment_manager::get_tutor_students_including_global($USER->id
 if (empty($assignments)) {
     echo '<div class="alert alert-info">';
     echo '<h4>' . get_string('no_students_assigned', 'local_studenttutor') . '</h4>';
-    echo '<p>Não há estudantes atribuídos a você neste curso.</p>';
-    echo '<p>Para atribuir estudantes, acesse a página de atribuições do Nexo Tutoria Acadêmica.</p>';
+    echo '<p>' . s(get_string('no_students_assigned', 'local_studenttutor')) . '</p>';
+    echo '<p>' . s(get_string('assign_students_hint', 'local_studenttutor')) . '</p>';
     echo '</div>';
     echo $OUTPUT->continue_button(new moodle_url('/course/view.php', ['id' => $courseid]));
     echo $OUTPUT->footer();
@@ -153,7 +153,8 @@ foreach ($assignments as $assignment) {
     ]);
 
     $date_assigned = userdate($assignment->timecreated, get_string('strftimedate'));
-    $last_contact = $last_history ? userdate($last_history->timecreated, get_string('strftimedate')) : get_string('never', 'local_studenttutor');
+    $last_contact = $last_history ? userdate($last_history->timecreated, get_string('strftimedate'))
+        : get_string('never', 'local_studenttutor');
 
     // Actions
     $actions = [];
