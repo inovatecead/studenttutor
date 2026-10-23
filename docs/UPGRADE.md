@@ -1,4 +1,4 @@
-# Atualização — Nexo Tutoria Acadêmica (`local_studenttutor`)
+# Atualização — Tutoria Acadêmica (`local_studenttutor`)
 
 ## 1. Antes de atualizar
 

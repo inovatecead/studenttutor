@@ -1,4 +1,4 @@
-# Dependências — Nexo Tutoria Acadêmica (`local_studenttutor`)
+# Dependências — Tutoria Acadêmica (`local_studenttutor`)
 
 ## 1. Dependências de execução
 

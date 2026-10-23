@@ -1,7 +1,7 @@
-# Privacidade e proteção de dados — Nexo Tutoria Acadêmica
+# Privacidade e proteção de dados — Tutoria Acadêmica
 
 Documento de transparência sobre o tratamento de dados pessoais realizado pelo plugin
-`local_studenttutor` (Nexo Tutoria Acadêmica), em conformidade com a Lei nº 13.709/2018 (LGPD) e com
+`local_studenttutor` (Tutoria Acadêmica), em conformidade com a Lei nº 13.709/2018 (LGPD) e com
 as diretrizes de privacidade do Moodle.
 
 ## Papéis no tratamento

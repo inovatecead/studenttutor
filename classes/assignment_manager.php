@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Assignment manager class for the Nexo Tutoria Acadêmica plugin.
+ * Assignment manager class for the Tutoria Acadêmica plugin.
  *
  * @package    local_studenttutor
  * @author     Rodrigo Severo Ribeiro

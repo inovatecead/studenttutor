@@ -1,4 +1,4 @@
-# Padrões de código — Nexo Tutoria Acadêmica (`local_studenttutor`)
+# Padrões de código — Tutoria Acadêmica (`local_studenttutor`)
 
 O código segue o **padrão oficial de código do Moodle**, verificado com a ferramenta oficial do
 projeto (`moodlehq/moodle-cs`, que empacota o PHP_CodeSniffer com o *standard* `moodle`).

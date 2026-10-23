@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Brazilian Portuguese language strings for the Nexo Tutoria Acadêmica plugin.
+ * Brazilian Portuguese language strings for the Tutoria Acadêmica plugin.
  *
  * @package    local_studenttutor
  * @author     Rodrigo Severo Ribeiro
@@ -26,12 +26,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 // Plugin e configurações.
-$string['pluginname'] = 'Nexo Tutoria Acadêmica';
+$string['pluginname'] = 'Tutoria Acadêmica';
 $string['settings'] = 'Configurações';
 $string['general_settings'] = 'Configurações Gerais';
 $string['general_settings_desc'] = 'Configure as configurações gerais do plugin';
 $string['enable_plugin'] = 'Habilitar Plugin';
-$string['enable_plugin_desc'] = 'Habilitar ou desabilitar o plugin Nexo Tutoria Acadêmica';
+$string['enable_plugin_desc'] = 'Habilitar ou desabilitar o plugin Tutoria Acadêmica';
 $string['max_assignments'] = 'Máximo de Atribuições';
 $string['max_assignments_desc'] = 'Número máximo de estudantes que um tutor pode ter atribuído';
 $string['tutor_role'] = 'Papel de tutor';
@@ -262,7 +262,7 @@ $string['studenttutor:view_all_history'] = 'Ver o histórico de tutoria de toda 
 $string['studenttutor:viewreports'] = 'Ver relatórios de tutoria';
 
 // Metadados de privacidade (Privacy API - não altere os nomes das chaves).
-$string['privacy:metadata'] = 'O plugin Nexo Tutoria Acadêmica armazena qual tutor é responsável por cada estudante e o histórico das interações de tutoria.';
+$string['privacy:metadata'] = 'O plugin Tutoria Acadêmica armazena qual tutor é responsável por cada estudante e o histórico das interações de tutoria.';
 $string['privacy:metadata:local_studenttutor_assign'] = 'Informações sobre qual tutor é responsável por qual estudante.';
 $string['privacy:metadata:local_studenttutor_history'] = 'Informações sobre cada interação de tutoria registrada por um tutor.';
 $string['privacy:path'] = 'Tutoria';

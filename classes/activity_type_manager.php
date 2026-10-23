@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Activity Type manager class for the Nexo Tutoria Acadêmica plugin.
+ * Activity Type manager class for the Tutoria Acadêmica plugin.
  *
  * @package    local_studenttutor
  * @author     Rodrigo Severo Ribeiro

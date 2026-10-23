@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Edit activity type for the Nexo Tutoria Acadêmica plugin
+ * Edit activity type for the Tutoria Acadêmica plugin
  *
  * @package    local_studenttutor
  * @author     Rodrigo Severo Ribeiro

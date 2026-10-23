@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Settings for the Nexo Tutoria Acadêmica plugin
+ * Settings for the Tutoria Acadêmica plugin
  *
  * @package    local_studenttutor
  * @author     Rodrigo Severo Ribeiro

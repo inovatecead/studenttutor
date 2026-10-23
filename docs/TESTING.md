@@ -1,4 +1,4 @@
-# Testes — Nexo Tutoria Acadêmica (`local_studenttutor`)
+# Testes — Tutoria Acadêmica (`local_studenttutor`)
 
 O plugin usa o **PHPUnit do Moodle** (`advanced_testcase`) e roda dentro da estrutura oficial de
 testes de plugins. Estado atual:

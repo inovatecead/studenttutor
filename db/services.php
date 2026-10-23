@@ -73,7 +73,7 @@ $functions = [
 
 // Define services
 $services = [
-    'Nexo Tutoria Acadêmica API' => [
+    'Tutoria Acadêmica API' => [
         'functions' => [
             'local_studenttutor_get_assignments',
             'local_studenttutor_create_assignment',

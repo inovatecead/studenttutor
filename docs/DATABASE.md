@@ -1,4 +1,4 @@
-# Banco de dados — Nexo Tutoria Acadêmica (`local_studenttutor`)
+# Banco de dados — Tutoria Acadêmica (`local_studenttutor`)
 
 Esquema definido em `db/install.xml` e aplicado pelas etapas de `db/upgrade.php`. O plugin usa
 exclusivamente a API XMLDB do Moodle (`$DB->get_records*`, `get_record_select`, `insert_record`,

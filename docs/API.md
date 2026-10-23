@@ -1,4 +1,4 @@
-# API de integração — Nexo Tutoria Acadêmica (`local_studenttutor`)
+# API de integração — Tutoria Acadêmica (`local_studenttutor`)
 
 O plugin expõe quatro funções de web service (padrão Moodle) e um endpoint AJAX interno.
 
@@ -6,7 +6,7 @@ O plugin expõe quatro funções de web service (padrão Moodle) e um endpoint A
 
 1. **Administração do site → Servidor → Serviços externos**: confirme que os serviços externos estão
    habilitados e que o protocolo desejado (REST) está ativo.
-2. O serviço **Nexo Tutoria Acadêmica API** (`studenttutor_api`) já é criado na instalação e contém as
+2. O serviço **Tutoria Acadêmica API** (`studenttutor_api`) já é criado na instalação e contém as
    quatro funções.
 3. Gere um *token* em **Administração do site → Servidor → Serviços externos → Gerenciar tokens**
    (recomenda-se usuário de serviço dedicado, com apenas as capabilities necessárias).

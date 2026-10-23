@@ -1,4 +1,4 @@
-# Instalação — Nexo Tutoria Acadêmica (`local_studenttutor`)
+# Instalação — Tutoria Acadêmica (`local_studenttutor`)
 
 ## 1. Requisitos
 
@@ -48,7 +48,7 @@ php admin/cli/purge_caches.php
 
 ### 2.4 Configurações
 
-Em **Administração do site → Plugins → Plugins locais → Nexo Tutoria Acadêmica**:
+Em **Administração do site → Plugins → Plugins locais → Tutoria Acadêmica**:
 
 | Configuração | Padrão | Descrição |
 |---|---|---|

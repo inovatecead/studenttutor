@@ -1,4 +1,4 @@
-# Manual funcional — Nexo Tutoria Acadêmica
+# Manual funcional — Tutoria Acadêmica
 
 Manual de uso do plugin `local_studenttutor`, voltado à coordenação de tutoria, aos tutores e à
 administração do site.
@@ -25,7 +25,7 @@ administração do site.
 
 ### 3.1 Configurações
 
-**Administração do site → Plugins → Plugins locais → Nexo Tutoria Acadêmica**
+**Administração do site → Plugins → Plugins locais → Tutoria Acadêmica**
 
 | Configuração | Para que serve |
 |---|---|
@@ -36,7 +36,7 @@ administração do site.
 
 ### 3.2 Tipos de atividade
 
-**Administração do site → Plugins → Plugins locais → Nexo Tutoria Acadêmica → Tipos de atividade**
+**Administração do site → Plugins → Plugins locais → Tutoria Acadêmica → Tipos de atividade**
 
 - **Criar**: informe nome, atalho (`shortname`), descrição, ícone (FontAwesome), cor, ordem e
   disponibilidade.

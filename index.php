@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Assignment list page for the Nexo Tutoria Acadêmica plugin.
+ * Assignment list page for the Tutoria Acadêmica plugin.
  * Shows pedagogical dashboard for tutors and administrative dashboard for admins
  *
  * @package    local_studenttutor

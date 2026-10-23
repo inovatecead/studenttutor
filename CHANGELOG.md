@@ -1,4 +1,4 @@
-# Histórico de versões — Nexo Tutoria Acadêmica (`local_studenttutor`)
+# Histórico de versões — Tutoria Acadêmica (`local_studenttutor`)
 
 Todas as alterações relevantes do plugin são registradas neste arquivo.
 Formato inspirado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
@@ -8,6 +8,11 @@ Formato inspirado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 Versão de estabilização, segurança, documentação e testabilidade, mantendo compatibilidade com os
 dados e as funcionalidades existentes (nenhuma tabela, capability, evento ou endpoint foi
 removido ou teve o significado alterado).
+
+### Identificação do produto
+
+- Nome do produto definido como **Tutoria Acadêmica** (componente técnico `local_studenttutor`
+  preservado) e texto integral da licença GNU GPL v3 incluído em `LICENSE`.
 
 ### Adicionado
 

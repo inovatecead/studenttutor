@@ -1,4 +1,4 @@
-# Permissões — Nexo Tutoria Acadêmica (`local_studenttutor`)
+# Permissões — Tutoria Acadêmica (`local_studenttutor`)
 
 Todas as capabilities são declaradas em `db/access.php` e concedidas por papel do Moodle em
 **Administração do site → Usuários → Permissões → Definir papéis**.

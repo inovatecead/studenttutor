@@ -1,11 +1,11 @@
-# Nexo Tutoria Acadêmica
+# Tutoria Acadêmica
 
 Plugin de tutoria acadêmica para Moodle: atribui estudantes a tutores e registra o histórico das
 atividades de tutoria, com relatórios e API de integração.
 
 | | |
 |---|---|
-| **Nome do produto** | Nexo Tutoria Acadêmica |
+| **Nome do produto** | Tutoria Acadêmica |
 | **Componente técnico** | `local_studenttutor` (não alterado) |
 | **Versão** | 1.1.0 |
 | **Tipo** | Plugin local (`local`) para Moodle |
@@ -51,7 +51,7 @@ atividades de tutoria, com relatórios e API de integração.
    e `db/upgrade.php`).
 3. **Execute a limpeza de caches** (Administração do site → Desenvolvimento → Limpar caches).
    As classes novas só passam a ser carregadas depois disso.
-4. Revise as configurações em **Administração do site → Plugins → Plugins locais → Nexo Tutoria
+4. Revise as configurações em **Administração do site → Plugins → Plugins locais → Tutoria
    Acadêmica** (papel de tutor, papéis adicionais, limite de atribuições por tutor).
 5. Conceda as capabilities às roles desejadas (ver [`docs/PERMISSIONS.md`](docs/PERMISSIONS.md)).
 
@@ -109,7 +109,7 @@ A tabela completa, com arquétipos padrão e a capability exigida por cada pági
 | `local_studenttutor_get_history` | leitura | `local/studenttutor:viewhistory` |
 | `local_studenttutor_add_history` | escrita | `local/studenttutor:managehistory` |
 
-As quatro funções compõem o serviço **Nexo Tutoria Acadêmica API** (`studenttutor_api`) e também
+As quatro funções compõem o serviço **Tutoria Acadêmica API** (`studenttutor_api`) e também
 estão expostas no serviço oficial do aplicativo Moodle Mobile. Parâmetros, retornos e exemplos estão
 em [`docs/API.md`](docs/API.md).
 

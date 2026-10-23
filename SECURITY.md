@@ -1,4 +1,4 @@
-# Política de segurança — Nexo Tutoria Acadêmica
+# Política de segurança — Tutoria Acadêmica
 
 Plugin `local_studenttutor` — versão 1.1.0.
 

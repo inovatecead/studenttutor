@@ -1,4 +1,4 @@
-# Arquitetura — Nexo Tutoria Acadêmica (`local_studenttutor`)
+# Arquitetura — Tutoria Acadêmica (`local_studenttutor`)
 
 ## 1. Visão geral
 

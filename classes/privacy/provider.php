@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy provider for the Nexo Tutoria Acadêmica plugin.
+ * Privacy provider for the Tutoria Acadêmica plugin.
  *
  * Data written by this plugin lives in the system context: assignments are
  * site-wide (a course id of 0 means "all courses") and the capabilities are

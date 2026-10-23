@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * English language strings for the Nexo Tutoria Acadêmica plugin.
+ * English language strings for the Tutoria Acadêmica plugin.
  *
  * @package    local_studenttutor
  * @author     Rodrigo Severo Ribeiro
@@ -26,12 +26,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 // Plugin and settings.
-$string['pluginname'] = 'Nexo Academic Tutoring';
+$string['pluginname'] = 'Tutoria Acadêmica';
 $string['settings'] = 'Settings';
 $string['general_settings'] = 'General Settings';
 $string['general_settings_desc'] = 'Configure the general settings of the plugin';
 $string['enable_plugin'] = 'Enable Plugin';
-$string['enable_plugin_desc'] = 'Enable or disable the Nexo Academic Tutoring plugin';
+$string['enable_plugin_desc'] = 'Enable or disable the Tutoria Acadêmica plugin';
 $string['max_assignments'] = 'Maximum Assignments';
 $string['max_assignments_desc'] = 'Maximum number of students a tutor can be assigned to';
 $string['tutor_role'] = 'Tutor role';
@@ -262,7 +262,7 @@ $string['studenttutor:view_all_history'] = 'View the tutoring history of all sta
 $string['studenttutor:viewreports'] = 'View tutoring reports';
 
 // Privacy metadata (Privacy API - do not change the key names).
-$string['privacy:metadata'] = 'The Nexo Tutoring plugin stores which tutor is responsible for each student and the history of the tutoring interactions.';
+$string['privacy:metadata'] = 'The Tutoria Acadêmica plugin stores which tutor is responsible for each student and the history of the tutoring interactions.';
 $string['privacy:metadata:local_studenttutor_assign'] = 'Information about which tutor is responsible for which student.';
 $string['privacy:metadata:local_studenttutor_history'] = 'Information about each tutoring interaction recorded by a tutor.';
 $string['privacy:path'] = 'Tutoring';
